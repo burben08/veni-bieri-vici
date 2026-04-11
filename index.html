@@ -52,6 +52,8 @@
             color: #64748b;
             padding: 8px;
             font-size: 1.2rem;
+            top: 8px !important;
+            right: 8px !important;
         }
         .custom-popup a.leaflet-popup-close-button:hover {
             color: #0f172a;
@@ -130,7 +132,7 @@
                 </button>
             </form>
         </div>
-        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v1.2</div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v1.3</div>
     </div>
 
     <!-- Tutorial Modal -->
@@ -242,7 +244,7 @@
     <!-- Top Left Controls Group -->
     <div class="absolute top-4 left-4 sm:left-6 sm:top-6 z-[2000] flex gap-2 pointer-events-none">
         <button id="btn-settings" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors pointer-events-auto active:scale-95" title="Player Settings">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1-1-1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
 
         <button id="btn-toggle-view" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-blue-600 hover:text-blue-700 transition-colors pointer-events-auto active:scale-95" title="Toggle Map View">
@@ -251,15 +253,23 @@
         </button>
     </div>
 
-    <!-- Activity Log Bottom Center (Adapts to Mobile safe-areas) -->
-    <div id="activity-box" class="absolute left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[2000] sm:w-80 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 overflow-hidden pointer-events-auto flex flex-col transition-all duration-300 h-14" style="bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));">
-        <div id="activity-header" class="flex-shrink-0 h-14 px-4 flex items-center justify-between cursor-pointer border-b border-transparent transition-colors hover:bg-slate-50 group">
-            <div id="activity-latest" class="truncate text-sm text-slate-600 flex items-center gap-2">
-                <span class="text-slate-400 italic">No recent activity</span>
+    <!-- Bottom Center Controls (GPS & Activity Log Stack) -->
+    <div class="absolute bottom-6 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[2000] sm:w-80 flex flex-col gap-3 pointer-events-none" style="padding-bottom: max(0px, env(safe-area-inset-bottom, 0px));">
+        <!-- GPS Button -->
+        <button id="btn-gps-token" class="w-full bg-slate-400 hover:bg-slate-500 text-white py-3.5 px-4 rounded-2xl shadow-lg border border-slate-500 font-black tracking-wide pointer-events-auto transition-all active:scale-95" title="Drink Beer & Place Token">
+            Beer Finished
+        </button>
+        
+        <!-- Activity Log -->
+        <div id="activity-box" class="w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 overflow-hidden pointer-events-auto flex flex-col transition-all duration-300 h-14">
+            <div id="activity-header" class="flex-shrink-0 h-14 px-4 flex items-center justify-between cursor-pointer border-b border-transparent transition-colors hover:bg-slate-50 group">
+                <div id="activity-latest" class="truncate text-sm text-slate-600 flex items-center gap-2">
+                    <span class="text-slate-400 italic">No recent activity</span>
+                </div>
+                <svg id="activity-toggle-icon" class="text-slate-400 group-hover:text-slate-600 transition-transform duration-300 shrink-0 ml-2" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
             </div>
-            <svg id="activity-toggle-icon" class="text-slate-400 group-hover:text-slate-600 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            <div id="activity-list" class="flex-1 overflow-y-auto p-2 flex flex-col gap-1.5 opacity-0 transition-opacity"></div>
         </div>
-        <div id="activity-list" class="flex-1 overflow-y-auto p-2 flex flex-col gap-1.5 opacity-0 transition-opacity"></div>
     </div>
 
     <!-- Toast Notification System -->
@@ -267,8 +277,8 @@
         <span id="toast-msg">Notification</span>
     </div>
 
-    <!-- Leaderboard Top Right & GPS Button -->
-    <div class="absolute top-4 right-4 sm:right-6 sm:top-6 z-[2000] w-56 sm:w-72 pointer-events-none flex flex-col gap-3">
+    <!-- Leaderboard Top Right -->
+    <div class="absolute top-4 right-4 sm:right-6 sm:top-6 z-[2000] w-64 sm:w-80 pointer-events-none flex flex-col gap-3">
         <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 p-4 pointer-events-auto flex flex-col max-h-[50vh]">
             <div id="leaderboard-header" class="shrink-0 mb-2 flex items-center justify-between border-b border-slate-100 pb-2 cursor-pointer group">
                 <h3 class="font-black text-slate-800 flex items-center gap-1.5">
@@ -283,11 +293,6 @@
             
             <div id="leaderboard" class="flex-1 overflow-y-auto pr-1 flex flex-col gap-1.5"></div>
         </div>
-
-        <!-- GPS Button Under Leaderboard -->
-        <button id="btn-gps-token" class="w-full bg-slate-400 hover:bg-slate-500 text-white py-3.5 px-4 rounded-2xl shadow-lg border border-slate-500 font-black tracking-wide pointer-events-auto transition-all active:scale-95 flex items-center justify-center gap-2" title="Drink Beer & Place Token">
-            <span class="text-2xl leading-none">🍺</span> Beer Finished
-        </button>
     </div>
 
     <!-- Loading Screen -->
@@ -306,7 +311,7 @@
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Global State & Storage ---
-        const VERSION = "v1.2";
+        const VERSION = "v1.3";
         const PALETTE = ['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16'];
         
         let registeredUsers = {};
@@ -373,7 +378,7 @@
         // --- Map Initialization ---
         const map = L.map('map', {
             center: [46.8182, 8.2275], zoom: 8, minZoom: 7, maxZoom: 13, 
-            zoomControl: false, attributionControl: false, // Disabled to remove thin white strip
+            zoomControl: false, attributionControl: false, 
             maxBounds: [[45.5, 5.5], [48.0, 11.0]], maxBoundsViscosity: 0.8
         });
         L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -434,7 +439,6 @@
         }
 
         // --- Firebase Setup ---
-        // ⚠️ PASTE YOUR FIREBASE CONFIGURATION HERE ⚠️
         const firebaseConfig = {
             apiKey: "AIzaSyCfzl0RKiF0Yy8XXAZ0O20TEmDV5gogh9I",
             authDomain: "bierisko.firebaseapp.com",
@@ -449,13 +453,11 @@
         let app, auth, db, stateRef;
 
         try {
-            // Use provided config if pasted, else fallback to Canvas magic variable (for preview)
             const activeConfig = Object.keys(firebaseConfig).length > 0 ? firebaseConfig : JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
             app = initializeApp(activeConfig);
             auth = getAuth(app);
             db = getFirestore(app);
             
-            // Use generic db collection if config is provided manually, otherwise use Canvas magic paths
             if (Object.keys(firebaseConfig).length > 0) {
                  stateRef = doc(db, 'bierisko_game', 'global_state');
             } else {
@@ -470,7 +472,6 @@
 
         async function initFirebase() {
             try {
-                // If in Canvas use custom token, otherwise generic anonymous auth
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token && Object.keys(firebaseConfig).length === 0) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
@@ -508,7 +509,6 @@
                         currentUser = registeredUsers[currentUser.id];
                         updateLocalUserLastSeen();
                     } else if (currentUser && !registeredUsers[currentUser.id]) {
-                        // User was deleted by another session
                         btnLogout.click();
                     }
                     
@@ -519,7 +519,6 @@
                         refreshMapVisuals();
                     }
                 } else {
-                    // Initialize empty cloud document if it doesn't exist
                     pushState();
                 }
             }, (error) => {
@@ -533,7 +532,7 @@
                 await setDoc(stateRef, {
                     users: registeredUsers,
                     tokens: tokensState,
-                    activityLog: activityLog.slice(-100), // Prevent unbounded array growth
+                    activityLog: activityLog.slice(-100), 
                     tokenHistory: tokenHistory.slice(-500)
                 }, { merge: true });
             } catch(e) { console.error("Save error", e); }
@@ -632,7 +631,7 @@
             if (currentUser) {
                 currentUser.lastSeen = Date.now();
                 saveLocalUserLastSeen();
-                pushState(); // save new lastSeen to cloud
+                pushState(); 
             }
             currentUser = null;
             updateUIForUser();
@@ -700,10 +699,11 @@
                     }
                 }
                 
-                activityLog.push({ type: 'system', text: `Player ${currentUser.name} abandoned the map. Their territories collapsed.`, timestamp: Date.now() });
+                // Scrub user entirely from logs & history
+                activityLog = activityLog.filter(log => log.playerId !== idToDelete);
+                tokenHistory = tokenHistory.filter(log => log.playerId !== idToDelete);
                 
                 pushState();
-                
                 btnLogout.click(); 
             }
         });
@@ -727,7 +727,6 @@
             const actualTokensState = JSON.parse(JSON.stringify(tokensState));
             let replayTokensState = JSON.parse(JSON.stringify(tokensState));
             
-            // Reconstruct the past
             for (let t of unseenTokens) {
                 if (replayTokensState[t.gemId] && replayTokensState[t.gemId][t.playerId]) {
                     replayTokensState[t.gemId][t.playerId]--;
@@ -818,7 +817,6 @@
             isReplaying = false;
             replayOverlay.classList.add('hidden');
             
-            // Sync completely to cloud truth
             tokensState = actualTokensState;
             calculateGameState();
             renderActivityBox(); 
@@ -1330,8 +1328,8 @@
             if (!rawGemeindeData) return showToast("Map data not loaded yet.", true);
             if (!navigator.geolocation) return showToast("Your browser doesn't support geolocation.", true);
 
-            const originalContent = '<span class="text-2xl leading-none">🍺</span> Beer Finished';
-            btnGpsToken.innerHTML = '<span class="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></span>';
+            const originalContent = 'Beer Finished';
+            btnGpsToken.innerHTML = '<span class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></span>';
             btnGpsToken.classList.add('opacity-70', 'cursor-wait');
             btnGpsToken.disabled = true;
 
