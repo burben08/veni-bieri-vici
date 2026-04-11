@@ -120,7 +120,7 @@
     <div id="login-screen" class="absolute inset-0 z-[5000] bg-slate-100/90 backdrop-blur-md flex flex-col items-center justify-center p-4">
         <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-xl max-w-sm w-full text-center relative">
             <h2 class="text-4xl font-black text-slate-800 mb-2">Veni Bieri Vici</h2>
-            <p class="text-slate-500 text-sm mb-6">Welcome to Strava for part-time Alcoholics. Drink beers, claim Gemeinden and conquer Cantons to gain control of the whole Swiss map.</p>
+            <p class="text-slate-500 text-sm mb-6">Drink beers, claim Gemeinden and conquer Cantons to gain control of the whole Swiss map.</p>
             
             <div id="db-status" class="text-xs font-bold text-blue-500 mb-4 animate-pulse">Connecting to live map...</div>
 
@@ -132,7 +132,7 @@
                 </button>
             </form>
         </div>
-        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v1.5</div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v1.6</div>
     </div>
 
     <!-- Tutorial/Rules Modal -->
@@ -153,13 +153,12 @@
                 
                 <p><strong>How to Play:</strong></p>
                 <ul class="list-disc pl-5 space-y-2 text-slate-600">
-                    <li> Whenever you finish a beer, press tap the "Drink Beer Here" button to place a token.</li>
-                    <li class="text-emerald-700 font-bold">Every time you log a beer, send a selfie with the beer in the WhatsApp group 📸.</li>
-                    <li> Non-alcoholic beers are fully allowed!</li>
-                    <li> All sizes (3dl, 5dl, etc.) are worth exactly ONE token.</li>
-                    <li> Have the most tokens in a Gemeinde to claim it 🚩.</li>
-                    <li> Control the largest area within a Canton to conquer the entire Canton 🏆.</li>
-                    <li> Control the most Cantons to move up the Leaderboard 🥇.</li>
+                    <li>Drink a beer and tap a Gemeinde to place a token 🍺.</li>
+                    <li class="text-emerald-700 font-bold">📸 Every time you log a beer, you must send a selfie with the beer in the WhatsApp group!</li>
+                    <li><strong>Important:</strong> Non-alcoholic beers are fully allowed!</li>
+                    <li><strong>Important:</strong> All sizes (3dl, 5dl, etc.) are worth exactly ONE token.</li>
+                    <li>Have the most tokens in a Gemeinde to claim it 🚩.</li>
+                    <li>Control the largest area within a Canton to conquer the entire Canton 🏆.</li>
                 </ul>
                 <p class="pt-2">Keep an eye on the Leaderboard and watch out for other players taking your territory!</p>
             </div>
@@ -328,7 +327,7 @@
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Global State & Storage ---
-        const VERSION = "v1.5";
+        const VERSION = "v1.6";
         const PALETTE = ['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16'];
         
         let registeredUsers = {};
@@ -696,9 +695,15 @@
             // Remove from history
             tokenHistory.splice(lastTokenIndex, 1);
 
-            // Remove from token state cleanly
+            // Corrected Token State Logic: Decriment instead of setting to zero
             if (tokensState[gemId] && tokensState[gemId][currentUser.id]) {
-                tokensState[gemId][currentUser.id] = 0; // Setting to 0 correctly resets it for calculating max tokens
+                tokensState[gemId][currentUser.id]--;
+                if (tokensState[gemId][currentUser.id] <= 0) {
+                    delete tokensState[gemId][currentUser.id];
+                }
+                if (Object.keys(tokensState[gemId]).length === 0) {
+                    delete tokensState[gemId];
+                }
             }
 
             // Remove associated activity logs to keep the board clean
@@ -719,12 +724,15 @@
                 
                 for (const gemId in tokensState) {
                     if (tokensState[gemId][idToDelete]) {
-                        tokensState[gemId][idToDelete] = 0; 
+                        delete tokensState[gemId][idToDelete];
+                    }
+                    if (tokensState[gemId] && Object.keys(tokensState[gemId]).length === 0) {
+                        delete tokensState[gemId];
                     }
                 }
                 
                 // Scrub user entirely from logs & history
-                activityLog = activityLog.filter(log => log.playerId !== idToDelete && log.type !== 'system');
+                activityLog = activityLog.filter(log => log.playerId !== idToDelete);
                 tokenHistory = tokenHistory.filter(log => log.playerId !== idToDelete);
                 
                 pushState();
