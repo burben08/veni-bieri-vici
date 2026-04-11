@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Veni Bieri Vici</title>
+    <title>VENI BIERI VICI</title>
     
     <!-- Beer Emoji Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍺</text></svg>">
@@ -119,8 +119,8 @@
     <!-- Login/Register Screen Overlay -->
     <div id="login-screen" class="absolute inset-0 z-[5000] bg-slate-100/90 backdrop-blur-md flex flex-col items-center justify-center p-4">
         <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-xl max-w-sm w-full text-center relative">
-            <h2 class="text-4xl font-black text-slate-800 mb-2">Veni Bieri Vici</h2>
-            <p class="text-slate-500 text-sm mb-6">Drink beers, claim Gemeinden and conquer Cantons to gain control of the whole Swiss map.</p>
+            <h2 class="text-4xl font-black text-slate-800 mb-2">VENI BIERI VICI</h2>
+            <p class="text-slate-500 text-sm mb-6">Welcome to Strava for part-time Alcoholics. Drink beers, claim Gemeinden and conquer Cantons to gain control of the whole Swiss map.</p>
             
             <div id="db-status" class="text-xs font-bold text-blue-500 mb-4 animate-pulse">Connecting to live map...</div>
 
@@ -132,13 +132,17 @@
                 </button>
             </form>
         </div>
-        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v1.6</div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v1.8</div>
     </div>
 
     <!-- Tutorial/Rules Modal -->
     <div id="tutorial-modal" class="hidden absolute inset-0 z-[4800] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center px-4 transition-opacity">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col transform transition-all text-center">
-            <h3 class="text-2xl font-black text-slate-800 mb-4 shrink-0">Welcome to Veni Bieri Vici! 🍻</h3>
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col transform transition-all text-center relative">
+            <button onclick="document.getElementById('tutorial-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+
+            <h3 class="text-2xl font-black text-slate-800 mb-4 shrink-0 uppercase tracking-tight">VENI BIERI VICI! 🍻</h3>
             
             <div class="text-slate-600 text-sm space-y-4 mb-8 text-left overflow-y-auto pr-2 custom-scrollbar">
                 <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl">
@@ -149,18 +153,19 @@
                     </a>
                 </div>
 
-                <p><strong>The Goal:</strong> Conquer as much of Switzerland as possible by claiming municipalities (Gemeinden) and entire Cantons.</p>
+                <p><strong>The Goal:</strong> Conquer Switzerland by claiming municipalities (Gemeinden) and Cantons.</p>
                 
                 <p><strong>How to Play:</strong></p>
                 <ul class="list-disc pl-5 space-y-2 text-slate-600">
-                    <li>Drink a beer and tap a Gemeinde to place a token 🍺.</li>
-                    <li class="text-emerald-700 font-bold">📸 Every time you log a beer, you must send a selfie with the beer in the WhatsApp group!</li>
-                    <li><strong>Important:</strong> Non-alcoholic beers are fully allowed!</li>
-                    <li><strong>Important:</strong> All sizes (3dl, 5dl, etc.) are worth exactly ONE token.</li>
-                    <li>Have the most tokens in a Gemeinde to claim it 🚩.</li>
-                    <li>Control the largest area within a Canton to conquer the entire Canton 🏆.</li>
+                    <li> Whenever you finish a beer, press tap the "Drink Beer Here" button to place a token.</li>
+                    <li class="text-emerald-700 font-bold">Every time you log a beer, send a selfie with the beer in the WhatsApp group 📸.</li>
+                    <li> Non-alcoholic beers are fully allowed!</li>
+                    <li> All sizes (3dl, 5dl, etc.) are worth exactly ONE token.</li>
+                    <li> Have the most tokens in a Gemeinde to claim it 🚩.</li>
+                    <li> Control the largest area within a Canton to conquer the entire Canton 🏆.</li>
+                    <li> Control the most Cantons to move up the Leaderboard 🥇.</li>
                 </ul>
-                <p class="pt-2">Keep an eye on the Leaderboard and watch out for other players taking your territory!</p>
+                <p class="pt-2 italic">Keep an eye on the Leaderboard and watch out for other players taking your territory!</p>
             </div>
             
             <button id="btn-close-tutorial" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-md shadow-blue-600/30 shrink-0">
@@ -203,7 +208,7 @@
                 <span id="profile-name" class="font-bold text-base text-slate-800 truncate"></span>
             </div>
             
-            <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-3 relative">
                 <button id="btn-show-rules" class="w-full py-3 text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors border border-blue-200 flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
                     How to Play & Group Chat
@@ -212,10 +217,19 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
                     Log Out
                 </button>
-                <button id="btn-undo" class="w-full py-3 text-sm font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-xl transition-colors border border-amber-200 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
-                    Undo Last beer
-                </button>
+                
+                <div class="relative w-full">
+                    <button id="btn-undo" class="w-full py-3 text-sm font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-xl transition-all border border-amber-200 flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+                        Undo Last beer
+                    </button>
+                    <!-- Undo Hint -->
+                    <div id="undo-hint" class="hidden absolute left-1/2 -translate-x-1/2 -top-10 bg-amber-500 text-white text-[10px] font-black py-1 px-3 rounded-full whitespace-nowrap shadow-lg animate-bounce">
+                        <div class="absolute w-2 h-2 bg-amber-500 rotate-45 left-1/2 -translate-x-1/2 -bottom-1"></div>
+                        here you can undo actions
+                    </div>
+                </div>
+
                 <button id="btn-delete" class="w-full py-3 text-sm font-bold text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors border border-red-200 flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                     Delete Account & Data
@@ -297,7 +311,7 @@
     <div class="absolute top-4 right-4 sm:right-6 sm:top-6 z-[2000] w-64 sm:w-80 pointer-events-none flex flex-col gap-3">
         <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 p-4 pointer-events-auto flex flex-col max-h-[50vh]">
             <div id="leaderboard-header" class="shrink-0 mb-2 flex items-center justify-between border-b border-slate-100 pb-2 cursor-pointer group">
-                <h3 class="font-black text-slate-800 flex items-center gap-1.5">
+                <h3 class="font-black text-slate-800 flex items-center gap-1.5 uppercase">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> 
                     Leaderboard
                 </h3>
@@ -327,7 +341,7 @@
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Global State & Storage ---
-        const VERSION = "v1.6";
+        const VERSION = "v1.8";
         const PALETTE = ['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16'];
         
         let registeredUsers = {};
@@ -370,6 +384,7 @@
         const profileColor = document.getElementById('profile-color');
         const btnLogout = document.getElementById('btn-logout');
         const btnUndo = document.getElementById('btn-undo');
+        const undoHint = document.getElementById('undo-hint');
         const btnDelete = document.getElementById('btn-delete');
         const btnShowRules = document.getElementById('btn-show-rules');
         
@@ -456,7 +471,6 @@
         }
 
         // --- Firebase Setup ---
-        // ⚠️ PASTE YOUR FIREBASE CONFIGURATION HERE ⚠️
         const firebaseConfig = {
             apiKey: "AIzaSyCfzl0RKiF0Yy8XXAZ0O20TEmDV5gogh9I",
             authDomain: "bierisko.firebaseapp.com",
@@ -520,11 +534,9 @@
                     registeredUsers = data.users || {};
                     tokensState = data.tokens || {};
                     
-                    // Filter out any lingering 'abandoned' system messages from the past
                     activityLog = (data.activityLog || []).filter(log => log.type !== 'system');
                     tokenHistory = data.tokenHistory || [];
                     
-                    // Verify active login
                     if (currentUser && registeredUsers[currentUser.id]) {
                         currentUser = registeredUsers[currentUser.id];
                         updateLocalUserLastSeen();
@@ -532,7 +544,6 @@
                         btnLogout.click();
                     }
                     
-                    // Don't forcefully interrupt UI if we are in the middle of a replay
                     if (!isReplaying) {
                         calculateGameState();
                         renderActivityBox();
@@ -549,7 +560,6 @@
         async function pushState() {
             if (!isFirebaseReady) return;
             try {
-                // We overwrite the entire document (no {merge: true}) so deletions propagate properly across the cloud
                 await setDoc(stateRef, {
                     users: registeredUsers,
                     tokens: tokensState,
@@ -564,13 +574,18 @@
                 const storedLocalInfo = JSON.parse(localStorage.getItem('bierisko_local_user') || '{}');
                 if (currentUser && storedLocalInfo.id === currentUser.id) {
                     currentUser.lastSeen = storedLocalInfo.lastSeen;
+                    currentUser.hasSeenUndoHint = storedLocalInfo.hasSeenUndoHint || false;
                 }
             } catch(e) {}
         }
 
         function saveLocalUserLastSeen() {
             if (currentUser) {
-                localStorage.setItem('bierisko_local_user', JSON.stringify({ id: currentUser.id, lastSeen: currentUser.lastSeen }));
+                localStorage.setItem('bierisko_local_user', JSON.stringify({ 
+                    id: currentUser.id, 
+                    lastSeen: currentUser.lastSeen,
+                    hasSeenUndoHint: currentUser.hasSeenUndoHint || false
+                }));
             }
         }
 
@@ -604,8 +619,15 @@
             }
         });
 
-        btnSettings.addEventListener('click', () => settingsModal.classList.remove('hidden'));
-        btnCloseSettings.addEventListener('click', () => settingsModal.classList.add('hidden'));
+        btnSettings.addEventListener('click', () => {
+            settingsModal.classList.remove('hidden');
+        });
+        
+        btnCloseSettings.addEventListener('click', () => {
+            settingsModal.classList.add('hidden');
+            undoHint.classList.add('hidden');
+            btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse');
+        });
 
         btnCloseTutorial.addEventListener('click', () => {
             tutorialModal.classList.add('hidden');
@@ -669,6 +691,8 @@
             loginScreen.style.opacity = '1';
             settingsModal.classList.add('hidden'); 
             tutorialModal.classList.add('hidden');
+            undoHint.classList.add('hidden');
+            btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse');
             map.closePopup(); 
         });
 
@@ -692,10 +716,8 @@
             const gemId = lastToken.gemId;
             const targetTs = lastToken.timestamp;
 
-            // Remove from history
             tokenHistory.splice(lastTokenIndex, 1);
 
-            // Corrected Token State Logic: Decriment instead of setting to zero
             if (tokensState[gemId] && tokensState[gemId][currentUser.id]) {
                 tokensState[gemId][currentUser.id]--;
                 if (tokensState[gemId][currentUser.id] <= 0) {
@@ -706,8 +728,10 @@
                 }
             }
 
-            // Remove associated activity logs to keep the board clean
             activityLog = activityLog.filter(log => !(log.playerId === currentUser.id && log.timestamp === targetTs));
+
+            undoHint.classList.add('hidden');
+            btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse');
 
             showToast("Last beer placement undone.");
             
@@ -731,7 +755,6 @@
                     }
                 }
                 
-                // Scrub user entirely from logs & history
                 activityLog = activityLog.filter(log => log.playerId !== idToDelete);
                 tokenHistory = tokenHistory.filter(log => log.playerId !== idToDelete);
                 
@@ -1148,11 +1171,20 @@
                 activityLog.push({ type: canActionType, playerId: currentUser.id, targetName: canName, timestamp: ts });
             }
 
+            // --- FIRST BEER TUTORIAL TRIGGER ---
+            if (!currentUser.hasSeenUndoHint) {
+                currentUser.hasSeenUndoHint = true;
+                saveLocalUserLastSeen();
+                setTimeout(() => {
+                    settingsModal.classList.remove('hidden');
+                    undoHint.classList.remove('hidden');
+                    btnUndo.classList.add('ring-4', 'ring-amber-400', 'animate-pulse');
+                }, 1000);
+            }
+
             currentUser.lastSeen = ts;
             saveLocalUserLastSeen();
             renderActivityBox();
-            
-            // Push LIVE to Firebase
             pushState(); 
         };
 
@@ -1326,7 +1358,6 @@
                 loader.style.opacity = '0';
                 setTimeout(() => loader.style.display = 'none', 400);
                 
-                // Once map is ready, attempt to connect to Cloud Database
                 initFirebase();
                 
             } catch(error) {
@@ -1406,7 +1437,7 @@
         });
 
         loginInput.focus();
-        bootMap(); // Starts up the map logic, which then starts the firebase sync
+        bootMap(); 
         renderActivityBox();
     </script>
 </body>
