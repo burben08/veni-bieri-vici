@@ -132,7 +132,7 @@
                 </button>
             </form>
         </div>
-        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v1.3</div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v1.4</div>
     </div>
 
     <!-- Tutorial Modal -->
@@ -244,7 +244,7 @@
     <!-- Top Left Controls Group -->
     <div class="absolute top-4 left-4 sm:left-6 sm:top-6 z-[2000] flex gap-2 pointer-events-none">
         <button id="btn-settings" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors pointer-events-auto active:scale-95" title="Player Settings">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1-1-1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
 
         <button id="btn-toggle-view" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-blue-600 hover:text-blue-700 transition-colors pointer-events-auto active:scale-95" title="Toggle Map View">
@@ -311,7 +311,7 @@
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Global State & Storage ---
-        const VERSION = "v1.3";
+        const VERSION = "v1.4";
         const PALETTE = ['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16'];
         
         let registeredUsers = {};
@@ -439,6 +439,7 @@
         }
 
         // --- Firebase Setup ---
+        // ⚠️ PASTE YOUR FIREBASE CONFIGURATION HERE ⚠️
         const firebaseConfig = {
             apiKey: "AIzaSyCfzl0RKiF0Yy8XXAZ0O20TEmDV5gogh9I",
             authDomain: "bierisko.firebaseapp.com",
@@ -501,7 +502,9 @@
                     const data = docSnap.data();
                     registeredUsers = data.users || {};
                     tokensState = data.tokens || {};
-                    activityLog = data.activityLog || [];
+                    
+                    // Filter out any lingering 'abandoned' system messages from the past
+                    activityLog = (data.activityLog || []).filter(log => log.type !== 'system');
                     tokenHistory = data.tokenHistory || [];
                     
                     // Verify active login
@@ -529,12 +532,13 @@
         async function pushState() {
             if (!isFirebaseReady) return;
             try {
+                // We overwrite the entire document (no {merge: true}) so deletions propagate properly across the cloud
                 await setDoc(stateRef, {
                     users: registeredUsers,
                     tokens: tokensState,
                     activityLog: activityLog.slice(-100), 
                     tokenHistory: tokenHistory.slice(-500)
-                }, { merge: true });
+                });
             } catch(e) { console.error("Save error", e); }
         }
 
@@ -669,11 +673,9 @@
             // Remove from history
             tokenHistory.splice(lastTokenIndex, 1);
 
-            // Remove from token state
+            // Remove from token state cleanly
             if (tokensState[gemId] && tokensState[gemId][currentUser.id]) {
-                tokensState[gemId][currentUser.id]--;
-                if (tokensState[gemId][currentUser.id] <= 0) delete tokensState[gemId][currentUser.id];
-                if (Object.keys(tokensState[gemId]).length === 0) delete tokensState[gemId];
+                tokensState[gemId][currentUser.id] = 0; // Setting to 0 correctly resets it for calculating max tokens
             }
 
             // Remove associated activity logs to keep the board clean
@@ -694,13 +696,12 @@
                 
                 for (const gemId in tokensState) {
                     if (tokensState[gemId][idToDelete]) {
-                        delete tokensState[gemId][idToDelete];
-                        if (Object.keys(tokensState[gemId]).length === 0) delete tokensState[gemId];
+                        tokensState[gemId][idToDelete] = 0; 
                     }
                 }
                 
                 // Scrub user entirely from logs & history
-                activityLog = activityLog.filter(log => log.playerId !== idToDelete);
+                activityLog = activityLog.filter(log => log.playerId !== idToDelete && log.type !== 'system');
                 tokenHistory = tokenHistory.filter(log => log.playerId !== idToDelete);
                 
                 pushState();
