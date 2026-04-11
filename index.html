@@ -19,9 +19,16 @@
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
     <style>
-        body, html { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden; }
+        /* Mobile-safe absolute viewport locking */
+        body, html { 
+            margin: 0; padding: 0; 
+            width: 100%; height: 100%; 
+            position: fixed; 
+            overflow: hidden; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+        }
         
-        #map { width: 100vw; height: 100vh; background-color: #f8fafc; }
+        #map { width: 100%; height: 100%; background-color: #f8fafc; }
         .leaflet-container { outline: 0; background: #f8fafc; }
         
         /* Clean Light-themed Popups */
@@ -123,7 +130,7 @@
                 </button>
             </form>
         </div>
-        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v1.0</div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v1.1</div>
     </div>
 
     <!-- Tutorial Modal -->
@@ -235,7 +242,7 @@
     <!-- Top Left Controls Group -->
     <div class="absolute top-4 left-4 sm:left-6 sm:top-6 z-[2000] flex gap-2 pointer-events-none">
         <button id="btn-settings" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors pointer-events-auto active:scale-95" title="Player Settings">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1-1-1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
 
         <button id="btn-toggle-view" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-blue-600 hover:text-blue-700 transition-colors pointer-events-auto active:scale-95" title="Toggle Map View">
@@ -244,8 +251,8 @@
         </button>
     </div>
 
-    <!-- Activity Log Bottom Center (Adapts to Mobile) -->
-    <div id="activity-box" class="absolute bottom-6 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[2000] sm:w-80 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 overflow-hidden pointer-events-auto flex flex-col transition-all duration-300 h-14">
+    <!-- Activity Log Bottom Center (Adapts to Mobile safe-areas) -->
+    <div id="activity-box" class="absolute left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[2000] sm:w-80 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 overflow-hidden pointer-events-auto flex flex-col transition-all duration-300 h-14" style="bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));">
         <div id="activity-header" class="flex-shrink-0 h-14 px-4 flex items-center justify-between cursor-pointer border-b border-transparent transition-colors hover:bg-slate-50 group">
             <div id="activity-latest" class="truncate text-sm text-slate-600 flex items-center gap-2">
                 <span class="text-slate-400 italic">No recent activity</span>
@@ -299,7 +306,7 @@
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Global State & Storage ---
-        const VERSION = "v1.0";
+        const VERSION = "v1.1";
         const PALETTE = ['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16'];
         
         let registeredUsers = {};
@@ -365,7 +372,8 @@
 
         // --- Map Initialization ---
         const map = L.map('map', {
-            center: [46.8182, 8.2275], zoom: 8, minZoom: 7, maxZoom: 13, zoomControl: false,
+            center: [46.8182, 8.2275], zoom: 8, minZoom: 7, maxZoom: 13, 
+            zoomControl: false, attributionControl: false, // Disabled to remove thin white strip
             maxBounds: [[45.5, 5.5], [48.0, 11.0]], maxBoundsViscosity: 0.8
         });
         L.control.zoom({ position: 'bottomright' }).addTo(map);
