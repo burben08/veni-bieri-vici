@@ -109,7 +109,7 @@
 
     <!-- Login/Register Screen Overlay -->
     <div id="login-screen" class="absolute inset-0 z-[5000] bg-slate-100/90 backdrop-blur-md flex flex-col items-center justify-center p-4">
-        <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
+        <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-xl max-w-sm w-full text-center relative">
             <h2 class="text-4xl font-black text-slate-800 mb-2">Veni Bieri Vici</h2>
             <p class="text-slate-500 text-sm mb-6">Drink beers, claim Gemeinden and conquer Cantons to gain control of the whole Swiss map.</p>
             
@@ -123,6 +123,7 @@
                 </button>
             </form>
         </div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v1.0</div>
     </div>
 
     <!-- Tutorial Modal -->
@@ -244,7 +245,7 @@
     </div>
 
     <!-- Activity Log Bottom Center (Adapts to Mobile) -->
-    <div id="activity-box" class="absolute bottom-6 left-4 right-24 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[2000] sm:w-80 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 overflow-hidden pointer-events-auto flex flex-col transition-all duration-300 h-14">
+    <div id="activity-box" class="absolute bottom-6 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[2000] sm:w-80 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 overflow-hidden pointer-events-auto flex flex-col transition-all duration-300 h-14">
         <div id="activity-header" class="flex-shrink-0 h-14 px-4 flex items-center justify-between cursor-pointer border-b border-transparent transition-colors hover:bg-slate-50 group">
             <div id="activity-latest" class="truncate text-sm text-slate-600 flex items-center gap-2">
                 <span class="text-slate-400 italic">No recent activity</span>
@@ -254,18 +255,13 @@
         <div id="activity-list" class="flex-1 overflow-y-auto p-2 flex flex-col gap-1.5 opacity-0 transition-opacity"></div>
     </div>
 
-    <!-- GPS Button Bottom Right -->
-    <button id="btn-gps-token" class="absolute bottom-6 right-4 sm:right-6 z-[2000] bg-amber-500 hover:bg-amber-400 text-white p-3.5 rounded-full shadow-lg border border-amber-600 font-bold pointer-events-auto transition-all active:scale-95 flex items-center justify-center min-w-[56px] min-h-[56px]" title="Finish Beer & Place Token">
-        <span class="text-xl leading-none flex items-center gap-0.5"><span class="text-2xl leading-none font-black">+</span>🍺</span>
-    </button>
-
     <!-- Toast Notification System -->
     <div id="toast" class="fixed top-24 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl font-medium text-sm transition-all duration-300 transform -translate-y-20 opacity-0 z-[6000] pointer-events-none flex items-center gap-2 whitespace-nowrap">
         <span id="toast-msg">Notification</span>
     </div>
 
-    <!-- Leaderboard Top Right -->
-    <div class="absolute top-4 right-4 sm:right-6 sm:top-6 z-[2000] w-56 sm:w-72 pointer-events-none">
+    <!-- Leaderboard Top Right & GPS Button -->
+    <div class="absolute top-4 right-4 sm:right-6 sm:top-6 z-[2000] w-56 sm:w-72 pointer-events-none flex flex-col gap-3">
         <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 p-4 pointer-events-auto flex flex-col max-h-[50vh]">
             <div id="leaderboard-header" class="shrink-0 mb-2 flex items-center justify-between border-b border-slate-100 pb-2 cursor-pointer group">
                 <h3 class="font-black text-slate-800 flex items-center gap-1.5">
@@ -280,6 +276,11 @@
             
             <div id="leaderboard" class="flex-1 overflow-y-auto pr-1 flex flex-col gap-1.5"></div>
         </div>
+
+        <!-- GPS Button Under Leaderboard -->
+        <button id="btn-gps-token" class="w-full bg-amber-500 hover:bg-amber-400 text-white py-3.5 px-4 rounded-2xl shadow-lg border border-amber-600 font-black tracking-wide pointer-events-auto transition-all active:scale-95 flex items-center justify-center gap-2" title="Drink Beer & Place Token">
+            <span class="text-2xl leading-none">🍺</span> Drink Beer
+        </button>
     </div>
 
     <!-- Loading Screen -->
@@ -298,6 +299,7 @@
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Global State & Storage ---
+        const VERSION = "v1.0";
         const PALETTE = ['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16'];
         
         let registeredUsers = {};
@@ -1308,7 +1310,7 @@
             if (!rawGemeindeData) return showToast("Map data not loaded yet.", true);
             if (!navigator.geolocation) return showToast("Your browser doesn't support geolocation.", true);
 
-            const originalContent = '<span class="text-xl leading-none flex items-center gap-0.5"><span class="text-2xl leading-none font-black">+</span>🍺</span>';
+            const originalContent = '<span class="text-2xl leading-none">🍺</span> Drink Beer';
             btnGpsToken.innerHTML = '<span class="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></span>';
             btnGpsToken.classList.add('opacity-70', 'cursor-wait');
             btnGpsToken.disabled = true;
