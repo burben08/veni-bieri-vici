@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Veni Bieri Vici</title>
+    <title>Veni Bieri Vici - Live Multiplayer</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -102,7 +102,7 @@
     <!-- Login/Register Screen Overlay -->
     <div id="login-screen" class="absolute inset-0 z-[5000] bg-slate-100/90 backdrop-blur-md flex flex-col items-center justify-center p-4">
         <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
-            <h2 class="text-4xl font-black text-slate-800 mb-2">Bierisko</h2>
+            <h2 class="text-4xl font-black text-slate-800 mb-2">Veni Bieri Vici</h2>
             <p class="text-slate-500 text-sm mb-6">Drink beers, claim Gemeinden and conquer Cantons to gain control of the whole Swiss map.</p>
             
             <div id="db-status" class="text-xs font-bold text-blue-500 mb-4 animate-pulse">Connecting to live map...</div>
@@ -120,7 +120,7 @@
     <!-- Tutorial Modal -->
     <div id="tutorial-modal" class="hidden absolute inset-0 z-[4800] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center px-4 transition-opacity">
         <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full transform transition-all text-center">
-            <h3 class="text-2xl font-black text-slate-800 mb-4">Welcome to Bierisko! 🍻</h3>
+            <h3 class="text-2xl font-black text-slate-800 mb-4">Welcome to Veni Bieri Vici! 🍻</h3>
             <div class="text-slate-600 text-sm space-y-4 mb-8 text-left">
                 <p><strong>The Goal:</strong> Conquer as much of Switzerland as possible by claiming municipalities (Gemeinden) and entire Cantons.</p>
                 <p><strong>How to Play:</strong></p>
@@ -399,15 +399,34 @@
         }
 
         // --- Firebase Setup ---
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'bierisko-default';
+        // ⚠️ PASTE YOUR FIREBASE CONFIGURATION HERE ⚠️
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfzl0RKiF0Yy8XXAZ0O20TEmDV5gogh9I",
+            authDomain: "bierisko.firebaseapp.com",
+            databaseURL: "https://bierisko-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "bierisko",
+            storageBucket: "bierisko.firebasestorage.app",
+            messagingSenderId: "291287462170",
+            appId: "1:291287462170:web:f209563d49b3fc0d93bca3",
+            measurementId: "G-BSG6YYVGJW"
+        };
+        
         let app, auth, db, stateRef;
 
         try {
-            app = initializeApp(firebaseConfig);
+            // Use provided config if pasted, else fallback to Canvas magic variable (for preview)
+            const activeConfig = Object.keys(firebaseConfig).length > 0 ? firebaseConfig : JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+            app = initializeApp(activeConfig);
             auth = getAuth(app);
             db = getFirestore(app);
-            stateRef = doc(db, 'artifacts', appId, 'public', 'data', 'bierisko', 'state');
+            
+            // Use generic db collection if config is provided manually, otherwise use Canvas magic paths
+            if (Object.keys(firebaseConfig).length > 0) {
+                 stateRef = doc(db, 'bierisko_game', 'global_state');
+            } else {
+                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'bierisko-default';
+                 stateRef = doc(db, 'artifacts', appId, 'public', 'data', 'bierisko', 'state');
+            }
         } catch (e) {
             console.error("Firebase init error", e);
             dbStatus.innerText = "Error connecting to cloud.";
@@ -416,7 +435,8 @@
 
         async function initFirebase() {
             try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                // If in Canvas use custom token, otherwise generic anonymous auth
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token && Object.keys(firebaseConfig).length === 0) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
                     await signInAnonymously(auth);
