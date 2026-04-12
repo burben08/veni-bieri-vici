@@ -160,7 +160,7 @@
                 </button>
             </form>
         </div>
-        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v2.1</div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v2.2</div>
     </div>
 
     <!-- Tutorial/Rules Modal -->
@@ -188,7 +188,7 @@
                         <p class="font-black text-slate-800 uppercase text-[10px] tracking-widest mb-2">Logging Progress</p>
                         <ul class="list-disc pl-5 space-y-2 text-slate-600">
                             <li>Whenever you finish a beer, tap the "Drink Beer Here" button to place a token in the Gemeinde you are currently in.</li>
-                            <li class="text-emerald-700 font-bold">Every time you log a beer, send a selfie with you and the beer in the WhatsApp group 📸.</li>
+                            <li class="text-emerald-700 font-bold">Every time you log a beer, you must send a selfie with you and the beer in the WhatsApp group 📸.</li>
                             <li>Each beer is worth exactly 1 token, whether non-alcoholic, 3dl, 5dl, etc.</li>
                         </ul>
                     </div>
@@ -310,13 +310,13 @@
 
     <!-- Top Left Controls Group -->
     <div class="absolute top-4 left-4 sm:left-6 sm:top-6 z-[2000] flex gap-2 pointer-events-none">
-        <button id="btn-settings" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors pointer-events-auto active:scale-95" title="Player Settings">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        <button id="btn-settings" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors pointer-events-auto active:scale-95 flex items-center justify-center shrink-0 aspect-square" title="Player Settings">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
 
-        <button id="btn-toggle-view" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-blue-600 hover:text-blue-700 transition-colors pointer-events-auto active:scale-95" title="Toggle Map View">
-            <svg id="icon-view-gem" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-            <svg id="icon-view-can" class="hidden" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l3-3 6 3 9-3v12l-9 3-6-3-3 3V6z"/><path d="M12 6v12"/><path d="M6 3v12"/><path d="M18 9v12"/></svg>
+        <button id="btn-toggle-view" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-blue-600 hover:text-blue-700 transition-colors pointer-events-auto active:scale-95 flex items-center justify-center shrink-0 aspect-square" title="Toggle Map View">
+            <svg id="icon-view-gem" class="shrink-0" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+            <svg id="icon-view-can" class="hidden shrink-0" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l3-3 6 3 9-3v12l-9 3-6-3-3 3V6z"/><path d="M12 6v12"/><path d="M6 3v12"/><path d="M18 9v12"/></svg>
         </button>
     </div>
 
@@ -378,7 +378,7 @@
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Global State & Storage ---
-        const VERSION = "v2.1";
+        const VERSION = "v2.2";
         const PALETTE = ['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16'];
         
         let registeredUsers = {};
