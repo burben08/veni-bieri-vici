@@ -155,7 +155,7 @@
                 </button>
             </form>
         </div>
-        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v2.3</div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v2.4</div>
     </div>
 
     <div id="tutorial-modal" class="hidden absolute inset-0 z-[4800] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center px-4 transition-opacity">
@@ -228,7 +228,7 @@
             </button>
             
             <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2 uppercase">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1-1-1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
                 Settings
             </h3>
 
@@ -360,7 +360,7 @@
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Global State & Storage ---
-        const VERSION = "v2.3";
+        const VERSION = "v2.4";
         const PALETTE = ['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16'];
         
         let registeredUsers = {};
@@ -490,6 +490,24 @@
             }
         }
 
+        function unlockUIAndAutoLogin() {
+            if (!isInitialDataLoaded) {
+                isInitialDataLoaded = true;
+                dbStatus.innerText = "Connected to live map ✓";
+                dbStatus.classList.remove('animate-pulse');
+                dbStatus.classList.replace('text-blue-500', 'text-emerald-500');
+                loginInput.disabled = false;
+                btnLoginSubmit.disabled = false;
+
+                const savedName = localStorage.getItem('bierisko_username');
+                if (savedName && !currentUser) {
+                    loginInput.value = savedName;
+                    loginInput.dispatchEvent(new Event('input')); // Ensure button state updates
+                    btnLoginSubmit.click(); // Trigger auto-login
+                }
+            }
+        }
+
         // --- Firebase Setup ---
         const firebaseConfig = {
             apiKey: "AIzaSyCfzl0RKiF0Yy8XXAZ0O20TEmDV5gogh9I",
@@ -546,20 +564,12 @@
                     const data = docSnap.data();
                     registeredUsers = data.users || {};
                     tokensState = data.tokens || {};
-                    
                     activityLog = (data.activityLog || []).filter(log => log.type !== 'system');
                     tokenHistory = data.tokenHistory || [];
                     
-                    // Unlock the UI only AFTER the first data snapshot arrives to prevent wiping the DB
-                    if (!isInitialDataLoaded) {
-                        isInitialDataLoaded = true;
-                        dbStatus.innerText = "Connected to live map ✓";
-                        dbStatus.classList.remove('animate-pulse');
-                        dbStatus.classList.replace('text-blue-500', 'text-emerald-500');
-                        loginInput.disabled = false;
-                        btnLoginSubmit.disabled = false;
-                    }
-
+                    unlockUIAndAutoLogin();
+                    
+                    // Verify active login
                     if (currentUser && registeredUsers[currentUser.id]) {
                         currentUser = registeredUsers[currentUser.id];
                         updateLocalUserLastSeen();
@@ -687,6 +697,9 @@
                 pushState();
             }
 
+            // Save login name for auto-login
+            localStorage.setItem('bierisko_username', rawName);
+
             currentUser = registeredUsers[userId];
             updateLocalUserLastSeen();
             updateUIForUser();
@@ -715,6 +728,10 @@
             }
             currentUser = null;
             updateUIForUser();
+            
+            // Clear auto-login memory
+            localStorage.removeItem('bierisko_username');
+
             loginInput.value = '';
             btnLoginSubmit.innerText = "Register";
             btnLoginSubmit.className = "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-600/30 disabled:opacity-50 disabled:cursor-not-allowed";
@@ -787,7 +804,7 @@
                     }
                 }
                 
-                activityLog = activityLog.filter(log => log.playerId !== idToDelete);
+                activityLog = activityLog.filter(log => log.playerId !== idToDelete && log.type !== 'system');
                 tokenHistory = tokenHistory.filter(log => log.playerId !== idToDelete);
                 
                 pushState();
