@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>VENI BIERI VICI</title>
     
+    <!-- Beer Emoji Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍺</text></svg>">
     
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+    <!-- Turf.js for geographical math -->
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
     <style>
@@ -140,6 +144,7 @@
 </head>
 <body class="bg-slate-50 relative text-slate-800">
 
+    <!-- Login/Register Screen Overlay -->
     <div id="login-screen" class="absolute inset-0 z-[5000] bg-slate-100/90 backdrop-blur-md flex flex-col items-center justify-center p-4">
         <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-xl max-w-sm w-full text-center relative">
             <h2 class="text-4xl font-black text-slate-800 mb-2 uppercase">VENI BIERI VICI</h2>
@@ -155,9 +160,10 @@
                 </button>
             </form>
         </div>
-        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v2.4</div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v2.9</div>
     </div>
 
+    <!-- Tutorial/Rules Modal -->
     <div id="tutorial-modal" class="hidden absolute inset-0 z-[4800] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center px-4 transition-opacity">
         <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col transform transition-all text-center relative">
             <button onclick="document.getElementById('tutorial-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
@@ -179,20 +185,22 @@
                 
                 <div class="space-y-4">
                     <div>
-                        <p class="font-black text-slate-800 uppercase text-[10px] tracking-widest mb-2">Logging Progress</p>
+                        <p class="font-black text-slate-800 uppercase text-[10px] tracking-widest mb-2">Logging Rules</p>
                         <ul class="list-disc pl-5 space-y-2 text-slate-600">
-                            <li>Whenever you finish a beer, tap the "Drink Beer Here" button to place a token in the Gemeinde you are currently in.</li>
-                            <li class="text-emerald-700 font-bold">Every time you log a beer, you must send a selfie with you and the beer in the WhatsApp group 📸.</li>
-                            <li>Each beer is worth exactly 1 token, whether non-alcoholic, 3dl, 5dl, etc.</li>
+                            <li><strong class="text-slate-800">Only beers</strong> count. Wine and other beverages are not allowed.</li>
+                            <li>Log your beer <strong class="text-slate-800">exactly when you finish it</strong>. Logging past beers is strictly forbidden.</li>
+                            <li>Beers consumed in <strong class="text-slate-800">moving vehicles</strong> (trains, buses, cars) cannot be logged.</li>
+                            <li>Each beer is worth exactly <strong class="text-slate-800">1 token</strong>, regardless of size or if it's non-alcoholic.</li>
+                            <li>Tap <strong class="text-slate-800">"Drink Beer Here"</strong> to place a token in your current Gemeinde.</li>
                         </ul>
                     </div>
 
                     <div>
                         <p class="font-black text-slate-800 uppercase text-[10px] tracking-widest mb-2">How the Game Works</p>
                         <ul class="list-disc pl-5 space-y-2 text-slate-600">
-                            <li>Be the person with the most tokens in a Gemeinde to claim it 🚩.</li>
-                            <li>Control the largest area through claimed Gemeinden within a Canton to claim the entire Canton 🏆.</li>
-                            <li>Conquer the most Cantons throughout Switzerland to move up the Leaderboard 🥇.</li>
+                            <li>Be the person with the most tokens in a Gemeinde to <strong class="text-slate-800">claim it</strong> 🚩.</li>
+                            <li>Control the largest area through claimed Gemeinden within a Canton to <strong class="text-slate-800">conquer the entire Canton</strong> 🏆.</li>
+                            <li>Conquer the most Cantons throughout Switzerland to <strong class="text-slate-800">move up the Leaderboard</strong> 🥇.</li>
                         </ul>
                     </div>
                 </div>
@@ -206,6 +214,7 @@
         </div>
     </div>
 
+    <!-- Replay Overlay -->
     <div id="replay-overlay" class="hidden absolute inset-0 z-[4500] pointer-events-none flex flex-col items-center justify-end pb-24">
         <button id="btn-skip-replay" class="mb-4 bg-slate-700 hover:bg-slate-600 text-slate-200 px-6 py-2.5 rounded-full font-bold text-sm transition-colors shadow-lg pointer-events-auto border border-slate-600 active:scale-95">
             Skip to Present
@@ -221,6 +230,7 @@
         </div>
     </div>
 
+    <!-- Settings Modal -->
     <div id="settings-modal" class="hidden absolute inset-0 z-[4000] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center px-4 transition-opacity">
         <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full transform transition-all relative">
             <button id="btn-close-settings" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
@@ -253,6 +263,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
                         Undo Last beer
                     </button>
+                    <!-- Undo Hint -->
                     <div id="undo-hint" class="hidden absolute left-1/2 -translate-x-1/2 -top-10 bg-amber-500 text-white text-[10px] font-black py-1 px-3 rounded-full whitespace-nowrap shadow-lg animate-bounce">
                         <div class="absolute w-2 h-2 bg-amber-500 rotate-45 left-1/2 -translate-x-1/2 -bottom-1"></div>
                         here you can undo actions
@@ -267,6 +278,7 @@
         </div>
     </div>
 
+    <!-- Player Stats Modal -->
     <div id="player-stats-modal" class="hidden absolute inset-0 z-[4000] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center px-4 transition-opacity">
         <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full transform transition-all relative">
             <button onclick="document.getElementById('player-stats-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
@@ -299,6 +311,7 @@
         </div>
     </div>
 
+    <!-- Top Left Controls Group -->
     <div class="absolute top-4 left-4 sm:left-6 sm:top-6 z-[2000] flex gap-2 pointer-events-none">
         <button id="btn-settings" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors pointer-events-auto active:scale-95 flex items-center justify-center shrink-0 aspect-square" title="Player Settings">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -310,11 +323,14 @@
         </button>
     </div>
 
+    <!-- Bottom Center Controls (GPS & Activity Log Stack) -->
     <div class="absolute bottom-6 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[2000] sm:w-80 flex flex-col gap-3 pointer-events-none" style="padding-bottom: max(0px, env(safe-area-inset-bottom, 0px));">
+        <!-- GPS Button -->
         <button id="btn-gps-token" class="w-full bg-slate-400 hover:bg-slate-500 text-white py-3.5 px-4 rounded-2xl shadow-lg border border-slate-500 font-black tracking-wide pointer-events-auto transition-all active:scale-95" title="Drink Beer & Place Token">
             Drink Beer Here
         </button>
         
+        <!-- Activity Log -->
         <div id="activity-box" class="w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 overflow-hidden pointer-events-auto flex flex-col transition-all duration-300 h-14">
             <div id="activity-header" class="flex-shrink-0 h-14 px-4 flex items-center justify-between cursor-pointer border-b border-transparent transition-colors hover:bg-slate-50 group">
                 <div id="activity-latest" class="truncate text-sm text-slate-600 flex items-center gap-2">
@@ -326,13 +342,15 @@
         </div>
     </div>
 
+    <!-- Toast Notification System -->
     <div id="toast" class="fixed top-24 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl font-medium text-sm transition-all duration-300 transform -translate-y-20 opacity-0 z-[6000] pointer-events-none flex items-center gap-2 whitespace-nowrap">
         <span id="toast-msg">Notification</span>
     </div>
 
+    <!-- Leaderboard Top Right -->
     <div class="absolute top-4 right-4 sm:right-6 sm:top-6 z-[2000] w-64 sm:w-80 pointer-events-none flex flex-col gap-3">
         <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 p-4 pointer-events-auto flex flex-col max-h-[50vh]">
-            <div id="leaderboard-header" class="shrink-0 mb-2 flex items-center justify-between border-b border-slate-100 pb-2 cursor-pointer group uppercase">
+            <div id="leaderboard-header" class="shrink-0 flex items-center justify-between cursor-pointer group uppercase">
                 <h3 class="font-black text-slate-800 flex items-center gap-1.5 uppercase">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> 
                     Leaderboard
@@ -343,24 +361,29 @@
                 </div>
             </div>
             
-            <div id="leaderboard" class="flex-1 overflow-y-auto pr-1 flex flex-col gap-1.5"></div>
+            <div id="leaderboard" class="flex-1 overflow-y-auto flex flex-col"></div>
         </div>
     </div>
 
+    <!-- Loading Screen -->
     <div id="loader" class="absolute inset-0 bg-slate-50 z-[6000] flex flex-col items-center justify-center">
         <div class="animate-spin rounded-full h-14 w-14 border-4 border-slate-200 border-t-blue-500 mb-6"></div>
         <p id="loader-text" class="text-slate-500 font-medium animate-pulse">Loading map data...</p>
     </div>
 
+    <!-- The Map Container -->
     <div id="map"></div>
 
+    <!-- FIREBASE INTEGRATION SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- Global State & Storage ---
-        const VERSION = "v2.4";
+        // ==========================================
+        // 1. STATE & VARIABLES
+        // ==========================================
+        const VERSION = "v2.9";
         const PALETTE = ['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16'];
         
         let registeredUsers = {};
@@ -368,26 +391,28 @@
         
         let currentView = 'gemeinde'; 
         let isLeaderboardExpanded = false;
+        let isActivityExpanded = false;
         let activePopupGemId = null; 
         let activePopupCanId = null;
         let isReplaying = false;
         let isFirebaseReady = false;
         let isInitialDataLoaded = false;
+        let latestServerData = null; 
         
         let rawCantonData = null;
         let rawGemeindeData = null;
         let gemToCantonMap = {}; 
 
-        // State Data Structures
         let tokensState = {};
         let activityLog = [];
         let tokenHistory = [];
         
-        // Derived Engine Variables
         let gemeindeOwners = {}; 
         let cantonStats = {}; 
 
-        // --- DOM Elements ---
+        // ==========================================
+        // 2. DOM ELEMENTS
+        // ==========================================
         const loginScreen = document.getElementById('login-screen');
         const loginForm = document.getElementById('login-form');
         const loginInput = document.getElementById('login-input');
@@ -427,7 +452,9 @@
         const btnSkipReplay = document.getElementById('btn-skip-replay');
         const btnGpsToken = document.getElementById('btn-gps-token');
 
-        // --- Map Initialization ---
+        // ==========================================
+        // 3. MAP INITIALIZATION
+        // ==========================================
         const map = L.map('map', {
             center: [46.8182, 8.2275], zoom: 8, minZoom: 7, maxZoom: 13, 
             zoomControl: false, attributionControl: false, 
@@ -449,7 +476,9 @@
         let cantonBordersGeoJsonLayer;
         let cantonGeoJsonLayer;
 
-        // --- Helper Functions ---
+        // ==========================================
+        // 4. UTILITY FUNCTIONS
+        // ==========================================
         function getGemeindeName(feature) { return feature.properties.gem_name || feature.properties.name || feature.properties.NAME || "Unknown Gemeinde"; }
         function getGemeindeId(feature) { return String(feature.properties.gem_no || feature.properties.id || feature.properties.BFS_NUMMER || getGemeindeName(feature)); }
         function getCantonName(feature) { return feature.properties.kan_name || feature.properties.name || feature.properties.NAME || "Unknown Canton"; }
@@ -490,500 +519,9 @@
             }
         }
 
-        function unlockUIAndAutoLogin() {
-            if (!isInitialDataLoaded) {
-                isInitialDataLoaded = true;
-                dbStatus.innerText = "Connected to live map ✓";
-                dbStatus.classList.remove('animate-pulse');
-                dbStatus.classList.replace('text-blue-500', 'text-emerald-500');
-                loginInput.disabled = false;
-                btnLoginSubmit.disabled = false;
-
-                const savedName = localStorage.getItem('bierisko_username');
-                if (savedName && !currentUser) {
-                    loginInput.value = savedName;
-                    loginInput.dispatchEvent(new Event('input')); // Ensure button state updates
-                    btnLoginSubmit.click(); // Trigger auto-login
-                }
-            }
-        }
-
-        // --- Firebase Setup ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyCfzl0RKiF0Yy8XXAZ0O20TEmDV5gogh9I",
-            authDomain: "bierisko.firebaseapp.com",
-            databaseURL: "https://bierisko-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "bierisko",
-            storageBucket: "bierisko.firebasestorage.app",
-            messagingSenderId: "291287462170",
-            appId: "1:291287462170:web:f209563d49b3fc0d93bca3",
-            measurementId: "G-BSG6YYVGJW"
-        };
-        
-        let app, auth, db, stateRef;
-
-        try {
-            const activeConfig = Object.keys(firebaseConfig).length > 0 ? firebaseConfig : JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-            app = initializeApp(activeConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            
-            if (Object.keys(firebaseConfig).length > 0) {
-                 stateRef = doc(db, 'bierisko_game', 'global_state');
-            } else {
-                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'bierisko-default';
-                 stateRef = doc(db, 'artifacts', appId, 'public', 'data', 'bierisko', 'state');
-            }
-        } catch (e) {
-            console.error("Firebase init error", e);
-            dbStatus.innerText = "Error connecting to cloud.";
-            dbStatus.classList.replace('text-blue-500', 'text-red-500');
-        }
-
-        async function initFirebase() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token && Object.keys(firebaseConfig).length === 0) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                onAuthStateChanged(auth, user => {
-                    if (user && !isFirebaseReady) {
-                        isFirebaseReady = true;
-                        dbStatus.innerText = "Syncing with cloud...";
-                        listenToLiveState();
-                    }
-                });
-            } catch (e) { console.error("Auth error", e); }
-        }
-
-        function listenToLiveState() {
-            onSnapshot(stateRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    registeredUsers = data.users || {};
-                    tokensState = data.tokens || {};
-                    activityLog = (data.activityLog || []).filter(log => log.type !== 'system');
-                    tokenHistory = data.tokenHistory || [];
-                    
-                    unlockUIAndAutoLogin();
-                    
-                    // Verify active login
-                    if (currentUser && registeredUsers[currentUser.id]) {
-                        currentUser = registeredUsers[currentUser.id];
-                        updateLocalUserLastSeen();
-                    } else if (currentUser && !registeredUsers[currentUser.id]) {
-                        btnLogout.click();
-                    }
-                    
-                    if (!isReplaying) {
-                        calculateGameState();
-                        renderActivityBox();
-                        refreshMapVisuals();
-                    }
-                } else {
-                    // DB is empty, safe to unlock UI
-                    if (!isInitialDataLoaded) {
-                        isInitialDataLoaded = true;
-                        dbStatus.innerText = "Connected to live map ✓";
-                        dbStatus.classList.remove('animate-pulse');
-                        dbStatus.classList.replace('text-blue-500', 'text-emerald-500');
-                        loginInput.disabled = false;
-                        btnLoginSubmit.disabled = false;
-                    }
-                    pushState();
-                }
-            }, (error) => {
-                console.error("Snapshot sync error:", error);
-            });
-        }
-
-        async function pushState() {
-            if (!isFirebaseReady || !isInitialDataLoaded) return;
-            try {
-                await setDoc(stateRef, {
-                    users: registeredUsers,
-                    tokens: tokensState,
-                    activityLog: activityLog.slice(-100), 
-                    tokenHistory: tokenHistory.slice(-500)
-                });
-            } catch(e) { console.error("Save error", e); }
-        }
-
-        function updateLocalUserLastSeen() {
-            try {
-                const storedLocalInfo = JSON.parse(localStorage.getItem('bierisko_local_user') || '{}');
-                if (currentUser && storedLocalInfo.id === currentUser.id) {
-                    currentUser.lastSeen = storedLocalInfo.lastSeen;
-                    currentUser.hasSeenUndoHint = storedLocalInfo.hasSeenUndoHint || false;
-                }
-            } catch(e) {}
-        }
-
-        function saveLocalUserLastSeen() {
-            if (currentUser) {
-                localStorage.setItem('bierisko_local_user', JSON.stringify({ 
-                    id: currentUser.id, 
-                    lastSeen: currentUser.lastSeen,
-                    hasSeenUndoHint: currentUser.hasSeenUndoHint || false
-                }));
-            }
-        }
-
-        function refreshMapVisuals() {
-            if (gemeindeGeoJsonLayer) {
-                gemeindeGeoJsonLayer.eachLayer(l => {
-                    l.setStyle(getGemeindeStyle(l.feature));
-                    updateGemeindeLabel(l); 
-                    if (l.isPopupOpen()) l.setPopupContent(generateGemeindePopupContent(l.feature));
-                });
-            }
-            if (cantonGeoJsonLayer) {
-                cantonGeoJsonLayer.eachLayer(l => {
-                    l.setStyle(getCantonStyle(l.feature));
-                    if (l.isPopupOpen()) l.setPopupContent(generateCantonPopupContent(l.feature));
-                });
-            }
-        }
-
-        // --- Authentication & Replay Logic ---
-        loginInput.addEventListener('input', (e) => {
-            const rawName = e.target.value.trim();
-            const userId = rawName.toLowerCase().replace(/[^a-z0-9]/g, '');
-            
-            if (registeredUsers[userId]) {
-                btnLoginSubmit.innerText = "Login";
-                btnLoginSubmit.className = "w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-emerald-600/30";
-            } else {
-                btnLoginSubmit.innerText = "Register";
-                btnLoginSubmit.className = "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-600/30";
-            }
-        });
-
-        btnSettings.addEventListener('click', () => {
-            settingsModal.classList.remove('hidden');
-        });
-        
-        btnCloseSettings.addEventListener('click', () => {
-            settingsModal.classList.add('hidden');
-            undoHint.classList.add('hidden');
-            btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse');
-        });
-
-        btnCloseTutorial.addEventListener('click', () => {
-            tutorialModal.classList.add('hidden');
-            checkAndRunReplay(); 
-        });
-
-        btnShowRules.addEventListener('click', () => {
-            tutorialModal.classList.remove('hidden');
-            settingsModal.classList.add('hidden');
-        });
-
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const rawName = loginInput.value.trim();
-            if(!rawName) return;
-
-            const userId = rawName.toLowerCase().replace(/[^a-z0-9]/g, ''); 
-            if(!userId) return;
-
-            let isNewUser = false;
-            if(!registeredUsers[userId]) {
-                isNewUser = true;
-                const colorIndex = Object.keys(registeredUsers).length % PALETTE.length;
-                registeredUsers[userId] = { id: userId, name: rawName, color: PALETTE[colorIndex], lastSeen: Date.now() };
-                pushState();
-            }
-
-            // Save login name for auto-login
-            localStorage.setItem('bierisko_username', rawName);
-
-            currentUser = registeredUsers[userId];
-            updateLocalUserLastSeen();
-            updateUIForUser();
-            
-            profileName.innerText = currentUser.name;
-            profileColor.style.backgroundColor = currentUser.color;
-            
-            loginScreen.style.opacity = '0';
-            setTimeout(() => loginScreen.style.visibility = 'hidden', 400);
-
-            calculateGameState();
-            renderActivityBox();
-            
-            if (isNewUser) {
-                tutorialModal.classList.remove('hidden');
-            } else {
-                checkAndRunReplay(); 
-            }
-        });
-
-        btnLogout.addEventListener('click', () => {
-            if (currentUser) {
-                currentUser.lastSeen = Date.now();
-                saveLocalUserLastSeen();
-                pushState(); 
-            }
-            currentUser = null;
-            updateUIForUser();
-            
-            // Clear auto-login memory
-            localStorage.removeItem('bierisko_username');
-
-            loginInput.value = '';
-            btnLoginSubmit.innerText = "Register";
-            btnLoginSubmit.className = "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-600/30 disabled:opacity-50 disabled:cursor-not-allowed";
-            
-            loginScreen.style.visibility = 'visible';
-            loginScreen.style.opacity = '1';
-            settingsModal.classList.add('hidden'); 
-            tutorialModal.classList.add('hidden');
-            undoHint.classList.add('hidden');
-            btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse');
-            map.closePopup(); 
-        });
-
-        btnUndo.addEventListener('click', () => {
-            if (!currentUser || isReplaying) return;
-
-            let lastTokenIndex = -1;
-            for (let i = tokenHistory.length - 1; i >= 0; i--) {
-                if (tokenHistory[i].playerId === currentUser.id) {
-                    lastTokenIndex = i;
-                    break;
-                }
-            }
-
-            if (lastTokenIndex === -1) {
-                showToast("No recent actions to undo.", true);
-                return;
-            }
-
-            const lastToken = tokenHistory[lastTokenIndex];
-            const gemId = lastToken.gemId;
-            const targetTs = lastToken.timestamp;
-
-            tokenHistory.splice(lastTokenIndex, 1);
-
-            if (tokensState[gemId] && tokensState[gemId][currentUser.id]) {
-                tokensState[gemId][currentUser.id]--;
-                if (tokensState[gemId][currentUser.id] <= 0) {
-                    delete tokensState[gemId][currentUser.id];
-                }
-                if (Object.keys(tokensState[gemId]).length === 0) {
-                    delete tokensState[gemId];
-                }
-            }
-
-            activityLog = activityLog.filter(log => !(log.playerId === currentUser.id && log.timestamp === targetTs));
-
-            undoHint.classList.add('hidden');
-            btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse');
-
-            showToast("Last beer placement undone.");
-            
-            calculateGameState();
-            renderActivityBox();
-            refreshMapVisuals();
-            pushState();
-        });
-
-        btnDelete.addEventListener('click', () => {
-            if(confirm(`Are you sure you want to delete data for ${currentUser.name}? All your tokens will be removed from the live map globally.`)) {
-                const idToDelete = currentUser.id;
-                delete registeredUsers[idToDelete];
-                
-                for (const gemId in tokensState) {
-                    if (tokensState[gemId][idToDelete]) {
-                        delete tokensState[gemId][idToDelete];
-                    }
-                    if (tokensState[gemId] && Object.keys(tokensState[gemId]).length === 0) {
-                        delete tokensState[gemId];
-                    }
-                }
-                
-                activityLog = activityLog.filter(log => log.playerId !== idToDelete && log.type !== 'system');
-                tokenHistory = tokenHistory.filter(log => log.playerId !== idToDelete);
-                
-                pushState();
-                btnLogout.click(); 
-            }
-        });
-
-        // --- Replay Engine ---
-        btnSkipReplay.addEventListener('click', () => { isReplaying = false; });
-
-        async function checkAndRunReplay() {
-            if (!currentUser) return;
-            
-            const unseenTokens = tokenHistory.filter(t => t.timestamp > currentUser.lastSeen);
-            if (unseenTokens.length === 0) {
-                currentUser.lastSeen = Date.now();
-                saveLocalUserLastSeen();
-                return;
-            }
-
-            isReplaying = true;
-            replayOverlay.classList.remove('hidden');
-            
-            const actualTokensState = JSON.parse(JSON.stringify(tokensState));
-            let replayTokensState = JSON.parse(JSON.stringify(tokensState));
-            
-            for (let t of unseenTokens) {
-                if (replayTokensState[t.gemId] && replayTokensState[t.gemId][t.playerId]) {
-                    replayTokensState[t.gemId][t.playerId]--;
-                    if (replayTokensState[t.gemId][t.playerId] === 0) delete replayTokensState[t.gemId][t.playerId];
-                }
-            }
-
-            tokensState = replayTokensState;
-            calculateGameState(); 
-            if (currentView !== 'gemeinde') switchView('gemeinde');
-
-            for (let i = 0; i < unseenTokens.length; i++) {
-                if (!isReplaying) break; 
-                const t = unseenTokens[i];
-                
-                if (!tokensState[t.gemId]) tokensState[t.gemId] = {};
-                
-                const prevGemOwner = gemeindeOwners[t.gemId]?.ownerId;
-                const prevCanOwner = cantonStats[gemToCantonMap[t.gemId]]?.ownerId;
-
-                tokensState[t.gemId][t.playerId] = (tokensState[t.gemId][t.playerId] || 0) + 1;
-                calculateGameState(); 
-
-                const newGemOwner = gemeindeOwners[t.gemId]?.ownerId;
-                const newCanOwner = cantonStats[gemToCantonMap[t.gemId]]?.ownerId;
-
-                const isGemTakeover = newGemOwner !== prevGemOwner && newGemOwner === t.playerId;
-                const isCanTakeover = newCanOwner !== prevCanOwner && newCanOwner === t.playerId;
-
-                renderActivityBox(t.timestamp); 
-
-                const currentLogs = activityLog.filter(log => log.timestamp === t.timestamp);
-                let displayLog = currentLogs.find(log => log.type.includes('conquer_can') || log.type.includes('claim_can') || log.type.includes('takeover_can'));
-                if (!displayLog) displayLog = currentLogs.find(log => log.type.includes('conquer_gem') || log.type.includes('claim_gem') || log.type.includes('takeover_gem'));
-                if (!displayLog) displayLog = currentLogs.find(log => log.type === 'token');
-
-                if (displayLog) {
-                    document.getElementById('replay-current-action').innerHTML = createActivityHtml(displayLog, true, false);
-                }
-
-                let targetLayer = null;
-                gemeindeGeoJsonLayer.eachLayer(l => { if (getGemeindeId(l.feature) === t.gemId) targetLayer = l; });
-
-                if (targetLayer) {
-                    map.flyToBounds(targetLayer.getBounds(), { maxZoom: 10, duration: 0.6 });
-                    await new Promise(r => setTimeout(r, 650)); 
-
-                    if (!isReplaying) break;
-                    targetLayer.setStyle(getGemeindeStyle(targetLayer.feature));
-                    updateGemeindeLabel(targetLayer, true, getUser(t.playerId).color);
-                    
-                    if (targetLayer._path) {
-                        targetLayer._path.classList.remove('anim-takeover', 'anim-token');
-                        void targetLayer._path.offsetWidth;
-                        targetLayer._path.classList.add(isGemTakeover ? 'anim-takeover' : 'anim-token');
-                    }
-                }
-
-                if (isCanTakeover && cantonBordersGeoJsonLayer) {
-                    let canBorderLayer = null;
-                    cantonBordersGeoJsonLayer.eachLayer(l => { if (getCantonId(l.feature) === gemToCantonMap[t.gemId]) canBorderLayer = l; });
-                    
-                    if (canBorderLayer) {
-                        if (!isReplaying) break;
-                        const pColor = getUser(t.playerId).color;
-                        canBorderLayer.setStyle({ color: pColor, weight: 5 });
-                        
-                        if (canBorderLayer._path) {
-                            canBorderLayer._path.classList.remove('anim-canton-takeover');
-                            void canBorderLayer._path.offsetWidth;
-                            canBorderLayer._path.classList.add('anim-canton-takeover');
-                        }
-                        await new Promise(r => setTimeout(r, 2500)); 
-                        canBorderLayer.setStyle({ color: '#475569', weight: 2 });
-                    }
-                } else if (isGemTakeover) {
-                    await new Promise(r => setTimeout(r, 1200));
-                } else {
-                    await new Promise(r => setTimeout(r, 500));
-                }
-            }
-
-            isReplaying = false;
-            replayOverlay.classList.add('hidden');
-            
-            tokensState = actualTokensState;
-            calculateGameState();
-            renderActivityBox(); 
-            refreshMapVisuals();
-            
-            currentUser.lastSeen = Date.now();
-            saveLocalUserLastSeen();
-            pushState();
-        }
-
-        // --- Activity Box UI ---
-        let isActivityExpanded = false;
-        activityHeader.addEventListener('click', () => {
-            isActivityExpanded = !isActivityExpanded;
-            if (isActivityExpanded) {
-                activityBox.classList.replace('h-14', 'h-64');
-                activityList.classList.replace('opacity-0', 'opacity-100');
-                activityToggleIcon.style.transform = 'rotate(180deg)';
-            } else {
-                activityBox.classList.replace('h-64', 'h-14');
-                activityList.classList.replace('opacity-100', 'opacity-0');
-                activityToggleIcon.style.transform = 'rotate(0deg)';
-            }
-        });
-
-        function renderActivityBox(maxTimestamp = Date.now()) {
-            const visibleLogs = activityLog.filter(a => a.timestamp <= maxTimestamp).slice(-50).reverse(); 
-            
-            activityList.innerHTML = '';
-            
-            if (visibleLogs.length === 0) {
-                activityLatest.innerHTML = '<span class="text-slate-400 italic">No recent activity</span>';
-                return;
-            }
-
-            activityLatest.innerHTML = createActivityHtml(visibleLogs[0], false, false);
-
-            visibleLogs.forEach(log => {
-                const el = document.createElement('div');
-                el.className = "text-xs p-2 bg-slate-50 rounded-lg border border-slate-100 flex items-center gap-2 overflow-hidden whitespace-nowrap justify-between w-full";
-                el.innerHTML = createActivityHtml(log, false, true);
-                activityList.appendChild(el);
-            });
-        }
-
-        function createActivityHtml(log, isDarkBg = false, showTime = false) {
-            const timeStr = showTime ? `<span class="text-slate-400 text-[10px] ml-auto shrink-0 pl-2">${new Date(log.timestamp).toLocaleString([], {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})}</span>` : '';
-
-            if (log.type === 'system') return `<span class="text-slate-500 italic truncate w-full">${log.text}</span> ${timeStr}`;
-            
-            const p = getUser(log.playerId);
-            const dot = `<div class="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm border border-slate-200" style="background-color: ${p.color}"></div>`;
-            const pName = `<span style="color: ${p.color}" class="font-bold">${p.name}</span>`;
-            
-            const textClass = isDarkBg ? "text-slate-300" : "text-slate-600";
-            const strongTextClass = isDarkBg ? "text-white" : "text-slate-800";
-
-            let content = '';
-            if (log.type === 'token') content = `${dot} <span class="truncate ${textClass}">${pName} 🍺 placed token in <b>${log.targetName}</b></span>`;
-            else if (log.type === 'claim_gem') content = `${dot} <span class="truncate ${textClass}">${pName} 🚩 claimed <b>${log.targetName}</b></span>`;
-            else if (log.type === 'conquer_gem' || log.type === 'takeover_gem') content = `${dot} <span class="truncate ${textClass}">${pName} 🚩 conquered <b>${log.targetName}</b></span>`;
-            else if (log.type === 'claim_can') content = `${dot} <span class="truncate ${strongTextClass}">${pName} 🏆 claimed <b>${log.targetName.toUpperCase()}</b></span>`;
-            else if (log.type === 'conquer_can' || log.type === 'takeover_can') content = `${dot} <span class="truncate ${strongTextClass}">${pName} 🏆 conquered <b>${log.targetName.toUpperCase()}</b></span>`;
-            
-            return content + timeStr;
-        }
-
-        // --- Styling Functions ---
+        // ==========================================
+        // 5. STYLING & POPUP CONTENT
+        // ==========================================
         const getGemeindeStyle = (feature) => {
             const id = getGemeindeId(feature);
             const ownerInfo = gemeindeOwners[id];
@@ -1037,7 +575,247 @@
             }
         }
 
-        // --- Game Engine Logic ---
+        function generateGemeindePopupContent(feature) {
+            const gemId = getGemeindeId(feature);
+            const name = getGemeindeName(feature);
+            const ownerInfo = gemeindeOwners[gemId] || { ownerId: null };
+            const tokens = tokensState[gemId] || {};
+            const area = (turf.area(feature) / 1000000).toFixed(1);
+
+            let tokenRows = '';
+            Object.keys(tokens).sort((a,b) => tokens[b] - tokens[a]).forEach(pid => {
+                if (tokens[pid] > 0) {
+                    const p = getUser(pid);
+                    tokenRows += `<div class="flex justify-between text-sm my-1"><span style="color:${p.color}" class="font-bold">${p.name}</span> <span>${tokens[pid]} token</span></div>`;
+                }
+            });
+            if (!tokenRows) tokenRows = '<div class="text-sm text-slate-500 italic my-2">No tokens placed</div>';
+
+            const ownerUser = ownerInfo.ownerId ? getUser(ownerInfo.ownerId) : null;
+            const isTied = !ownerInfo.ownerId && ownerInfo.totalTokens > 0;
+            
+            let ownerStr = '<span class="text-slate-400">Unclaimed</span>';
+            if (ownerUser) ownerStr = `<span style="color:${ownerUser.color}" class="font-bold">${ownerUser.name}</span>`;
+            else if (isTied) ownerStr = `<span class="text-slate-500 font-bold">Contested (Tie)</span>`;
+            
+            const safeGemId = gemId.replace(/'/g, "\\'");
+            const btnHTML = currentUser ? `
+                <button onclick="window.placeToken('${safeGemId}')" class="mt-4 w-full py-2.5 px-3 rounded-lg text-sm font-bold text-white shadow-md active:scale-95 transition-all" style="background-color: ${currentUser.color}; box-shadow: 0 4px 14px 0 ${currentUser.color}40;">
+                    Drink Beer Here
+                </button>` : '';
+
+            return `
+                <div class="border-b border-slate-200 pb-2 mb-2">
+                    <strong class="block text-lg mb-1 text-slate-800">${name}</strong>
+                    <div class="text-xs text-slate-500 mb-0.5">Area: ${area} km²</div>
+                    <div class="text-xs text-slate-500">Controlled By: ${ownerStr}</div>
+                </div>
+                <div>
+                    <strong class="text-xs uppercase tracking-wider text-slate-400 mb-1 block">Tokens Placed</strong>
+                    ${tokenRows}
+                </div>
+                ${btnHTML}
+            `;
+        }
+
+        function generateCantonPopupContent(feature) {
+            const canId = getCantonId(feature);
+            const name = getCantonName(feature);
+            const stat = cantonStats[canId] || { areas: {} };
+            
+            let areaRows = '';
+            Object.keys(stat.areas).sort((a,b) => stat.areas[b] - stat.areas[a]).forEach(pid => {
+                if (stat.areas[pid] && stat.areas[pid] > 0) {
+                    const p = getUser(pid);
+                    areaRows += `<div class="flex justify-between text-sm my-1"><span style="color:${p.color}" class="font-bold">${p.name}</span> <span>${stat.areas[pid].toFixed(1)} km²</span></div>`;
+                }
+            });
+            if (!areaRows) areaRows = '<div class="text-sm text-slate-500 italic my-2">No claims active</div>';
+
+            const ownerUser = stat.ownerId ? getUser(stat.ownerId) : null;
+            const ownerStr = ownerUser ? `<span style="color:${ownerUser.color}" class="font-bold">${ownerUser.name}</span>` : '<span class="text-slate-400">Unclaimed</span>';
+
+            return `
+                <div class="border-b border-slate-200 pb-2 mb-2">
+                    <strong class="block text-xl mb-1 text-slate-800">${name}</strong>
+                    <div class="text-sm text-slate-500">Controlled By: ${ownerStr}</div>
+                </div>
+                <div>
+                    <strong class="text-xs uppercase tracking-wider text-slate-400 mb-1 block">Territorial Breakdown</strong>
+                    ${areaRows}
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // 6. UI UPDATES & DOM MANIPULATION
+        // ==========================================
+        function refreshMapVisuals() {
+            if (gemeindeGeoJsonLayer) {
+                gemeindeGeoJsonLayer.eachLayer(l => {
+                    l.setStyle(getGemeindeStyle(l.feature));
+                    updateGemeindeLabel(l); 
+                    if (l.isPopupOpen()) l.setPopupContent(generateGemeindePopupContent(l.feature));
+                });
+            }
+            if (cantonGeoJsonLayer) {
+                cantonGeoJsonLayer.eachLayer(l => {
+                    l.setStyle(getCantonStyle(l.feature));
+                    if (l.isPopupOpen()) l.setPopupContent(generateCantonPopupContent(l.feature));
+                });
+            }
+        }
+
+        function createActivityHtml(log, isDarkBg = false, showTime = false) {
+            const timeStr = showTime ? `<span class="text-slate-400 text-[10px] ml-auto shrink-0 pl-2">${new Date(log.timestamp).toLocaleString([], {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})}</span>` : '';
+
+            if (log.type === 'system') return `<span class="text-slate-500 italic truncate w-full">${log.text}</span> ${timeStr}`;
+            
+            const p = getUser(log.playerId);
+            const dot = `<div class="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm border border-slate-200" style="background-color: ${p.color}"></div>`;
+            const pName = `<span style="color: ${p.color}" class="font-bold">${p.name}</span>`;
+            
+            const textClass = isDarkBg ? "text-slate-300" : "text-slate-600";
+            const strongTextClass = isDarkBg ? "text-white" : "text-slate-800";
+
+            let content = '';
+            if (log.type === 'token') content = `${dot} <span class="truncate ${textClass}">${pName} 🍺 placed token in <b>${log.targetName}</b></span>`;
+            else if (log.type === 'claim_gem') content = `${dot} <span class="truncate ${textClass}">${pName} 🚩 claimed <b>${log.targetName}</b></span>`;
+            else if (log.type === 'conquer_gem' || log.type === 'takeover_gem') content = `${dot} <span class="truncate ${textClass}">${pName} 🚩 conquered <b>${log.targetName}</b></span>`;
+            else if (log.type === 'claim_can') content = `${dot} <span class="truncate ${strongTextClass}">${pName} 🏆 claimed <b>${log.targetName.toUpperCase()}</b></span>`;
+            else if (log.type === 'conquer_can' || log.type === 'takeover_can') content = `${dot} <span class="truncate ${strongTextClass}">${pName} 🏆 conquered <b>${log.targetName.toUpperCase()}</b></span>`;
+            
+            return content + timeStr;
+        }
+
+        function renderActivityBox(maxTimestamp = Date.now()) {
+            const visibleLogs = activityLog.filter(a => a.timestamp <= maxTimestamp).slice(-50).reverse(); 
+            
+            activityList.innerHTML = '';
+            
+            if (visibleLogs.length === 0) {
+                activityLatest.innerHTML = '<span class="text-slate-400 italic">No recent activity</span>';
+                return;
+            }
+
+            activityLatest.innerHTML = createActivityHtml(visibleLogs[0], false, false);
+
+            visibleLogs.forEach(log => {
+                const el = document.createElement('div');
+                el.className = "text-xs p-2 bg-slate-50 rounded-lg border border-slate-100 flex items-center gap-2 overflow-hidden whitespace-nowrap justify-between w-full";
+                el.innerHTML = createActivityHtml(log, false, true);
+                activityList.appendChild(el);
+            });
+        }
+
+        function updateLeaderboard() {
+            const scores = {};
+            Object.keys(registeredUsers).forEach(pid => {
+                if (registeredUsers[pid]) {
+                    scores[pid] = { cantons: 0, area: 0 };
+                }
+            });
+
+            Object.values(cantonStats).forEach(stat => {
+                if (stat.ownerId && scores[stat.ownerId]) scores[stat.ownerId].cantons += 1;
+                Object.keys(stat.areas).forEach(pid => { if(scores[pid]) scores[pid].area += stat.areas[pid]; });
+            });
+
+            const sortedPlayers = Object.keys(registeredUsers)
+                .filter(pid => registeredUsers[pid] !== null)
+                .sort((a, b) => {
+                    if (scores[b].cantons !== scores[a].cantons) return scores[b].cantons - scores[a].cantons;
+                    return scores[b].area - scores[a].area;
+                });
+
+            leaderboard.innerHTML = '';
+            leaderboardHeader.classList.remove('border-b', 'border-slate-100', 'pb-2', 'mb-2');
+
+            if(sortedPlayers.length === 0) {
+                if (isLeaderboardExpanded) {
+                    leaderboardHeader.classList.add('border-b', 'border-slate-100', 'pb-2', 'mb-2');
+                    leaderboard.innerHTML = '<div class="text-xs text-slate-500 italic mt-2">No players active.</div>';
+                }
+                return;
+            }
+
+            const playersToShow = isLeaderboardExpanded ? sortedPlayers : [];
+            
+            if (isLeaderboardExpanded) {
+                leaderboardHeader.classList.add('border-b', 'border-slate-100', 'pb-2', 'mb-2');
+            }
+
+            playersToShow.forEach((pid, index) => {
+                const p = getUser(pid); const s = scores[pid];
+                leaderboard.innerHTML += `
+                    <div onclick="window.showPlayerStats('${pid}')" class="flex items-center justify-between bg-slate-50 hover:bg-slate-100 cursor-pointer rounded-lg p-2 border border-slate-200 transition-colors group mb-1.5">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-black text-slate-400 w-3 text-right">${index + 1}.</span>
+                            <div class="w-3 h-3 rounded-full shrink-0" style="background-color: ${p.color}"></div>
+                            <span class="text-sm font-bold text-slate-800 truncate max-w-[90px]">${p.name}</span>
+                        </div>
+                        <div class="text-right flex items-baseline gap-2 shrink-0">
+                            <span class="text-lg font-black text-slate-800">${s.cantons}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.showPlayerStats = function(pid) {
+            const p = getUser(pid);
+            let cantons = 0; let gemeinden = 0; let tokens = 0; let area = 0;
+
+            Object.values(cantonStats).forEach(stat => {
+                if (stat.ownerId === pid) cantons++;
+                if (stat.areas[pid]) area += stat.areas[pid];
+            });
+            Object.keys(tokensState).forEach(gemId => {
+                if (tokensState[gemId][pid] && tokensState[gemId][pid] > 0) {
+                    tokens += tokensState[gemId][pid];
+                }
+                if (gemeindeOwners[gemId]?.ownerId === pid) gemeinden++;
+            });
+
+            document.getElementById('stat-modal-name').innerText = p.name;
+            document.getElementById('stat-modal-color').style.backgroundColor = p.color;
+            document.getElementById('stat-modal-cantons').innerText = cantons;
+            document.getElementById('stat-modal-gemeinden').innerText = gemeinden;
+            document.getElementById('stat-modal-tokens').innerText = tokens;
+            document.getElementById('stat-modal-area').innerText = Math.round(area) + ' km²';
+            
+            document.getElementById('player-stats-modal').classList.remove('hidden');
+            if (currentView !== 'canton') switchView('canton');
+
+            if (cantonGeoJsonLayer) {
+                cantonGeoJsonLayer.eachLayer(l => {
+                    const canId = getCantonId(l.feature);
+                    if (cantonStats[canId]?.ownerId === pid) {
+                        if (l._path) { l._path.classList.remove('anim-takeover'); void l._path.offsetWidth; l._path.classList.add('anim-takeover'); }
+                        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) l.bringToFront();
+                    }
+                });
+            }
+        };
+
+        function switchView(view) {
+            currentView = view;
+            if (view === 'gemeinde') {
+                btnToggleView.classList.add('text-blue-600'); btnToggleView.classList.remove('text-slate-500');
+                iconViewGem.classList.remove('hidden'); iconViewCan.classList.add('hidden');
+                map.addLayer(gemeindeLayerGroup); map.addLayer(cantonBordersLayerGroup); map.removeLayer(cantonLayerGroup);
+                if (gemeindeGeoJsonLayer) gemeindeGeoJsonLayer.eachLayer(l => l.setStyle(getGemeindeStyle(l.feature)));
+            } else {
+                btnToggleView.classList.remove('text-blue-600'); btnToggleView.classList.add('text-slate-500');
+                iconViewCan.classList.remove('hidden'); iconViewGem.classList.add('hidden');
+                map.addLayer(cantonLayerGroup); map.removeLayer(gemeindeLayerGroup); map.removeLayer(cantonBordersLayerGroup); 
+                if (cantonGeoJsonLayer) cantonGeoJsonLayer.eachLayer(l => l.setStyle(getCantonStyle(l.feature)));
+            }
+        }
+
+        // ==========================================
+        // 7. GAME ENGINE LOGIC
+        // ==========================================
         function calculateGameState() {
             gemeindeOwners = {};
             cantonStats = {};
@@ -1056,9 +834,11 @@
 
                     Object.keys(tokens).forEach(pid => {
                         const count = tokens[pid];
-                        totalTokens += count;
-                        if (count > maxTokens) { maxTokens = count; currentOwner = pid; tie = false; } 
-                        else if (count === maxTokens && count > 0) tie = true;
+                        if (count > 0) {
+                            totalTokens += count;
+                            if (count > maxTokens) { maxTokens = count; currentOwner = pid; tie = false; } 
+                            else if (count === maxTokens) tie = true;
+                        }
                     });
 
                     gemeindeOwners[gemId] = { ownerId: tie ? null : currentOwner, totalTokens, maxTokens };
@@ -1086,86 +866,152 @@
             updateLeaderboard();
         }
 
-        // --- Leaderboard & Stats Logic ---
-        leaderboardHeader.addEventListener('click', () => {
-            isLeaderboardExpanded = !isLeaderboardExpanded;
-            leaderboardToggleIcon.style.transform = isLeaderboardExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
-            updateLeaderboard();
-        });
+        function updateLocalUserLastSeen() {
+            try {
+                const storedLocalInfo = JSON.parse(localStorage.getItem('bierisko_local_user') || '{}');
+                if (currentUser && storedLocalInfo.id === currentUser.id) {
+                    currentUser.lastSeen = storedLocalInfo.lastSeen;
+                    currentUser.hasSeenUndoHint = storedLocalInfo.hasSeenUndoHint || false;
+                }
+            } catch(e) {}
+        }
 
-        function updateLeaderboard() {
-            const scores = {};
-            Object.keys(registeredUsers).forEach(pid => scores[pid] = { cantons: 0, area: 0 });
-
-            Object.values(cantonStats).forEach(stat => {
-                if (stat.ownerId && scores[stat.ownerId]) scores[stat.ownerId].cantons += 1;
-                Object.keys(stat.areas).forEach(pid => { if(scores[pid]) scores[pid].area += stat.areas[pid]; });
-            });
-
-            const sortedPlayers = Object.keys(registeredUsers).sort((a, b) => {
-                if (scores[b].cantons !== scores[a].cantons) return scores[b].cantons - scores[a].cantons;
-                return scores[b].area - scores[a].area;
-            });
-
-            leaderboard.innerHTML = '';
-            if(sortedPlayers.length === 0) {
-                leaderboard.innerHTML = '<div class="text-xs text-slate-500 italic mt-2">No players active.</div>';
-                return;
+        function saveLocalUserLastSeen() {
+            if (currentUser) {
+                localStorage.setItem('bierisko_local_user', JSON.stringify({ 
+                    id: currentUser.id, 
+                    lastSeen: currentUser.lastSeen,
+                    hasSeenUndoHint: currentUser.hasSeenUndoHint || false
+                }));
             }
+        }
 
-            const playersToShow = isLeaderboardExpanded ? sortedPlayers : sortedPlayers.slice(0, 3);
-            playersToShow.forEach((pid, index) => {
-                const p = getUser(pid); const s = scores[pid];
-                leaderboard.innerHTML += `
-                    <div onclick="window.showPlayerStats('${pid}')" class="flex items-center justify-between bg-slate-50 hover:bg-slate-100 cursor-pointer rounded-lg p-2 border border-slate-200 transition-colors group">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-black text-slate-400 w-3 text-right">${index + 1}.</span>
-                            <div class="w-3 h-3 rounded-full shrink-0" style="background-color: ${p.color}"></div>
-                            <span class="text-sm font-bold text-slate-800 truncate max-w-[90px]">${p.name}</span>
-                        </div>
-                        <div class="text-right flex items-baseline gap-2 shrink-0">
-                            <span class="text-lg font-black text-slate-800">${s.cantons}</span>
-                        </div>
-                    </div>
-                `;
+        // ==========================================
+        // 8. SERVER / STATE SYNC
+        // ==========================================
+        function unlockUIAndAutoLogin() {
+            if (!isInitialDataLoaded) {
+                isInitialDataLoaded = true;
+                dbStatus.innerText = "Connected to live map ✓";
+                dbStatus.classList.remove('animate-pulse');
+                dbStatus.classList.replace('text-blue-500', 'text-emerald-500');
+                loginInput.disabled = false;
+                btnLoginSubmit.disabled = false;
+
+                const savedName = localStorage.getItem('bierisko_username');
+                if (savedName && !currentUser) {
+                    loginInput.value = savedName;
+                    loginInput.dispatchEvent(new Event('input')); 
+                    btnLoginSubmit.click(); 
+                }
+            }
+        }
+
+        function applyServerData(data) {
+            registeredUsers = data.users || {};
+            tokensState = data.tokens || {};
+            activityLog = (data.activityLog || []).filter(log => log.type !== 'system');
+            tokenHistory = data.tokenHistory || [];
+            
+            if (currentUser && registeredUsers[currentUser.id]) {
+                currentUser = registeredUsers[currentUser.id];
+                updateLocalUserLastSeen();
+            }
+            
+            calculateGameState();
+            renderActivityBox();
+            refreshMapVisuals();
+        }
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfzl0RKiF0Yy8XXAZ0O20TEmDV5gogh9I",
+            authDomain: "bierisko.firebaseapp.com",
+            databaseURL: "https://bierisko-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "bierisko",
+            storageBucket: "bierisko.firebasestorage.app",
+            messagingSenderId: "291287462170",
+            appId: "1:291287462170:web:f209563d49b3fc0d93bca3",
+            measurementId: "G-BSG6YYVGJW"
+        };
+        
+        let app, auth, db, stateRef;
+
+        try {
+            const activeConfig = Object.keys(firebaseConfig).length > 0 ? firebaseConfig : JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+            app = initializeApp(activeConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            
+            if (Object.keys(firebaseConfig).length > 0) {
+                 stateRef = doc(db, 'bierisko_game', 'global_state');
+            } else {
+                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'bierisko-default';
+                 stateRef = doc(db, 'artifacts', appId, 'public', 'data', 'bierisko', 'state');
+            }
+        } catch (e) {
+            console.error("Firebase init error", e);
+            dbStatus.innerText = "Error connecting to cloud.";
+            dbStatus.classList.replace('text-blue-500', 'text-red-500');
+        }
+
+        async function pushState() {
+            if (!isFirebaseReady || !isInitialDataLoaded) return;
+            try {
+                await setDoc(stateRef, {
+                    users: registeredUsers,
+                    tokens: tokensState,
+                    activityLog: activityLog.slice(-100), 
+                    tokenHistory: tokenHistory.slice(-500)
+                }, { merge: true }); // Restored safety net
+            } catch(e) { console.error("Save error", e); }
+        }
+
+        function listenToLiveState() {
+            onSnapshot(stateRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    latestServerData = docSnap.data();
+                    
+                    unlockUIAndAutoLogin();
+                    
+                    // Safely log out if the user was deleted on the server
+                    if (currentUser && !latestServerData.users?.[currentUser.id]) {
+                        btnLogout.click();
+                        return;
+                    }
+                    
+                    if (!isReplaying) {
+                        applyServerData(latestServerData);
+                    }
+                } else {
+                    unlockUIAndAutoLogin();
+                    pushState();
+                }
+            }, (error) => {
+                console.error("Snapshot sync error:", error);
             });
         }
 
-        window.showPlayerStats = function(pid) {
-            const p = getUser(pid);
-            let cantons = 0; let gemeinden = 0; let tokens = 0; let area = 0;
+        async function initFirebase() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token && Object.keys(firebaseConfig).length === 0) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
 
-            Object.values(cantonStats).forEach(stat => {
-                if (stat.ownerId === pid) cantons++;
-                if (stat.areas[pid]) area += stat.areas[pid];
-            });
-            Object.keys(tokensState).forEach(gemId => {
-                if (tokensState[gemId][pid]) tokens += tokensState[gemId][pid];
-                if (gemeindeOwners[gemId]?.ownerId === pid) gemeinden++;
-            });
-
-            document.getElementById('stat-modal-name').innerText = p.name;
-            document.getElementById('stat-modal-color').style.backgroundColor = p.color;
-            document.getElementById('stat-modal-cantons').innerText = cantons;
-            document.getElementById('stat-modal-gemeinden').innerText = gemeinden;
-            document.getElementById('stat-modal-tokens').innerText = tokens;
-            document.getElementById('stat-modal-area').innerText = Math.round(area) + ' km²';
-            
-            document.getElementById('player-stats-modal').classList.remove('hidden');
-            if (currentView !== 'canton') switchView('canton');
-
-            if (cantonGeoJsonLayer) {
-                cantonGeoJsonLayer.eachLayer(l => {
-                    const canId = getCantonId(l.feature);
-                    if (cantonStats[canId]?.ownerId === pid) {
-                        if (l._path) { l._path.classList.remove('anim-takeover'); void l._path.offsetWidth; l._path.classList.add('anim-takeover'); }
-                        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) l.bringToFront();
+                onAuthStateChanged(auth, user => {
+                    if (user && !isFirebaseReady) {
+                        isFirebaseReady = true;
+                        dbStatus.innerText = "Syncing with cloud...";
+                        listenToLiveState();
                     }
                 });
-            }
-        };
+            } catch (e) { console.error("Auth error", e); }
+        }
 
-        // --- Interactions & Popups ---
+        // ==========================================
+        // 9. CORE ACTIONS
+        // ==========================================
         window.placeToken = function(id) {
             if (currentView !== 'gemeinde' || !currentUser) return;
             if (isReplaying) return; 
@@ -1251,80 +1097,123 @@
             saveLocalUserLastSeen();
             renderActivityBox();
             pushState(); 
-        };
-
-        function generateGemeindePopupContent(feature) {
-            const gemId = getGemeindeId(feature);
-            const name = getGemeindeName(feature);
-            const ownerInfo = gemeindeOwners[gemId] || { ownerId: null };
-            const tokens = tokensState[gemId] || {};
-            const area = (turf.area(feature) / 1000000).toFixed(1);
-
-            let tokenRows = '';
-            Object.keys(tokens).sort((a,b) => tokens[b] - tokens[a]).forEach(pid => {
-                if (tokens[pid] > 0) {
-                    const p = getUser(pid);
-                    tokenRows += `<div class="flex justify-between text-sm my-1"><span style="color:${p.color}" class="font-bold">${p.name}</span> <span>${tokens[pid]} token(s)</span></div>`;
-                }
-            });
-            if (!tokenRows) tokenRows = '<div class="text-sm text-slate-500 italic my-2">No tokens placed</div>';
-
-            const ownerUser = ownerInfo.ownerId ? getUser(ownerInfo.ownerId) : null;
-            const isTied = !ownerInfo.ownerId && ownerInfo.totalTokens > 0;
-            
-            let ownerStr = '<span class="text-slate-400">Unclaimed</span>';
-            if (ownerUser) ownerStr = `<span style="color:${ownerUser.color}" class="font-bold">${ownerUser.name}</span>`;
-            else if (isTied) ownerStr = `<span class="text-slate-500 font-bold">Contested (Tie)</span>`;
-            
-            const safeGemId = gemId.replace(/'/g, "\\'");
-            const btnHTML = currentUser ? `
-                <button onclick="window.placeToken('${safeGemId}')" class="mt-4 w-full py-2.5 px-3 rounded-lg text-sm font-bold text-white shadow-md active:scale-95 transition-all" style="background-color: ${currentUser.color}; box-shadow: 0 4px 14px 0 ${currentUser.color}40;">
-                    Drink Beer Here
-                </button>` : '';
-
-            return `
-                <div class="border-b border-slate-200 pb-2 mb-2">
-                    <strong class="block text-lg mb-1 text-slate-800">${name}</strong>
-                    <div class="text-xs text-slate-500 mb-0.5">Area: ${area} km²</div>
-                    <div class="text-xs text-slate-500">Controlled By: ${ownerStr}</div>
-                </div>
-                <div>
-                    <strong class="text-xs uppercase tracking-wider text-slate-400 mb-1 block">Tokens Placed</strong>
-                    ${tokenRows}
-                </div>
-                ${btnHTML}
-            `;
         }
 
-        function generateCantonPopupContent(feature) {
-            const canId = getCantonId(feature);
-            const name = getCantonName(feature);
-            const stat = cantonStats[canId] || { areas: {} };
+        async function checkAndRunReplay() {
+            if (!currentUser) return;
             
-            let areaRows = '';
-            Object.keys(stat.areas).sort((a,b) => stat.areas[b] - stat.areas[a]).forEach(pid => {
-                if (stat.areas[pid] && stat.areas[pid] > 0) {
-                    const p = getUser(pid);
-                    areaRows += `<div class="flex justify-between text-sm my-1"><span style="color:${p.color}" class="font-bold">${p.name}</span> <span>${stat.areas[pid].toFixed(1)} km²</span></div>`;
+            const unseenTokens = tokenHistory.filter(t => t.timestamp > currentUser.lastSeen);
+            if (unseenTokens.length === 0) {
+                currentUser.lastSeen = Date.now();
+                saveLocalUserLastSeen();
+                return;
+            }
+
+            isReplaying = true;
+            replayOverlay.classList.remove('hidden');
+            
+            let replayTokensState = JSON.parse(JSON.stringify(tokensState));
+            
+            for (let t of unseenTokens) {
+                if (replayTokensState[t.gemId] && replayTokensState[t.gemId][t.playerId]) {
+                    replayTokensState[t.gemId][t.playerId]--;
+                    if (replayTokensState[t.gemId][t.playerId] < 0) replayTokensState[t.gemId][t.playerId] = 0;
                 }
-            });
-            if (!areaRows) areaRows = '<div class="text-sm text-slate-500 italic my-2">No claims active</div>';
+            }
 
-            const ownerUser = stat.ownerId ? getUser(stat.ownerId) : null;
-            const ownerStr = ownerUser ? `<span style="color:${ownerUser.color}" class="font-bold">${ownerUser.name}</span>` : '<span class="text-slate-400">Unclaimed</span>';
+            tokensState = replayTokensState;
+            calculateGameState(); 
+            if (currentView !== 'gemeinde') switchView('gemeinde');
 
-            return `
-                <div class="border-b border-slate-200 pb-2 mb-2">
-                    <strong class="block text-xl mb-1 text-slate-800">${name}</strong>
-                    <div class="text-sm text-slate-500">Controlled By: ${ownerStr}</div>
-                </div>
-                <div>
-                    <strong class="text-xs uppercase tracking-wider text-slate-400 mb-1 block">Territorial Breakdown</strong>
-                    ${areaRows}
-                </div>
-            `;
+            for (let i = 0; i < unseenTokens.length; i++) {
+                if (!isReplaying) break; 
+                const t = unseenTokens[i];
+                
+                if (!tokensState[t.gemId]) tokensState[t.gemId] = {};
+                
+                const prevGemOwner = gemeindeOwners[t.gemId]?.ownerId;
+                const prevCanOwner = cantonStats[gemToCantonMap[t.gemId]]?.ownerId;
+
+                tokensState[t.gemId][t.playerId] = (tokensState[t.gemId][t.playerId] || 0) + 1;
+                calculateGameState(); 
+
+                const newGemOwner = gemeindeOwners[t.gemId]?.ownerId;
+                const newCanOwner = cantonStats[gemToCantonMap[t.gemId]]?.ownerId;
+
+                const isGemTakeover = newGemOwner !== prevGemOwner && newGemOwner === t.playerId;
+                const isCanTakeover = newCanOwner !== prevCanOwner && newCanOwner === t.playerId;
+
+                renderActivityBox(t.timestamp); 
+
+                const currentLogs = activityLog.filter(log => log.timestamp === t.timestamp);
+                let displayLog = currentLogs.find(log => log.type.includes('conquer_can') || log.type.includes('claim_can') || log.type.includes('takeover_can'));
+                if (!displayLog) displayLog = currentLogs.find(log => log.type.includes('conquer_gem') || log.type.includes('claim_gem') || log.type.includes('takeover_gem'));
+                if (!displayLog) displayLog = currentLogs.find(log => log.type === 'token');
+
+                if (displayLog) {
+                    document.getElementById('replay-current-action').innerHTML = createActivityHtml(displayLog, true, false);
+                }
+
+                let targetLayer = null;
+                gemeindeGeoJsonLayer.eachLayer(l => { if (getGemeindeId(l.feature) === t.gemId) targetLayer = l; });
+
+                if (targetLayer) {
+                    map.flyToBounds(targetLayer.getBounds(), { maxZoom: 10, duration: 0.6 });
+                    await new Promise(r => setTimeout(r, 650)); 
+
+                    if (!isReplaying) break;
+                    targetLayer.setStyle(getGemeindeStyle(targetLayer.feature));
+                    updateGemeindeLabel(targetLayer, true, getUser(t.playerId).color);
+                    
+                    if (targetLayer._path) {
+                        targetLayer._path.classList.remove('anim-takeover', 'anim-token');
+                        void targetLayer._path.offsetWidth;
+                        targetLayer._path.classList.add(isGemTakeover ? 'anim-takeover' : 'anim-token');
+                    }
+                }
+
+                if (isCanTakeover && cantonBordersGeoJsonLayer) {
+                    let canBorderLayer = null;
+                    cantonBordersGeoJsonLayer.eachLayer(l => { if (getCantonId(l.feature) === gemToCantonMap[t.gemId]) canBorderLayer = l; });
+                    
+                    if (canBorderLayer) {
+                        if (!isReplaying) break;
+                        const pColor = getUser(t.playerId).color;
+                        canBorderLayer.setStyle({ color: pColor, weight: 5 });
+                        
+                        if (canBorderLayer._path) {
+                            canBorderLayer._path.classList.remove('anim-canton-takeover');
+                            void canBorderLayer._path.offsetWidth;
+                            canBorderLayer._path.classList.add('anim-canton-takeover');
+                        }
+                        await new Promise(r => setTimeout(r, 2500)); 
+                        canBorderLayer.setStyle({ color: '#475569', weight: 2 });
+                    }
+                } else if (isGemTakeover) {
+                    await new Promise(r => setTimeout(r, 1200));
+                } else {
+                    await new Promise(r => setTimeout(r, 500));
+                }
+            }
+
+            isReplaying = false;
+            replayOverlay.classList.add('hidden');
+            
+            if (latestServerData) {
+                applyServerData(latestServerData);
+            }
+            
+            currentUser.lastSeen = Date.now();
+            saveLocalUserLastSeen();
+            if (registeredUsers[currentUser.id]) {
+                registeredUsers[currentUser.id].lastSeen = currentUser.lastSeen;
+            }
+            pushState();
         }
 
+        // ==========================================
+        // 10. SETUP & INITIALIZATION
+        // ==========================================
         function onEachGemeinde(feature, layer) {
             layer.bindPopup(() => generateGemeindePopupContent(feature), { className: 'custom-popup', offset: [0, -10], autoPanPadding: [20, 20] });
             layer.on({
@@ -1375,7 +1264,6 @@
             });
         }
 
-        // --- Data Fetching & Setup ---
         async function buildSpatialIndex(cantons, gemeinden) {
             const cachedMap = localStorage.getItem('territoryWarSpatialMapV2');
             if (cachedMap) { gemToCantonMap = JSON.parse(cachedMap); return; }
@@ -1432,25 +1320,165 @@
             }
         }
 
-        // --- UI Controls Logic ---
-        function switchView(view) {
-            currentView = view;
-            if (view === 'gemeinde') {
-                btnToggleView.classList.add('text-blue-600'); btnToggleView.classList.remove('text-slate-500');
-                iconViewGem.classList.remove('hidden'); iconViewCan.classList.add('hidden');
-                map.addLayer(gemeindeLayerGroup); map.addLayer(cantonBordersLayerGroup); map.removeLayer(cantonLayerGroup);
-                if (gemeindeGeoJsonLayer) gemeindeGeoJsonLayer.eachLayer(l => l.setStyle(getGemeindeStyle(l.feature)));
+        // ==========================================
+        // 11. EVENT LISTENERS
+        // ==========================================
+        loginInput.addEventListener('input', (e) => {
+            const rawName = e.target.value.trim();
+            const userId = rawName.toLowerCase().replace(/[^a-z0-9]/g, '');
+            
+            if (registeredUsers[userId]) {
+                btnLoginSubmit.innerText = "Login";
+                btnLoginSubmit.className = "w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-emerald-600/30";
             } else {
-                btnToggleView.classList.remove('text-blue-600'); btnToggleView.classList.add('text-slate-500');
-                iconViewCan.classList.remove('hidden'); iconViewGem.classList.add('hidden');
-                map.addLayer(cantonLayerGroup); map.removeLayer(gemeindeLayerGroup); map.removeLayer(cantonBordersLayerGroup); 
-                if (cantonGeoJsonLayer) cantonGeoJsonLayer.eachLayer(l => l.setStyle(getCantonStyle(l.feature)));
+                btnLoginSubmit.innerText = "Register";
+                btnLoginSubmit.className = "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-600/30";
             }
-        }
+        });
+
+        btnSettings.addEventListener('click', () => {
+            settingsModal.classList.remove('hidden');
+        });
+        
+        btnCloseSettings.addEventListener('click', () => {
+            settingsModal.classList.add('hidden');
+            undoHint.classList.add('hidden');
+            btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse');
+        });
+
+        btnCloseTutorial.addEventListener('click', () => {
+            tutorialModal.classList.add('hidden');
+            checkAndRunReplay(); 
+        });
+
+        btnShowRules.addEventListener('click', () => {
+            tutorialModal.classList.remove('hidden');
+            settingsModal.classList.add('hidden');
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const rawName = loginInput.value.trim();
+            if(!rawName) return;
+
+            const userId = rawName.toLowerCase().replace(/[^a-z0-9]/g, ''); 
+            if(!userId) return;
+
+            let isNewUser = false;
+            if(!registeredUsers[userId]) {
+                isNewUser = true;
+                const colorIndex = Object.keys(registeredUsers).filter(pid => registeredUsers[pid]).length % PALETTE.length;
+                registeredUsers[userId] = { id: userId, name: rawName, color: PALETTE[colorIndex], lastSeen: Date.now() };
+                pushState();
+            }
+
+            localStorage.setItem('bierisko_username', rawName);
+
+            currentUser = registeredUsers[userId];
+            updateLocalUserLastSeen();
+            updateUIForUser();
+            
+            profileName.innerText = currentUser.name;
+            profileColor.style.backgroundColor = currentUser.color;
+            
+            loginScreen.style.opacity = '0';
+            setTimeout(() => loginScreen.style.visibility = 'hidden', 400);
+
+            calculateGameState();
+            renderActivityBox();
+            
+            if (isNewUser) {
+                tutorialModal.classList.remove('hidden');
+            } else {
+                checkAndRunReplay(); 
+            }
+        });
+
+        btnLogout.addEventListener('click', () => {
+            if (currentUser) {
+                currentUser.lastSeen = Date.now();
+                saveLocalUserLastSeen();
+                pushState(); 
+            }
+            currentUser = null;
+            updateUIForUser();
+            
+            localStorage.removeItem('bierisko_username');
+
+            loginInput.value = '';
+            btnLoginSubmit.innerText = "Register";
+            btnLoginSubmit.className = "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-600/30 disabled:opacity-50 disabled:cursor-not-allowed";
+            
+            loginScreen.style.visibility = 'visible';
+            loginScreen.style.opacity = '1';
+            settingsModal.classList.add('hidden'); 
+            tutorialModal.classList.add('hidden');
+            undoHint.classList.add('hidden');
+            btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse');
+            map.closePopup(); 
+        });
+
+        btnUndo.addEventListener('click', () => {
+            if (!currentUser || isReplaying) return;
+
+            let lastTokenIndex = -1;
+            for (let i = tokenHistory.length - 1; i >= 0; i--) {
+                if (tokenHistory[i].playerId === currentUser.id) {
+                    lastTokenIndex = i;
+                    break;
+                }
+            }
+
+            if (lastTokenIndex === -1) {
+                showToast("No recent actions to undo.", true);
+                return;
+            }
+
+            const lastToken = tokenHistory[lastTokenIndex];
+            const gemId = lastToken.gemId;
+            const targetTs = lastToken.timestamp;
+
+            tokenHistory.splice(lastTokenIndex, 1);
+
+            if (tokensState[gemId] && tokensState[gemId][currentUser.id]) {
+                tokensState[gemId][currentUser.id]--;
+                if (tokensState[gemId][currentUser.id] < 0) tokensState[gemId][currentUser.id] = 0;
+            }
+
+            activityLog = activityLog.filter(log => !(log.playerId === currentUser.id && log.timestamp === targetTs));
+
+            undoHint.classList.add('hidden');
+            btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse');
+
+            showToast("Last beer placement undone.");
+            
+            calculateGameState();
+            renderActivityBox();
+            refreshMapVisuals();
+            pushState();
+        });
+
+        btnDelete.addEventListener('click', () => {
+            if(confirm(`Are you sure you want to delete data for ${currentUser.name}? All your tokens will be removed from the live map globally.`)) {
+                const idToDelete = currentUser.id;
+                registeredUsers[idToDelete] = null;
+                
+                for (const gemId in tokensState) {
+                    if (tokensState[gemId][idToDelete] !== undefined) {
+                        tokensState[gemId][idToDelete] = 0;
+                    }
+                }
+                
+                activityLog = activityLog.filter(log => log.playerId !== idToDelete && log.type !== 'system');
+                tokenHistory = tokenHistory.filter(log => log.playerId !== idToDelete);
+                
+                pushState();
+                btnLogout.click(); 
+            }
+        });
 
         btnToggleView.addEventListener('click', () => switchView(currentView === 'gemeinde' ? 'canton' : 'gemeinde'));
 
-        // --- GPS Token Logic ---
         btnGpsToken.addEventListener('click', () => {
             if (!currentUser) return showToast("Please join the map first!", true);
             if (!rawGemeindeData) return showToast("Map data not loaded yet.", true);
@@ -1501,6 +1529,30 @@
             }
         });
 
+        activityHeader.addEventListener('click', () => {
+            isActivityExpanded = !isActivityExpanded;
+            if (isActivityExpanded) {
+                activityBox.classList.replace('h-14', 'h-64');
+                activityList.classList.replace('opacity-0', 'opacity-100');
+                activityToggleIcon.style.transform = 'rotate(180deg)';
+            } else {
+                activityBox.classList.replace('h-64', 'h-14');
+                activityList.classList.replace('opacity-100', 'opacity-0');
+                activityToggleIcon.style.transform = 'rotate(0deg)';
+            }
+        });
+
+        leaderboardHeader.addEventListener('click', () => {
+            isLeaderboardExpanded = !isLeaderboardExpanded;
+            leaderboardToggleIcon.style.transform = isLeaderboardExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+            updateLeaderboard();
+        });
+
+        btnSkipReplay.addEventListener('click', () => { isReplaying = false; });
+
+        // ==========================================
+        // 12. RUN EXECUTION
+        // ==========================================
         loginInput.focus();
         bootMap(); 
         renderActivityBox();
