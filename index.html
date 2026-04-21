@@ -104,7 +104,7 @@
                 </button>
             </form>
         </div>
-        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v4.2 STABLE</div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v4.3 STABLE</div>
     </div>
 
     <!-- Screen 2: Rules -->
@@ -264,7 +264,7 @@
         // ==========================================
         // 1. GLOBAL STATE & GLOBALS
         // ==========================================
-        const VERSION = "v4.2";
+        const VERSION = "v4.3";
         const PALETTE = ['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16'];
         
         let map;
@@ -430,12 +430,24 @@
             }
         }
 
+        // Live updating the Popups if they are open during a sync
         function refreshMapVisuals() {
             if (gemeindeGeoJsonLayer) { 
-                gemeindeGeoJsonLayer.eachLayer(l => { updateLayerStyle(l, getGemeindeStyle(l.feature)); updateGemeindeLabel(l); }); 
+                gemeindeGeoJsonLayer.eachLayer(l => { 
+                    updateLayerStyle(l, getGemeindeStyle(l.feature)); 
+                    updateGemeindeLabel(l); 
+                    if (l.isPopupOpen()) {
+                        l.setPopupContent(generateGemeindePopupContent(l.feature));
+                    }
+                }); 
             }
             if (cantonGeoJsonLayer) { 
-                cantonGeoJsonLayer.eachLayer(l => { updateLayerStyle(l, getCantonStyle(l.feature)); }); 
+                cantonGeoJsonLayer.eachLayer(l => { 
+                    updateLayerStyle(l, getCantonStyle(l.feature)); 
+                    if (l.isPopupOpen()) {
+                        l.setPopupContent(generateCantonPopupContent(l.feature));
+                    }
+                }); 
             }
         }
 
