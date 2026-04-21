@@ -8,18 +8,14 @@
     <!-- Beer Emoji Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍺</text></svg>">
     
-    <!-- Tailwind CSS -->
+    <!-- External Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <!-- Turf.js for geographical math -->
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
     <style>
-        /* Mobile-safe absolute viewport locking */
+        /* Mobile safe absolute viewport locking */
         body, html { 
             margin: 0; padding: 0; 
             width: 100%; height: 100%; 
@@ -31,7 +27,7 @@
         #map { width: 100%; height: 100%; background-color: #f8fafc; }
         .leaflet-container { outline: 0; background: #f8fafc; }
         
-        /* Clean Light-themed Popups */
+        /* Clean Popups */
         .custom-popup .leaflet-popup-content-wrapper {
             background-color: rgba(255, 255, 255, 0.98);
             border: 1px solid #e2e8f0;
@@ -40,60 +36,35 @@
             color: #0f172a;
             backdrop-filter: blur(8px);
         }
-        .custom-popup .leaflet-popup-tip {
-            background-color: rgba(255, 255, 255, 0.98);
-            border: 1px solid #e2e8f0;
-        }
-        .custom-popup .leaflet-popup-content {
-            margin: 1.25rem 1rem;
-            min-width: 180px;
-        }
-        .custom-popup a.leaflet-popup-close-button {
-            color: #64748b;
-            padding: 8px;
-            font-size: 1.2rem;
-            top: 8px !important;
-            right: 8px !important;
-        }
-        .custom-popup a.leaflet-popup-close-button:hover {
-            color: #0f172a;
-            background: transparent;
-        }
+        .custom-popup .leaflet-popup-content { margin: 1.25rem 1rem; min-width: 180px; }
+        .custom-popup a.leaflet-popup-close-button { color: #64748b; padding: 8px; font-size: 1.2rem; top: 8px !important; right: 8px !important; }
         
+        /* Animations */
         path.leaflet-interactive {
             transition: fill 0.3s ease, fill-opacity 0.3s ease, stroke-width 0.2s ease, stroke 0.3s ease;
         }
 
-        /* Takeover & Token Animations */
         @keyframes takeoverPulse {
             0% { fill-opacity: 0.2; stroke-width: 0px; filter: brightness(2); }
             50% { fill-opacity: 1; stroke-width: 4px; stroke: #ffffff; filter: brightness(1.5); }
             100% { fill-opacity: 0.75; stroke-width: 0.5px; filter: brightness(1); }
         }
-        .anim-takeover {
-            animation: takeoverPulse 0.8s ease-out !important;
-        }
+        .anim-takeover { animation: takeoverPulse 0.8s ease-out !important; }
 
-        /* Canton Border Outline Glow */
         @keyframes cantonTakeoverPulse {
             0% { filter: drop-shadow(0 0 0px currentColor); stroke-opacity: 1; }
             50% { filter: drop-shadow(0 0 12px currentColor); stroke-opacity: 1; stroke-width: 6px; }
             100% { filter: drop-shadow(0 0 0px currentColor); stroke-opacity: 1; }
         }
-        .anim-canton-takeover {
-            animation: cantonTakeoverPulse 2.5s ease-out !important;
-        }
+        .anim-canton-takeover { animation: cantonTakeoverPulse 2.5s ease-out !important; }
         
         @keyframes tokenPulse {
             0% { filter: brightness(1); }
             50% { filter: brightness(1.3); fill-opacity: 0.9; }
             100% { filter: brightness(1); }
         }
-        .anim-token {
-            animation: tokenPulse 0.4s ease-out !important;
-        }
+        .anim-token { animation: tokenPulse 0.4s ease-out !important; }
 
-        /* Floating +1 token animation */
         @keyframes floatUp {
             0% { opacity: 0; transform: translate(0, 0) scale(0.8); }
             20% { opacity: 1; transform: translate(10px, -10px) scale(1.2); }
@@ -101,258 +72,92 @@
             100% { opacity: 0; transform: translate(10px, -35px) scale(1); }
         }
         .anim-plus-one {
-            position: absolute;
-            left: 50%;
-            top: 0;
-            font-size: 18px;
-            font-weight: 900;
-            pointer-events: none;
-            animation: floatUp 1.2s ease-out forwards;
-            z-index: 100;
+            position: absolute; left: 50%; top: 0; font-size: 18px; font-weight: 900;
+            pointer-events: none; animation: floatUp 1.2s ease-out forwards; z-index: 100;
         }
 
-        /* Permanent Map Labels for Tokens */
-        .token-label {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            pointer-events: none !important;
-        }
+        .token-label { background: transparent !important; border: none !important; box-shadow: none !important; pointer-events: none !important; }
         .token-label::before { display: none !important; }
-
-        /* Zoom based visibility for tokens */
-        .hide-tokens .token-label {
-            opacity: 0 !important;
-            visibility: hidden !important;
-        }
-        .token-label {
-            transition: opacity 0.2s ease, visibility 0.2s ease;
-        }
+        .hide-tokens .token-label { opacity: 0 !important; visibility: hidden !important; }
 
         #loader, #login-screen { transition: opacity 0.4s ease, visibility 0.4s; }
-        
-        /* Custom Scrollbars */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
-        /* Mobile specific overrides */
-        @media (max-width: 640px) {
-            .leaflet-control-zoom { display: none !important; }
-        }
+        @media (max-width: 640px) { .leaflet-control-zoom { display: none !important; } }
     </style>
 </head>
 <body class="bg-slate-50 relative text-slate-800">
 
-    <!-- Login/Register Screen Overlay -->
+    <!-- Screen 1: Login -->
     <div id="login-screen" class="absolute inset-0 z-[5000] bg-slate-100/90 backdrop-blur-md flex flex-col items-center justify-center p-4">
         <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-xl max-w-sm w-full text-center relative">
-            <h2 class="text-4xl font-black text-slate-800 mb-2 uppercase">VENI BIERI VICI</h2>
-            <p class="text-slate-500 text-sm mb-6">Welcome to Strava for part-time Alcoholics. Drink beers, claim Gemeinden and conquer Cantons to gain control of the whole Swiss map.</p>
-            
+            <h1 class="text-4xl font-black text-slate-800 mb-2 uppercase tracking-tighter">VENI BIERI VICI</h1>
+            <p class="text-slate-500 text-sm mb-6">Welcome to Strava for part-time Alcoholics. Drink beers, claim Gemeinden and conquer Cantons to control the whole Swiss map.</p>
             <div id="db-status" class="text-xs font-bold text-blue-500 mb-4 animate-pulse">Connecting to live map...</div>
-
             <form id="login-form" class="flex flex-col gap-4">
                 <input type="text" id="login-input" placeholder="Player Name" required autocomplete="off" disabled
-                       class="w-full bg-slate-50 border border-slate-300 text-slate-800 px-4 py-3 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-semibold placeholder:font-normal placeholder:text-slate-400 disabled:opacity-50">
-                <button type="submit" id="btn-login-submit" disabled class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-600/30 disabled:opacity-50 disabled:cursor-not-allowed">
+                       class="w-full bg-slate-50 border border-slate-300 text-slate-800 px-4 py-3 rounded-lg focus:outline-none focus:border-blue-500 transition-all font-semibold placeholder:font-normal placeholder:text-slate-400 disabled:opacity-50">
+                <button type="submit" id="btn-login-submit" disabled class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-600/30 disabled:opacity-50">
                     Register
                 </button>
             </form>
         </div>
-        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v2.9</div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v4.2 STABLE</div>
     </div>
 
-    <!-- Tutorial/Rules Modal -->
+    <!-- Screen 2: Rules -->
     <div id="tutorial-modal" class="hidden absolute inset-0 z-[4800] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center px-4 transition-opacity">
         <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col transform transition-all text-center relative">
             <button onclick="document.getElementById('tutorial-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
             </button>
-
-            <h3 class="text-2xl font-black text-slate-800 mb-4 shrink-0 uppercase tracking-tight">VENI BIERI VICI! 🍻</h3>
-            
+            <h2 class="text-2xl font-black text-slate-800 mb-4 shrink-0 uppercase tracking-tight">VENI BIERI VICI! 🍻</h2>
             <div class="text-slate-600 text-sm space-y-4 mb-8 text-left overflow-y-auto pr-2 custom-scrollbar">
                 <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl">
-                    <p class="font-bold text-blue-700 mb-2">📢 Official WhatsApp Group</p>
-                    <p class="mb-3">Join the community and verify your claims!</p>
-                    <a href="https://chat.whatsapp.com/L76IiJiVUBDESEseDmTKko?mode=gi_t" target="_blank" class="inline-block bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold text-xs hover:bg-emerald-700 transition-colors">
-                        Join WhatsApp Group
-                    </a>
+                    <p class="font-bold text-blue-700 mb-2 uppercase text-[10px] tracking-widest">Official Group</p>
+                    <a href="https://chat.whatsapp.com/L76IiJiVUBDESEseDmTKko?mode=gi_t" target="_blank" class="inline-block bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold text-xs hover:bg-emerald-700 transition-colors">Join WhatsApp Group</a>
                 </div>
-
-                <p><strong>The Goal:</strong> Claim & conquer Gemeinde territories to control the most Cantons throughout Switzerland.</p>
-                
-                <div class="space-y-4">
-                    <div>
-                        <p class="font-black text-slate-800 uppercase text-[10px] tracking-widest mb-2">Logging Rules</p>
-                        <ul class="list-disc pl-5 space-y-2 text-slate-600">
-                            <li><strong class="text-slate-800">Only beers</strong> count. Wine and other beverages are not allowed.</li>
-                            <li>Log your beer <strong class="text-slate-800">exactly when you finish it</strong>. Logging past beers is strictly forbidden.</li>
-                            <li>Beers consumed in <strong class="text-slate-800">moving vehicles</strong> (trains, buses, cars) cannot be logged.</li>
-                            <li>Each beer is worth exactly <strong class="text-slate-800">1 token</strong>, regardless of size or if it's non-alcoholic.</li>
-                            <li>Tap <strong class="text-slate-800">"Drink Beer Here"</strong> to place a token in your current Gemeinde.</li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <p class="font-black text-slate-800 uppercase text-[10px] tracking-widest mb-2">How the Game Works</p>
-                        <ul class="list-disc pl-5 space-y-2 text-slate-600">
-                            <li>Be the person with the most tokens in a Gemeinde to <strong class="text-slate-800">claim it</strong> 🚩.</li>
-                            <li>Control the largest area through claimed Gemeinden within a Canton to <strong class="text-slate-800">conquer the entire Canton</strong> 🏆.</li>
-                            <li>Conquer the most Cantons throughout Switzerland to <strong class="text-slate-800">move up the Leaderboard</strong> 🥇.</li>
-                        </ul>
-                    </div>
+                <div>
+                    <p class="font-black text-slate-800 uppercase text-[10px] tracking-widest mb-2">Logging Rules</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>Only beers</strong> count. Wine and other beverages are not allowed.</li>
+                        <li>Log your beer <strong>exactly when you finish it</strong>. Back-logging previous drinks is not allowed.</li>
+                        <li>Beers drunk in <strong>moving vehicles</strong> (trains, buses, cars) are not allowed to be logged.</li>
+                        <li>Each beer is worth <strong>exactly 1 token</strong>, regardless of size or alcohol content.</li>
+                    </ul>
                 </div>
-
-                <p class="pt-2 italic border-t border-slate-100">Keep an eye on the Leaderboard and watch out for other players taking your territory!</p>
+                <div>
+                    <p class="font-black text-slate-800 uppercase text-[10px] tracking-widest mb-2">How it Works</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li>Most tokens in a Gemeinde 🚩 <strong>claims it</strong>.</li>
+                        <li>Most area in a Canton 🏆 <strong>conquers the Canton</strong>.</li>
+                        <li>Most Cantons moves you up the Leaderboard 🥇.</li>
+                    </ul>
+                </div>
             </div>
-            
-            <button id="btn-close-tutorial" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-md shadow-blue-600/30 shrink-0">
-                Let's Play!
-            </button>
+            <button id="btn-close-tutorial" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-md shadow-blue-600/30 shrink-0">Let's Play!</button>
         </div>
     </div>
 
-    <!-- Replay Overlay -->
-    <div id="replay-overlay" class="hidden absolute inset-0 z-[4500] pointer-events-none flex flex-col items-center justify-end pb-24">
-        <button id="btn-skip-replay" class="mb-4 bg-slate-700 hover:bg-slate-600 text-slate-200 px-6 py-2.5 rounded-full font-bold text-sm transition-colors shadow-lg pointer-events-auto border border-slate-600 active:scale-95">
-            Skip to Present
-        </button>
-        <div class="bg-slate-900/95 backdrop-blur-md p-4 rounded-2xl shadow-2xl pointer-events-auto text-center border border-slate-700 w-11/12 max-w-sm shadow-blue-900/20">
-            <p class="text-white font-bold mb-3 flex items-center justify-center gap-2 text-sm border-b border-slate-700 pb-3">
-                <span class="animate-spin rounded-full h-4 w-4 border-2 border-slate-400 border-t-white"></span>
-                Replaying missed actions...
-            </p>
-            <div id="replay-current-action" class="h-8 flex items-center justify-center overflow-hidden px-2 rounded-lg bg-slate-800 border border-slate-700">
-                <span class="text-slate-400 text-xs italic">Loading...</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="hidden absolute inset-0 z-[4000] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center px-4 transition-opacity">
-        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full transform transition-all relative">
-            <button id="btn-close-settings" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-            
-            <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2 uppercase">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1-1-1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-                Settings
-            </h3>
-
-            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-2">Player Profile</p>
-            <div class="flex items-center gap-3 mb-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
-                <div id="profile-color" class="w-5 h-5 rounded-full shadow-sm border-2 border-white"></div>
-                <span id="profile-name" class="font-bold text-base text-slate-800 truncate"></span>
-            </div>
-            
-            <div class="flex flex-col gap-3 relative">
-                <button id="btn-show-rules" class="w-full py-3 text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors border border-blue-200 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                    How to Play & Group Chat
-                </button>
-                <button id="btn-logout" class="w-full py-3 text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors border border-slate-200 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-                    Log Out
-                </button>
-                
-                <div class="relative w-full">
-                    <button id="btn-undo" class="w-full py-3 text-sm font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-xl transition-all border border-amber-200 flex items-center justify-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
-                        Undo Last beer
-                    </button>
-                    <!-- Undo Hint -->
-                    <div id="undo-hint" class="hidden absolute left-1/2 -translate-x-1/2 -top-10 bg-amber-500 text-white text-[10px] font-black py-1 px-3 rounded-full whitespace-nowrap shadow-lg animate-bounce">
-                        <div class="absolute w-2 h-2 bg-amber-500 rotate-45 left-1/2 -translate-x-1/2 -bottom-1"></div>
-                        here you can undo actions
-                    </div>
-                </div>
-
-                <button id="btn-delete" class="w-full py-3 text-sm font-bold text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition-colors border border-red-200 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                    Delete Account & Data
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Player Stats Modal -->
-    <div id="player-stats-modal" class="hidden absolute inset-0 z-[4000] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center px-4 transition-opacity">
-        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full transform transition-all relative">
-            <button onclick="document.getElementById('player-stats-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-            
-            <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                <div id="stat-modal-color" class="w-4 h-4 rounded-full border-2 border-white shadow-sm"></div>
-                <span id="stat-modal-name">Player Name</span>
-            </h3>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
-                    <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Cantons Owned</p>
-                    <p class="text-2xl font-black text-slate-800" id="stat-modal-cantons">0</p>
-                </div>
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
-                    <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Gemeinden Owned</p>
-                    <p class="text-2xl font-black text-slate-800" id="stat-modal-gemeinden">0</p>
-                </div>
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
-                    <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Total Tokens</p>
-                    <p class="text-2xl font-black text-slate-800" id="stat-modal-tokens">0</p>
-                </div>
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
-                    <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Total Area</p>
-                    <p class="text-2xl font-black text-slate-800" id="stat-modal-area">0</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Top Left Controls Group -->
+    <!-- UI Overlay: Top Controls -->
     <div class="absolute top-4 left-4 sm:left-6 sm:top-6 z-[2000] flex gap-2 pointer-events-none">
-        <button id="btn-settings" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors pointer-events-auto active:scale-95 flex items-center justify-center shrink-0 aspect-square" title="Player Settings">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        <button id="btn-settings" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors pointer-events-auto active:scale-95 flex items-center justify-center shrink-0 aspect-square" title="Settings">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1-1-1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
-
-        <button id="btn-toggle-view" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-blue-600 hover:text-blue-700 transition-colors pointer-events-auto active:scale-95 flex items-center justify-center shrink-0 aspect-square" title="Toggle Map View">
+        <button id="btn-toggle-view" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-blue-600 hover:text-blue-700 transition-colors pointer-events-auto active:scale-95 flex items-center justify-center shrink-0 aspect-square" title="Toggle View">
             <svg id="icon-view-gem" class="shrink-0" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
             <svg id="icon-view-can" class="hidden shrink-0" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l3-3 6 3 9-3v12l-9 3-6-3-3 3V6z"/><path d="M12 6v12"/><path d="M6 3v12"/><path d="M18 9v12"/></svg>
         </button>
     </div>
 
-    <!-- Bottom Center Controls (GPS & Activity Log Stack) -->
-    <div class="absolute bottom-6 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[2000] sm:w-80 flex flex-col gap-3 pointer-events-none" style="padding-bottom: max(0px, env(safe-area-inset-bottom, 0px));">
-        <!-- GPS Button -->
-        <button id="btn-gps-token" class="w-full bg-slate-400 hover:bg-slate-500 text-white py-3.5 px-4 rounded-2xl shadow-lg border border-slate-500 font-black tracking-wide pointer-events-auto transition-all active:scale-95" title="Drink Beer & Place Token">
-            Drink Beer Here
-        </button>
-        
-        <!-- Activity Log -->
-        <div id="activity-box" class="w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 overflow-hidden pointer-events-auto flex flex-col transition-all duration-300 h-14">
-            <div id="activity-header" class="flex-shrink-0 h-14 px-4 flex items-center justify-between cursor-pointer border-b border-transparent transition-colors hover:bg-slate-50 group">
-                <div id="activity-latest" class="truncate text-sm text-slate-600 flex items-center gap-2">
-                    <span class="text-slate-400 italic">No recent activity</span>
-                </div>
-                <svg id="activity-toggle-icon" class="text-slate-400 group-hover:text-slate-600 transition-transform duration-300 shrink-0 ml-2" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
-            </div>
-            <div id="activity-list" class="flex-1 overflow-y-auto p-2 flex flex-col gap-1.5 opacity-0 transition-opacity"></div>
-        </div>
-    </div>
-
-    <!-- Toast Notification System -->
-    <div id="toast" class="fixed top-24 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl font-medium text-sm transition-all duration-300 transform -translate-y-20 opacity-0 z-[6000] pointer-events-none flex items-center gap-2 whitespace-nowrap">
-        <span id="toast-msg">Notification</span>
-    </div>
-
-    <!-- Leaderboard Top Right -->
+    <!-- UI Overlay: Leaderboard (Top Right) -->
     <div class="absolute top-4 right-4 sm:right-6 sm:top-6 z-[2000] w-64 sm:w-80 pointer-events-none flex flex-col gap-3">
         <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 p-4 pointer-events-auto flex flex-col max-h-[50vh]">
             <div id="leaderboard-header" class="shrink-0 flex items-center justify-between cursor-pointer group uppercase">
                 <h3 class="font-black text-slate-800 flex items-center gap-1.5 uppercase">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> 
                     Leaderboard
                 </h3>
                 <div class="flex items-center gap-2">
@@ -360,35 +165,111 @@
                     <svg id="leaderboard-toggle-icon" class="text-slate-400 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </div>
             </div>
-            
-            <div id="leaderboard" class="flex-1 overflow-y-auto flex flex-col"></div>
+            <div id="leaderboard" class="flex-1 overflow-y-auto flex flex-col custom-scrollbar"></div>
+        </div>
+    </div>
+
+    <!-- UI Overlay: Action & Log -->
+    <div class="absolute bottom-6 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 z-[2000] sm:w-80 flex flex-col gap-3 pointer-events-none" style="padding-bottom: max(0px, env(safe-area-inset-bottom, 0px));">
+        <button id="btn-gps-token" class="w-full bg-slate-400 hover:bg-slate-500 text-white py-3.5 px-4 rounded-2xl shadow-lg border border-slate-500 font-black tracking-wide pointer-events-auto transition-all active:scale-95">Drink Beer Here</button>
+        <div id="activity-box" class="w-full bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-slate-200 overflow-hidden pointer-events-auto flex flex-col transition-all duration-300 h-14">
+            <div id="activity-header" class="flex-shrink-0 h-14 px-4 flex items-center justify-between cursor-pointer border-b border-transparent group">
+                <div id="activity-latest" class="truncate text-sm text-slate-600 flex items-center gap-2">
+                    <span class="text-slate-400 italic">Syncing activity...</span>
+                </div>
+                <svg id="activity-toggle-icon" class="text-slate-400 group-hover:text-slate-600 transition-transform duration-300 shrink-0 ml-2" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            </div>
+            <div id="activity-list" class="flex-1 overflow-y-auto p-2 flex flex-col gap-1.5 opacity-0 transition-opacity custom-scrollbar"></div>
+        </div>
+    </div>
+
+    <!-- UI Overlay: Settings Modal -->
+    <div id="settings-modal" class="hidden absolute inset-0 z-[4000] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center px-4 transition-opacity">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full transform transition-all relative text-center">
+            <button id="btn-close-settings" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <h3 class="text-xl font-bold text-slate-800 mb-6 uppercase tracking-tight">Settings</h3>
+            <div class="flex items-center gap-3 mb-6 p-4 bg-slate-50 rounded-xl border border-slate-200 text-left">
+                <div id="profile-color" class="w-5 h-5 rounded-full shadow-sm border-2 border-white"></div>
+                <span id="profile-name" class="font-bold text-base text-slate-800 truncate"></span>
+            </div>
+            <div class="flex flex-col gap-3 relative">
+                <button id="btn-show-rules" class="w-full py-3 text-sm font-bold text-blue-600 bg-blue-50 border border-blue-200 rounded-xl uppercase tracking-wide">Rules & Group Chat</button>
+                <button id="btn-logout" class="w-full py-3 text-sm font-bold text-slate-600 bg-slate-100 border border-slate-200 rounded-xl uppercase tracking-wide">Log Out</button>
+                <div class="relative w-full">
+                    <button id="btn-undo" class="w-full py-3 text-sm font-bold text-amber-600 bg-amber-50 border border-amber-200 rounded-xl uppercase tracking-wide">Undo Last Beer</button>
+                    <div id="undo-hint" class="hidden absolute left-1/2 -translate-x-1/2 -top-10 bg-amber-500 text-white text-[10px] font-black py-1 px-3 rounded-full whitespace-nowrap shadow-lg animate-bounce">
+                        here you can undo actions
+                    </div>
+                </div>
+                <button id="btn-delete" class="w-full py-3 text-sm font-bold text-red-500 bg-red-50 border border-red-200 rounded-xl uppercase tracking-wide">Delete Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UI Overlay: Replay -->
+    <div id="replay-overlay" class="hidden absolute inset-0 z-[4500] pointer-events-none flex flex-col items-center justify-end pb-24">
+        <button id="btn-skip-replay" class="mb-4 bg-slate-700 hover:bg-slate-600 text-slate-200 px-6 py-2.5 rounded-full font-bold text-sm transition-colors shadow-lg pointer-events-auto border border-slate-600 active:scale-95 uppercase tracking-wide">Skip Replay</button>
+        <div class="bg-slate-900/95 backdrop-blur-md p-4 rounded-2xl shadow-2xl pointer-events-auto text-center border border-slate-700 w-11/12 max-w-sm shadow-blue-900/20">
+            <p class="text-white font-bold mb-3 flex items-center justify-center gap-2 text-sm border-b border-slate-700 pb-3 uppercase tracking-wider">
+                <span class="animate-spin rounded-full h-4 w-4 border-2 border-slate-400 border-t-white"></span>
+                Recapping missed drinks...
+            </p>
+            <div id="replay-current-action" class="h-8 flex items-center justify-center overflow-hidden px-2 rounded-lg bg-slate-800 border border-slate-700 text-xs text-white">
+                <span class="text-slate-400 italic">Syncing...</span>
+            </div>
         </div>
     </div>
 
     <!-- Loading Screen -->
     <div id="loader" class="absolute inset-0 bg-slate-50 z-[6000] flex flex-col items-center justify-center">
         <div class="animate-spin rounded-full h-14 w-14 border-4 border-slate-200 border-t-blue-500 mb-6"></div>
-        <p id="loader-text" class="text-slate-500 font-medium animate-pulse">Loading map data...</p>
+        <p id="loader-text" class="text-slate-500 font-medium animate-pulse">Initializing Switzerland...</p>
     </div>
 
-    <!-- The Map Container -->
+    <!-- Player Stats Modal -->
+    <div id="player-stats-modal" class="hidden absolute inset-0 z-[4000] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center px-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full transform transition-all relative">
+            <button onclick="document.getElementById('player-stats-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <div id="stat-modal-color" class="w-4 h-4 rounded-full border-2 border-white shadow-sm"></div>
+                <span id="stat-modal-name"></span>
+            </h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center"><p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Cantons Owned</p><p class="text-2xl font-black text-slate-800" id="stat-modal-cantons">0</p></div>
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center"><p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Gemeinden Owned</p><p class="text-2xl font-black text-slate-800" id="stat-modal-gemeinden">0</p></div>
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center"><p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Total Tokens</p><p class="text-2xl font-black text-slate-800" id="stat-modal-tokens">0</p></div>
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center"><p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Total Area</p><p class="text-2xl font-black text-slate-800" id="stat-modal-area">0</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Message Area -->
+    <div id="toast" class="fixed top-24 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl font-medium text-sm transition-all duration-300 transform -translate-y-20 opacity-0 z-[6000] pointer-events-none flex items-center gap-2 whitespace-nowrap">
+        <span id="toast-msg"></span>
+    </div>
+
+    <!-- Map Container -->
     <div id="map"></div>
 
-    <!-- FIREBASE INTEGRATION SCRIPT -->
+    <!-- FIREBASE & CORE APP LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ==========================================
-        // 1. STATE & VARIABLES
+        // 1. GLOBAL STATE & GLOBALS
         // ==========================================
-        const VERSION = "v2.9";
+        const VERSION = "v4.2";
         const PALETTE = ['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16'];
         
+        let map;
         let registeredUsers = {};
         let currentUser = null; 
-        
         let currentView = 'gemeinde'; 
         let isLeaderboardExpanded = false;
         let isActivityExpanded = false;
@@ -402,26 +283,30 @@
         let rawCantonData = null;
         let rawGemeindeData = null;
         let gemToCantonMap = {}; 
-
         let tokensState = {};
         let activityLog = [];
         let tokenHistory = [];
-        
         let gemeindeOwners = {}; 
         let cantonStats = {}; 
 
+        let gemeindeGeoJsonLayer;
+        let cantonBordersGeoJsonLayer;
+        let cantonGeoJsonLayer;
+
+        let gemeindeLayerGroup;
+        let cantonBordersLayerGroup; 
+        let cantonLayerGroup;
+
         // ==========================================
-        // 2. DOM ELEMENTS
+        // 2. DOM ELEMENT CACHE
         // ==========================================
         const loginScreen = document.getElementById('login-screen');
         const loginForm = document.getElementById('login-form');
         const loginInput = document.getElementById('login-input');
         const btnLoginSubmit = document.getElementById('btn-login-submit');
         const dbStatus = document.getElementById('db-status');
-        
         const tutorialModal = document.getElementById('tutorial-modal');
         const btnCloseTutorial = document.getElementById('btn-close-tutorial');
-        
         const settingsModal = document.getElementById('settings-modal');
         const btnSettings = document.getElementById('btn-settings');
         const btnCloseSettings = document.getElementById('btn-close-settings');
@@ -432,7 +317,6 @@
         const undoHint = document.getElementById('undo-hint');
         const btnDelete = document.getElementById('btn-delete');
         const btnShowRules = document.getElementById('btn-show-rules');
-        
         const btnToggleView = document.getElementById('btn-toggle-view');
         const iconViewGem = document.getElementById('icon-view-gem');
         const iconViewCan = document.getElementById('icon-view-can');
@@ -441,63 +325,58 @@
         const leaderboard = document.getElementById('leaderboard');
         const loader = document.getElementById('loader');
         const loaderText = document.getElementById('loader-text');
-
         const activityBox = document.getElementById('activity-box');
         const activityHeader = document.getElementById('activity-header');
         const activityLatest = document.getElementById('activity-latest');
         const activityList = document.getElementById('activity-list');
         const activityToggleIcon = document.getElementById('activity-toggle-icon');
-
         const replayOverlay = document.getElementById('replay-overlay');
         const btnSkipReplay = document.getElementById('btn-skip-replay');
         const btnGpsToken = document.getElementById('btn-gps-token');
 
         // ==========================================
-        // 3. MAP INITIALIZATION
+        // 3. UTILITIES (Dynamic Data Extractors)
         // ==========================================
-        const map = L.map('map', {
-            center: [46.8182, 8.2275], zoom: 8, minZoom: 7, maxZoom: 13, 
-            zoomControl: false, attributionControl: false, 
-            maxBounds: [[45.5, 5.5], [48.0, 11.0]], maxBoundsViscosity: 0.8
-        });
-        L.control.zoom({ position: 'bottomright' }).addTo(map);
+        function getStableGeoId(f, prefix) {
+            try {
+                let coords = f.geometry.coordinates.flat(Infinity);
+                let sum = 0;
+                for (let i=0; i<Math.min(coords.length, 20); i++) sum += coords[i];
+                return prefix + "_" + Math.round(sum * 100000);
+            } catch(e) {
+                return prefix + "_" + Math.random().toString(36).substring(2, 9);
+            }
+        }
 
-        map.on('zoomend', () => {
-            if (map.getZoom() < 10) map.getContainer().classList.add('hide-tokens');
-            else map.getContainer().classList.remove('hide-tokens');
-        });
-        if (map.getZoom() < 10) map.getContainer().classList.add('hide-tokens');
+        function extProp(f, keys, fallback) {
+            if (!f || !f.properties) return fallback;
+            for (let k of keys) {
+                if (f.properties[k] !== undefined && f.properties[k] !== null) {
+                    let val = f.properties[k];
+                    return String(Array.isArray(val) ? val[0] : val);
+                }
+            }
+            return fallback;
+        }
 
-        const gemeindeLayerGroup = L.layerGroup().addTo(map);
-        const cantonBordersLayerGroup = L.layerGroup().addTo(map); 
-        const cantonLayerGroup = L.layerGroup(); 
-
-        let gemeindeGeoJsonLayer;
-        let cantonBordersGeoJsonLayer;
-        let cantonGeoJsonLayer;
-
-        // ==========================================
-        // 4. UTILITY FUNCTIONS
-        // ==========================================
-        function getGemeindeName(feature) { return feature.properties.gem_name || feature.properties.name || feature.properties.NAME || "Unknown Gemeinde"; }
-        function getGemeindeId(feature) { return String(feature.properties.gem_no || feature.properties.id || feature.properties.BFS_NUMMER || getGemeindeName(feature)); }
-        function getCantonName(feature) { return feature.properties.kan_name || feature.properties.name || feature.properties.NAME || "Unknown Canton"; }
-        function getCantonId(feature) { return String(feature.properties.kan_no || feature.properties.id || getCantonName(feature)); }
-
-        function getUser(userId) { return registeredUsers[userId] || { id: userId, name: "Deleted Player", color: "#94a3b8" }; }
+        const getUser = (userId) => registeredUsers[userId] || { id: userId, name: "Deleted Player", color: "#94a3b8" };
+        
+        // Bulletproof ID and Name extractors
+        const getGemeindeId = (f) => extProp(f, ['gem_no', 'com_code', 'com_id', 'BFS_NUMMER', 'id', 'gem_id'], getStableGeoId(f, 'gem'));
+        const getGemeindeName = (f) => extProp(f, ['gem_name', 'com_name', 'name', 'NAME', 'gemeindename', 'nom_comm'], 'Unknown Gemeinde');
+        const getCantonId = (f) => extProp(f, ['kan_no', 'ste_code', 'kan_code', 'id', 'kan_id'], getStableGeoId(f, 'can'));
+        const getCantonName = (f) => extProp(f, ['kan_name', 'ste_name', 'name', 'NAME', 'kantonname', 'nom_cant'], 'Unknown Canton');
 
         function darkenHex(hex, percent = 35) {
-            if(!hex || hex.length < 7) return '#475569';
-            let r = parseInt(hex.substring(1,3), 16); let g = parseInt(hex.substring(3,5), 16); let b = parseInt(hex.substring(5,7), 16);
-            r = parseInt(r * (100 - percent) / 100); g = parseInt(g * (100 - percent) / 100); b = parseInt(b * (100 - percent) / 100);
-            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).padStart(6, '0');
+            let r = parseInt(hex.substring(1,3), 16), g = parseInt(hex.substring(3,5), 16), b = parseInt(hex.substring(5,7), 16);
+            r = Math.floor(r * (100 - percent) / 100); g = Math.floor(g * (100 - percent) / 100); b = Math.floor(b * (100 - percent) / 100);
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
         }
 
         function lightenHex(hex, percent = 75) {
-            if(!hex || hex.length < 7) return '#f8fafc';
-            let r = parseInt(hex.substring(1,3), 16); let g = parseInt(hex.substring(3,5), 16); let b = parseInt(hex.substring(5,7), 16);
+            let r = parseInt(hex.substring(1,3), 16), g = parseInt(hex.substring(3,5), 16), b = parseInt(hex.substring(5,7), 16);
             r = Math.round(r + (255 - r) * percent / 100); g = Math.round(g + (255 - g) * percent / 100); b = Math.round(b + (255 - b) * percent / 100);
-            return "#" + ( (1 << 24) + (r << 16) + (g << 8) + b ).toString(16).slice(1).padStart(6, '0');
+            return "#" + ( (1 << 24) + (r << 16) + (g << 8) + b ).toString(16).slice(1);
         }
 
         function showToast(message, isError = false) {
@@ -509,293 +388,149 @@
             setTimeout(() => { toast.classList.add('-translate-y-20', 'opacity-0'); }, 4000);
         }
 
+        // ==========================================
+        // 4. SMART CACHE & RENDER ENGINE
+        // ==========================================
+        function updateLayerStyle(layer, newStyle) {
+            const styleStr = JSON.stringify(newStyle);
+            if (layer._cachedStyleStr !== styleStr) {
+                layer.setStyle(newStyle);
+                layer._cachedStyleStr = styleStr;
+            }
+        }
+
+        const getGemeindeStyle = (feature) => {
+            const id = getGemeindeId(feature); const info = gemeindeOwners[id]; const ownerId = info?.ownerId; const isTied = !ownerId && info?.maxTokens > 0;
+            let color = '#cbd5e1'; if (ownerId) color = getUser(ownerId).color; else if (isTied) color = '#94a3b8'; 
+            return { fillColor: color, fillOpacity: ownerId ? 0.75 : (isTied ? 0.6 : 0.4), color: activePopupGemId === id ? '#3b82f6' : '#94a3b8', weight: activePopupGemId === id ? 3 : 0.5 };
+        };
+
+        const getCantonStyle = (feature) => {
+            const id = getCantonId(feature); const ownerId = cantonStats[id]?.ownerId;
+            return { fillColor: ownerId ? getUser(ownerId).color : '#cbd5e1', fillOpacity: ownerId ? 0.85 : 0.4, color: activePopupCanId === id ? '#3b82f6' : '#475569', weight: activePopupCanId === id ? 4 : 2 };
+        };
+
+        function updateGemeindeLabel(layer, showPlusOne = false, pColor = null) {
+            const id = getGemeindeId(layer.feature); const info = gemeindeOwners[id];
+            if (info && info.maxTokens > 0) {
+                if (!showPlusOne && layer._cachedTokens === info.maxTokens && layer._cachedOwner === info.ownerId) return;
+
+                let color = info.ownerId ? lightenHex(getUser(info.ownerId).color, 75) : '#cbd5e1';
+                let p1color = pColor || (info.ownerId ? getUser(info.ownerId).color : '#cbd5e1');
+                let plusOneHtml = showPlusOne ? `<div class="anim-plus-one" style="color: ${p1color}; text-shadow: 0px 0px 4px #ffffff;">+1</div>` : '';
+                const labelHtml = `<div style="color: ${color}; font-weight: 900; font-size: 15px; position: relative;">${info.maxTokens}${plusOneHtml}</div>`;
+                
+                if (!layer.getTooltip()) layer.bindTooltip(labelHtml, { permanent: true, direction: "center", className: "token-label" }); 
+                else layer.setTooltipContent(labelHtml);
+                
+                layer._cachedTokens = info.maxTokens; layer._cachedOwner = info.ownerId;
+            } else if (layer.getTooltip()) {
+                layer.unbindTooltip();
+                layer._cachedTokens = 0; layer._cachedOwner = null;
+            }
+        }
+
+        function refreshMapVisuals() {
+            if (gemeindeGeoJsonLayer) { 
+                gemeindeGeoJsonLayer.eachLayer(l => { updateLayerStyle(l, getGemeindeStyle(l.feature)); updateGemeindeLabel(l); }); 
+            }
+            if (cantonGeoJsonLayer) { 
+                cantonGeoJsonLayer.eachLayer(l => { updateLayerStyle(l, getCantonStyle(l.feature)); }); 
+            }
+        }
+
+        // ==========================================
+        // 5. POPUP HTML GENERATORS
+        // ==========================================
+        function generateGemeindePopupContent(feature) {
+            const id = getGemeindeId(feature); const name = getGemeindeName(feature); const info = gemeindeOwners[id] || { ownerId: null };
+            const tokens = tokensState[id] || {}; const area = (turf.area(feature) / 1000000).toFixed(1);
+            let tokenRows = '';
+            Object.keys(tokens).sort((a,b) => tokens[b] - tokens[a]).forEach(pid => {
+                if (tokens[pid] > 0) tokenRows += `<div class="flex justify-between text-sm my-1"><span style="color:${getUser(pid).color}" class="font-bold">${getUser(pid).name}</span> <span>${tokens[pid]} token</span></div>`;
+            });
+            if (!tokenRows) tokenRows = '<div class="text-sm text-slate-500 italic my-2">No tokens placed</div>';
+            const ownerStr = info.ownerId ? `<span style="color:${getUser(info.ownerId).color}" class="font-bold">${getUser(info.ownerId).name}</span>` : (!info.ownerId && info.totalTokens > 0) ? `<span class="text-slate-500 font-bold">Contested (Tie)</span>` : '<span class="text-slate-400">Unclaimed</span>';
+            const safeGemId = id.replace(/'/g, "\\'");
+            const btnHTML = currentUser ? `<button onclick="window.placeToken('${safeGemId}')" class="mt-4 w-full py-2.5 px-3 rounded-lg text-sm font-bold text-white shadow-md active:scale-95 transition-all" style="background-color: ${currentUser.color};">Drink Beer Here</button>` : '';
+            return `<div class="border-b border-slate-200 pb-2 mb-2"><strong class="block text-lg mb-1 text-slate-800">${name}</strong><div class="text-xs text-slate-500 mb-0.5">Area: ${area} km²</div><div class="text-xs text-slate-500">Controlled By: ${ownerStr}</div></div><div><strong class="text-xs uppercase tracking-wider text-slate-400 mb-1 block">Tokens Placed</strong>${tokenRows}</div>${btnHTML}`;
+        }
+
+        function generateCantonPopupContent(feature) {
+            const id = getCantonId(feature); const name = getCantonName(feature); const stat = cantonStats[id] || { areas: {} };
+            let areaRows = '';
+            Object.keys(stat.areas).sort((a,b) => stat.areas[b] - stat.areas[a]).forEach(pid => {
+                if (stat.areas[pid] > 0) areaRows += `<div class="flex justify-between text-sm my-1"><span style="color:${getUser(pid).color}" class="font-bold">${getUser(pid).name}</span> <span>${stat.areas[pid].toFixed(1)} km²</span></div>`;
+            });
+            if (!areaRows) areaRows = '<div class="text-sm text-slate-500 italic my-2">No claims active</div>';
+            const ownerStr = stat.ownerId ? `<span style="color:${getUser(stat.ownerId).color}" class="font-bold">${getUser(stat.ownerId).name}</span>` : '<span class="text-slate-400">Unclaimed</span>';
+            return `<div class="border-b border-slate-200 pb-2 mb-2"><strong class="block text-xl mb-1 text-slate-800">${name}</strong><div class="text-sm text-slate-500">Controlled By: ${ownerStr}</div></div><div><strong class="text-xs uppercase tracking-wider text-slate-400 mb-1 block">Territorial Breakdown</strong>${areaRows}</div>`;
+        }
+
+        // ==========================================
+        // 6. UI UPDATERS
+        // ==========================================
         function updateUIForUser() {
             if (currentUser) {
                 btnGpsToken.style.backgroundColor = currentUser.color;
                 btnGpsToken.style.borderColor = darkenHex(currentUser.color, 20);
             } else {
-                btnGpsToken.style.backgroundColor = '#94a3b8'; // slate-400
-                btnGpsToken.style.borderColor = '#64748b'; // slate-500
-            }
-        }
-
-        // ==========================================
-        // 5. STYLING & POPUP CONTENT
-        // ==========================================
-        const getGemeindeStyle = (feature) => {
-            const id = getGemeindeId(feature);
-            const ownerInfo = gemeindeOwners[id];
-            const ownerId = ownerInfo?.ownerId;
-            const isTied = !ownerId && ownerInfo?.maxTokens > 0;
-            const isSelected = activePopupGemId === id;
-            
-            let color = '#cbd5e1'; 
-            if (ownerId) color = getUser(ownerId).color;
-            else if (isTied) color = '#94a3b8'; 
-            
-            return {
-                fillColor: color,
-                fillOpacity: ownerId ? 0.75 : (isTied ? 0.6 : 0.4),
-                color: isSelected ? '#3b82f6' : '#94a3b8', 
-                weight: isSelected ? 3 : 0.5
-            };
-        };
-
-        const getCantonStyle = (feature) => {
-            const id = getCantonId(feature);
-            const ownerId = cantonStats[id]?.ownerId;
-            const isSelected = activePopupCanId === id;
-            const color = ownerId ? getUser(ownerId).color : '#cbd5e1';
-
-            return {
-                fillColor: color,
-                fillOpacity: ownerId ? 0.85 : 0.4,
-                color: isSelected ? '#3b82f6' : '#475569',
-                weight: isSelected ? 4 : 2
-            };
-        };
-
-        function updateGemeindeLabel(layer, showPlusOne = false, pColor = null) {
-            const gemId = getGemeindeId(layer.feature);
-            const ownerInfo = gemeindeOwners[gemId];
-            
-            if (ownerInfo && ownerInfo.maxTokens > 0) {
-                let color = '#cbd5e1'; 
-                if (ownerInfo.ownerId) color = lightenHex(getUser(ownerInfo.ownerId).color, 75);
-                
-                let p1color = pColor || (ownerInfo.ownerId ? getUser(ownerInfo.ownerId).color : '#cbd5e1');
-                let plusOneHtml = showPlusOne ? `<div class="anim-plus-one" style="color: ${p1color}; text-shadow: 0px 0px 4px #ffffff, 0px 0px 2px #ffffff;">+1</div>` : '';
-                
-                const labelHtml = `<div style="color: ${color}; font-weight: 900; font-size: 15px; position: relative;">${ownerInfo.maxTokens}${plusOneHtml}</div>`;
-                
-                if (!layer.getTooltip()) layer.bindTooltip(labelHtml, { permanent: true, direction: "center", className: "token-label bg-transparent border-0 shadow-none text-center" });
-                else layer.setTooltipContent(labelHtml);
-            } else {
-                if (layer.getTooltip()) layer.unbindTooltip();
-            }
-        }
-
-        function generateGemeindePopupContent(feature) {
-            const gemId = getGemeindeId(feature);
-            const name = getGemeindeName(feature);
-            const ownerInfo = gemeindeOwners[gemId] || { ownerId: null };
-            const tokens = tokensState[gemId] || {};
-            const area = (turf.area(feature) / 1000000).toFixed(1);
-
-            let tokenRows = '';
-            Object.keys(tokens).sort((a,b) => tokens[b] - tokens[a]).forEach(pid => {
-                if (tokens[pid] > 0) {
-                    const p = getUser(pid);
-                    tokenRows += `<div class="flex justify-between text-sm my-1"><span style="color:${p.color}" class="font-bold">${p.name}</span> <span>${tokens[pid]} token</span></div>`;
-                }
-            });
-            if (!tokenRows) tokenRows = '<div class="text-sm text-slate-500 italic my-2">No tokens placed</div>';
-
-            const ownerUser = ownerInfo.ownerId ? getUser(ownerInfo.ownerId) : null;
-            const isTied = !ownerInfo.ownerId && ownerInfo.totalTokens > 0;
-            
-            let ownerStr = '<span class="text-slate-400">Unclaimed</span>';
-            if (ownerUser) ownerStr = `<span style="color:${ownerUser.color}" class="font-bold">${ownerUser.name}</span>`;
-            else if (isTied) ownerStr = `<span class="text-slate-500 font-bold">Contested (Tie)</span>`;
-            
-            const safeGemId = gemId.replace(/'/g, "\\'");
-            const btnHTML = currentUser ? `
-                <button onclick="window.placeToken('${safeGemId}')" class="mt-4 w-full py-2.5 px-3 rounded-lg text-sm font-bold text-white shadow-md active:scale-95 transition-all" style="background-color: ${currentUser.color}; box-shadow: 0 4px 14px 0 ${currentUser.color}40;">
-                    Drink Beer Here
-                </button>` : '';
-
-            return `
-                <div class="border-b border-slate-200 pb-2 mb-2">
-                    <strong class="block text-lg mb-1 text-slate-800">${name}</strong>
-                    <div class="text-xs text-slate-500 mb-0.5">Area: ${area} km²</div>
-                    <div class="text-xs text-slate-500">Controlled By: ${ownerStr}</div>
-                </div>
-                <div>
-                    <strong class="text-xs uppercase tracking-wider text-slate-400 mb-1 block">Tokens Placed</strong>
-                    ${tokenRows}
-                </div>
-                ${btnHTML}
-            `;
-        }
-
-        function generateCantonPopupContent(feature) {
-            const canId = getCantonId(feature);
-            const name = getCantonName(feature);
-            const stat = cantonStats[canId] || { areas: {} };
-            
-            let areaRows = '';
-            Object.keys(stat.areas).sort((a,b) => stat.areas[b] - stat.areas[a]).forEach(pid => {
-                if (stat.areas[pid] && stat.areas[pid] > 0) {
-                    const p = getUser(pid);
-                    areaRows += `<div class="flex justify-between text-sm my-1"><span style="color:${p.color}" class="font-bold">${p.name}</span> <span>${stat.areas[pid].toFixed(1)} km²</span></div>`;
-                }
-            });
-            if (!areaRows) areaRows = '<div class="text-sm text-slate-500 italic my-2">No claims active</div>';
-
-            const ownerUser = stat.ownerId ? getUser(stat.ownerId) : null;
-            const ownerStr = ownerUser ? `<span style="color:${ownerUser.color}" class="font-bold">${ownerUser.name}</span>` : '<span class="text-slate-400">Unclaimed</span>';
-
-            return `
-                <div class="border-b border-slate-200 pb-2 mb-2">
-                    <strong class="block text-xl mb-1 text-slate-800">${name}</strong>
-                    <div class="text-sm text-slate-500">Controlled By: ${ownerStr}</div>
-                </div>
-                <div>
-                    <strong class="text-xs uppercase tracking-wider text-slate-400 mb-1 block">Territorial Breakdown</strong>
-                    ${areaRows}
-                </div>
-            `;
-        }
-
-        // ==========================================
-        // 6. UI UPDATES & DOM MANIPULATION
-        // ==========================================
-        function refreshMapVisuals() {
-            if (gemeindeGeoJsonLayer) {
-                gemeindeGeoJsonLayer.eachLayer(l => {
-                    l.setStyle(getGemeindeStyle(l.feature));
-                    updateGemeindeLabel(l); 
-                    if (l.isPopupOpen()) l.setPopupContent(generateGemeindePopupContent(l.feature));
-                });
-            }
-            if (cantonGeoJsonLayer) {
-                cantonGeoJsonLayer.eachLayer(l => {
-                    l.setStyle(getCantonStyle(l.feature));
-                    if (l.isPopupOpen()) l.setPopupContent(generateCantonPopupContent(l.feature));
-                });
+                btnGpsToken.style.backgroundColor = '#94a3b8';
+                btnGpsToken.style.borderColor = '#64748b';
             }
         }
 
         function createActivityHtml(log, isDarkBg = false, showTime = false) {
-            const timeStr = showTime ? `<span class="text-slate-400 text-[10px] ml-auto shrink-0 pl-2">${new Date(log.timestamp).toLocaleString([], {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})}</span>` : '';
-
+            const timeStr = showTime ? `<span class="text-slate-400 text-[10px] ml-auto shrink-0 pl-2">${new Date(log.timestamp).toLocaleString([], {hour:'2-digit', minute:'2-digit'})}</span>` : '';
             if (log.type === 'system') return `<span class="text-slate-500 italic truncate w-full">${log.text}</span> ${timeStr}`;
-            
             const p = getUser(log.playerId);
-            const dot = `<div class="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm border border-slate-200" style="background-color: ${p.color}"></div>`;
+            const dot = `<div class="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm" style="background-color: ${p.color}"></div>`;
             const pName = `<span style="color: ${p.color}" class="font-bold">${p.name}</span>`;
-            
-            const textClass = isDarkBg ? "text-slate-300" : "text-slate-600";
-            const strongTextClass = isDarkBg ? "text-white" : "text-slate-800";
-
-            let content = '';
-            if (log.type === 'token') content = `${dot} <span class="truncate ${textClass}">${pName} 🍺 placed token in <b>${log.targetName}</b></span>`;
-            else if (log.type === 'claim_gem') content = `${dot} <span class="truncate ${textClass}">${pName} 🚩 claimed <b>${log.targetName}</b></span>`;
-            else if (log.type === 'conquer_gem' || log.type === 'takeover_gem') content = `${dot} <span class="truncate ${textClass}">${pName} 🚩 conquered <b>${log.targetName}</b></span>`;
-            else if (log.type === 'claim_can') content = `${dot} <span class="truncate ${strongTextClass}">${pName} 🏆 claimed <b>${log.targetName.toUpperCase()}</b></span>`;
-            else if (log.type === 'conquer_can' || log.type === 'takeover_can') content = `${dot} <span class="truncate ${strongTextClass}">${pName} 🏆 conquered <b>${log.targetName.toUpperCase()}</b></span>`;
-            
+            let content = log.type === 'token' ? `${dot} <span class="truncate">${pName} 🍺 in <b>${log.targetName}</b></span>` : `${dot} <span class="truncate">${pName} 🚩 <b>${log.targetName}</b></span>`;
             return content + timeStr;
         }
 
         function renderActivityBox(maxTimestamp = Date.now()) {
             const visibleLogs = activityLog.filter(a => a.timestamp <= maxTimestamp).slice(-50).reverse(); 
-            
             activityList.innerHTML = '';
-            
-            if (visibleLogs.length === 0) {
-                activityLatest.innerHTML = '<span class="text-slate-400 italic">No recent activity</span>';
-                return;
-            }
-
+            if (visibleLogs.length === 0) { activityLatest.innerHTML = '<span class="text-slate-400 italic">No recent activity</span>'; return; }
             activityLatest.innerHTML = createActivityHtml(visibleLogs[0], false, false);
-
             visibleLogs.forEach(log => {
-                const el = document.createElement('div');
-                el.className = "text-xs p-2 bg-slate-50 rounded-lg border border-slate-100 flex items-center gap-2 overflow-hidden whitespace-nowrap justify-between w-full";
-                el.innerHTML = createActivityHtml(log, false, true);
-                activityList.appendChild(el);
+                const el = document.createElement('div'); el.className = "text-xs p-2 bg-slate-50 rounded-lg border border-slate-100 flex items-center gap-2 overflow-hidden whitespace-nowrap justify-between w-full";
+                el.innerHTML = createActivityHtml(log, false, true); activityList.appendChild(el);
             });
         }
 
         function updateLeaderboard() {
             const scores = {};
-            Object.keys(registeredUsers).forEach(pid => {
-                if (registeredUsers[pid]) {
-                    scores[pid] = { cantons: 0, area: 0 };
-                }
-            });
-
+            Object.keys(registeredUsers).forEach(pid => { if (registeredUsers[pid]) scores[pid] = { cantons: 0, area: 0 }; });
             Object.values(cantonStats).forEach(stat => {
                 if (stat.ownerId && scores[stat.ownerId]) scores[stat.ownerId].cantons += 1;
                 Object.keys(stat.areas).forEach(pid => { if(scores[pid]) scores[pid].area += stat.areas[pid]; });
             });
-
-            const sortedPlayers = Object.keys(registeredUsers)
-                .filter(pid => registeredUsers[pid] !== null)
-                .sort((a, b) => {
-                    if (scores[b].cantons !== scores[a].cantons) return scores[b].cantons - scores[a].cantons;
-                    return scores[b].area - scores[a].area;
-                });
-
+            const sorted = Object.keys(registeredUsers).filter(pid => registeredUsers[pid]).sort((a, b) => (scores[b].cantons - scores[a].cantons) || (scores[b].area - scores[a].area));
             leaderboard.innerHTML = '';
             leaderboardHeader.classList.remove('border-b', 'border-slate-100', 'pb-2', 'mb-2');
-
-            if(sortedPlayers.length === 0) {
-                if (isLeaderboardExpanded) {
-                    leaderboardHeader.classList.add('border-b', 'border-slate-100', 'pb-2', 'mb-2');
-                    leaderboard.innerHTML = '<div class="text-xs text-slate-500 italic mt-2">No players active.</div>';
-                }
-                return;
-            }
-
-            const playersToShow = isLeaderboardExpanded ? sortedPlayers : [];
-            
             if (isLeaderboardExpanded) {
                 leaderboardHeader.classList.add('border-b', 'border-slate-100', 'pb-2', 'mb-2');
+                if (sorted.length === 0) leaderboard.innerHTML = '<div class="text-xs text-slate-500 italic mt-2 p-2">No players active.</div>';
+                sorted.forEach((pid, idx) => {
+                    const p = getUser(pid); const s = scores[pid];
+                    leaderboard.innerHTML += `<div onclick="window.showPlayerStats('${pid}')" class="flex items-center justify-between bg-slate-50 hover:bg-slate-100 cursor-pointer rounded-lg p-2 border border-slate-200 transition-colors group mb-1.5"><div class="flex items-center gap-2"><span class="text-xs font-black text-slate-400 w-3 text-right">${idx + 1}.</span><div class="w-3 h-3 rounded-full shrink-0" style="background-color: ${p.color}"></div><span class="text-sm font-bold text-slate-800 truncate max-w-[100px]">${p.name}</span></div><div class="text-right shrink-0"><span class="text-lg font-black text-slate-800">${s.cantons}</span></div></div>`;
+                });
             }
-
-            playersToShow.forEach((pid, index) => {
-                const p = getUser(pid); const s = scores[pid];
-                leaderboard.innerHTML += `
-                    <div onclick="window.showPlayerStats('${pid}')" class="flex items-center justify-between bg-slate-50 hover:bg-slate-100 cursor-pointer rounded-lg p-2 border border-slate-200 transition-colors group mb-1.5">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-black text-slate-400 w-3 text-right">${index + 1}.</span>
-                            <div class="w-3 h-3 rounded-full shrink-0" style="background-color: ${p.color}"></div>
-                            <span class="text-sm font-bold text-slate-800 truncate max-w-[90px]">${p.name}</span>
-                        </div>
-                        <div class="text-right flex items-baseline gap-2 shrink-0">
-                            <span class="text-lg font-black text-slate-800">${s.cantons}</span>
-                        </div>
-                    </div>
-                `;
-            });
         }
 
         window.showPlayerStats = function(pid) {
-            const p = getUser(pid);
-            let cantons = 0; let gemeinden = 0; let tokens = 0; let area = 0;
-
-            Object.values(cantonStats).forEach(stat => {
-                if (stat.ownerId === pid) cantons++;
-                if (stat.areas[pid]) area += stat.areas[pid];
-            });
-            Object.keys(tokensState).forEach(gemId => {
-                if (tokensState[gemId][pid] && tokensState[gemId][pid] > 0) {
-                    tokens += tokensState[gemId][pid];
-                }
-                if (gemeindeOwners[gemId]?.ownerId === pid) gemeinden++;
-            });
-
-            document.getElementById('stat-modal-name').innerText = p.name;
-            document.getElementById('stat-modal-color').style.backgroundColor = p.color;
-            document.getElementById('stat-modal-cantons').innerText = cantons;
-            document.getElementById('stat-modal-gemeinden').innerText = gemeinden;
-            document.getElementById('stat-modal-tokens').innerText = tokens;
-            document.getElementById('stat-modal-area').innerText = Math.round(area) + ' km²';
-            
+            const p = getUser(pid); let c = 0, g = 0, t = 0, a = 0;
+            Object.values(cantonStats).forEach(s => { if (s.ownerId === pid) c++; if (s.areas[pid]) a += s.areas[pid]; });
+            Object.keys(tokensState).forEach(id => { if (tokensState[id][pid] > 0) t += tokensState[id][pid]; if (gemeindeOwners[id]?.ownerId === pid) g++; });
+            document.getElementById('stat-modal-name').innerText = p.name; document.getElementById('stat-modal-color').style.backgroundColor = p.color;
+            document.getElementById('stat-modal-cantons').innerText = c; document.getElementById('stat-modal-gemeinden').innerText = g;
+            document.getElementById('stat-modal-tokens').innerText = t; document.getElementById('stat-modal-area').innerText = Math.round(a) + ' km²';
             document.getElementById('player-stats-modal').classList.remove('hidden');
             if (currentView !== 'canton') switchView('canton');
-
-            if (cantonGeoJsonLayer) {
-                cantonGeoJsonLayer.eachLayer(l => {
-                    const canId = getCantonId(l.feature);
-                    if (cantonStats[canId]?.ownerId === pid) {
-                        if (l._path) { l._path.classList.remove('anim-takeover'); void l._path.offsetWidth; l._path.classList.add('anim-takeover'); }
-                        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) l.bringToFront();
-                    }
-                });
-            }
+            if (cantonGeoJsonLayer) cantonGeoJsonLayer.eachLayer(l => { if (cantonStats[getCantonId(l.feature)]?.ownerId === pid) { if (l._path) { l._path.classList.remove('anim-takeover'); void l._path.offsetWidth; l._path.classList.add('anim-takeover'); } l.bringToFront(); } });
         };
 
         function switchView(view) {
@@ -804,125 +539,54 @@
                 btnToggleView.classList.add('text-blue-600'); btnToggleView.classList.remove('text-slate-500');
                 iconViewGem.classList.remove('hidden'); iconViewCan.classList.add('hidden');
                 map.addLayer(gemeindeLayerGroup); map.addLayer(cantonBordersLayerGroup); map.removeLayer(cantonLayerGroup);
-                if (gemeindeGeoJsonLayer) gemeindeGeoJsonLayer.eachLayer(l => l.setStyle(getGemeindeStyle(l.feature)));
+                refreshMapVisuals();
             } else {
                 btnToggleView.classList.remove('text-blue-600'); btnToggleView.classList.add('text-slate-500');
                 iconViewCan.classList.remove('hidden'); iconViewGem.classList.add('hidden');
                 map.addLayer(cantonLayerGroup); map.removeLayer(gemeindeLayerGroup); map.removeLayer(cantonBordersLayerGroup); 
-                if (cantonGeoJsonLayer) cantonGeoJsonLayer.eachLayer(l => l.setStyle(getCantonStyle(l.feature)));
+                refreshMapVisuals();
             }
         }
 
         // ==========================================
-        // 7. GAME ENGINE LOGIC
+        // 7. GAME LOGIC ENGINE
         // ==========================================
         function calculateGameState() {
-            gemeindeOwners = {};
-            cantonStats = {};
-
-            if (rawCantonData) {
-                rawCantonData.features.forEach(f => cantonStats[getCantonId(f)] = { ownerId: null, areas: {} });
-            }
-
-            if (rawGemeindeData) {
-                rawGemeindeData.features.forEach(gem => {
-                    const gemId = getGemeindeId(gem);
-                    const gemAreaSqKm = (turf.area(gem) / 1000000);
-                    const tokens = tokensState[gemId] || {};
-                    
-                    let maxTokens = 0; let currentOwner = null; let tie = false; let totalTokens = 0;
-
-                    Object.keys(tokens).forEach(pid => {
-                        const count = tokens[pid];
-                        if (count > 0) {
-                            totalTokens += count;
-                            if (count > maxTokens) { maxTokens = count; currentOwner = pid; tie = false; } 
-                            else if (count === maxTokens) tie = true;
-                        }
-                    });
-
-                    gemeindeOwners[gemId] = { ownerId: tie ? null : currentOwner, totalTokens, maxTokens };
-                    const actualOwner = gemeindeOwners[gemId].ownerId;
-                    const cantonId = gemToCantonMap[gemId];
-                    
-                    if (actualOwner && cantonId && cantonStats[cantonId]) {
-                        cantonStats[cantonId].areas[actualOwner] = (cantonStats[cantonId].areas[actualOwner] || 0) + gemAreaSqKm;
-                    }
+            gemeindeOwners = {}; cantonStats = {};
+            if (rawCantonData) rawCantonData.features.forEach(f => cantonStats[getCantonId(f)] = { ownerId: null, areas: {} });
+            if (rawGemeindeData) rawGemeindeData.features.forEach(gem => {
+                const id = getGemeindeId(gem), area = (turf.area(gem) / 1000000), tokens = tokensState[id] || {};
+                let max = 0, owner = null, tie = false, total = 0;
+                Object.keys(tokens).forEach(pid => { 
+                    const c = tokens[pid]; if (c > 0) { total += c; if (c > max) { max = c; owner = pid; tie = false; } else if (c === max) tie = true; }
                 });
-            }
-
-            Object.keys(cantonStats).forEach(canId => {
-                const areas = cantonStats[canId].areas;
-                let maxArea = 0; let currentOwner = null; let tie = false;
-
-                Object.keys(areas).forEach(pid => {
-                    if (areas[pid] > maxArea) { maxArea = areas[pid]; currentOwner = pid; tie = false; } 
-                    else if (areas[pid] === maxArea && maxArea > 0) tie = true;
-                });
-
-                cantonStats[canId].ownerId = tie ? null : currentOwner;
+                gemeindeOwners[id] = { ownerId: tie ? null : owner, totalTokens: total, maxTokens: max };
+                const actOwner = gemeindeOwners[id].ownerId; const canId = gemToCantonMap[id];
+                if (actOwner && canId && cantonStats[canId]) cantonStats[canId].areas[actOwner] = (cantonStats[canId].areas[actOwner] || 0) + area;
             });
-
+            Object.keys(cantonStats).forEach(canId => {
+                const areas = cantonStats[canId].areas; let max = 0, owner = null, tie = false;
+                Object.keys(areas).forEach(pid => { if (areas[pid] > max) { max = areas[pid]; owner = pid; tie = false; } else if (areas[pid] === max && max > 0) tie = true; });
+                cantonStats[canId].ownerId = tie ? null : owner;
+            });
             updateLeaderboard();
         }
 
         function updateLocalUserLastSeen() {
             try {
-                const storedLocalInfo = JSON.parse(localStorage.getItem('bierisko_local_user') || '{}');
-                if (currentUser && storedLocalInfo.id === currentUser.id) {
-                    currentUser.lastSeen = storedLocalInfo.lastSeen;
-                    currentUser.hasSeenUndoHint = storedLocalInfo.hasSeenUndoHint || false;
+                const stored = JSON.parse(localStorage.getItem('bierisko_local_user') || '{}');
+                if (currentUser && stored.id === currentUser.id) {
+                    currentUser.lastSeen = stored.lastSeen; currentUser.hasSeenUndoHint = stored.hasSeenUndoHint || false;
                 }
             } catch(e) {}
         }
-
         function saveLocalUserLastSeen() {
-            if (currentUser) {
-                localStorage.setItem('bierisko_local_user', JSON.stringify({ 
-                    id: currentUser.id, 
-                    lastSeen: currentUser.lastSeen,
-                    hasSeenUndoHint: currentUser.hasSeenUndoHint || false
-                }));
-            }
+            if (currentUser) { localStorage.setItem('bierisko_local_user', JSON.stringify({ id: currentUser.id, lastSeen: currentUser.lastSeen, hasSeenUndoHint: currentUser.hasSeenUndoHint })); }
         }
 
         // ==========================================
-        // 8. SERVER / STATE SYNC
+        // 8. FIREBASE SYNC ENGINE
         // ==========================================
-        function unlockUIAndAutoLogin() {
-            if (!isInitialDataLoaded) {
-                isInitialDataLoaded = true;
-                dbStatus.innerText = "Connected to live map ✓";
-                dbStatus.classList.remove('animate-pulse');
-                dbStatus.classList.replace('text-blue-500', 'text-emerald-500');
-                loginInput.disabled = false;
-                btnLoginSubmit.disabled = false;
-
-                const savedName = localStorage.getItem('bierisko_username');
-                if (savedName && !currentUser) {
-                    loginInput.value = savedName;
-                    loginInput.dispatchEvent(new Event('input')); 
-                    btnLoginSubmit.click(); 
-                }
-            }
-        }
-
-        function applyServerData(data) {
-            registeredUsers = data.users || {};
-            tokensState = data.tokens || {};
-            activityLog = (data.activityLog || []).filter(log => log.type !== 'system');
-            tokenHistory = data.tokenHistory || [];
-            
-            if (currentUser && registeredUsers[currentUser.id]) {
-                currentUser = registeredUsers[currentUser.id];
-                updateLocalUserLastSeen();
-            }
-            
-            calculateGameState();
-            renderActivityBox();
-            refreshMapVisuals();
-        }
-
         const firebaseConfig = {
             apiKey: "AIzaSyCfzl0RKiF0Yy8XXAZ0O20TEmDV5gogh9I",
             authDomain: "bierisko.firebaseapp.com",
@@ -933,377 +597,144 @@
             appId: "1:291287462170:web:f209563d49b3fc0d93bca3",
             measurementId: "G-BSG6YYVGJW"
         };
-        
-        let app, auth, db, stateRef;
-
-        try {
-            const activeConfig = Object.keys(firebaseConfig).length > 0 ? firebaseConfig : JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-            app = initializeApp(activeConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            
-            if (Object.keys(firebaseConfig).length > 0) {
-                 stateRef = doc(db, 'bierisko_game', 'global_state');
-            } else {
-                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'bierisko-default';
-                 stateRef = doc(db, 'artifacts', appId, 'public', 'data', 'bierisko', 'state');
-            }
-        } catch (e) {
-            console.error("Firebase init error", e);
-            dbStatus.innerText = "Error connecting to cloud.";
-            dbStatus.classList.replace('text-blue-500', 'text-red-500');
-        }
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const stateRef = doc(db, 'bierisko_game', 'global_state');
 
         async function pushState() {
             if (!isFirebaseReady || !isInitialDataLoaded) return;
-            try {
-                await setDoc(stateRef, {
-                    users: registeredUsers,
-                    tokens: tokensState,
-                    activityLog: activityLog.slice(-100), 
-                    tokenHistory: tokenHistory.slice(-500)
-                }, { merge: true }); // Restored safety net
-            } catch(e) { console.error("Save error", e); }
+            if (Object.keys(registeredUsers).length === 0 && currentUser !== null) return;
+            try { await setDoc(stateRef, { users: registeredUsers, tokens: tokensState, activityLog: activityLog.slice(-100), tokenHistory: tokenHistory.slice(-500) }, { merge: true }); } 
+            catch(e) { console.error("Cloud error", e); }
+        }
+
+        function applyServerData(data) {
+            registeredUsers = data.users || {}; tokensState = data.tokens || {};
+            activityLog = (data.activityLog || []).filter(log => log.type !== 'system'); tokenHistory = data.tokenHistory || [];
+            if (currentUser && registeredUsers[currentUser.id]) currentUser = registeredUsers[currentUser.id];
+            calculateGameState(); renderActivityBox(); refreshMapVisuals();
+        }
+
+        function unlockUIAndAutoLogin() {
+            if (!isInitialDataLoaded) {
+                isInitialDataLoaded = true;
+                dbStatus.innerText = "Connected to live map ✓"; dbStatus.classList.remove('animate-pulse'); dbStatus.classList.replace('text-blue-500', 'text-emerald-500');
+                loginInput.disabled = false; btnLoginSubmit.disabled = false;
+                const saved = localStorage.getItem('bierisko_username');
+                if (saved && !currentUser) { loginInput.value = saved; loginInput.dispatchEvent(new Event('input')); btnLoginSubmit.click(); }
+            }
         }
 
         function listenToLiveState() {
             onSnapshot(stateRef, (docSnap) => {
                 if (docSnap.exists()) {
                     latestServerData = docSnap.data();
-                    
+                    if (!isReplaying) applyServerData(latestServerData);
                     unlockUIAndAutoLogin();
-                    
-                    // Safely log out if the user was deleted on the server
-                    if (currentUser && !latestServerData.users?.[currentUser.id]) {
-                        btnLogout.click();
-                        return;
-                    }
-                    
-                    if (!isReplaying) {
-                        applyServerData(latestServerData);
-                    }
+                    if (currentUser && !latestServerData.users?.[currentUser.id]) btnLogout.click();
                 } else {
-                    unlockUIAndAutoLogin();
-                    pushState();
+                    isInitialDataLoaded = true; dbStatus.innerText = "Cloud ready ✓";
+                    loginInput.disabled = false; btnLoginSubmit.disabled = false; pushState();
                 }
-            }, (error) => {
-                console.error("Snapshot sync error:", error);
-            });
+            }, (err) => console.error("Sync error:", err));
         }
 
         async function initFirebase() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token && Object.keys(firebaseConfig).length === 0) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                onAuthStateChanged(auth, user => {
-                    if (user && !isFirebaseReady) {
-                        isFirebaseReady = true;
-                        dbStatus.innerText = "Syncing with cloud...";
-                        listenToLiveState();
-                    }
-                });
-            } catch (e) { console.error("Auth error", e); }
+            await signInAnonymously(auth);
+            onAuthStateChanged(auth, user => { if (user && !isFirebaseReady) { isFirebaseReady = true; listenToLiveState(); } });
         }
 
         // ==========================================
-        // 9. CORE ACTIONS
+        // 9. MAP INIT & FETCH FALLBACK
         // ==========================================
-        window.placeToken = function(id) {
-            if (currentView !== 'gemeinde' || !currentUser) return;
-            if (isReplaying) return; 
-
-            const prevGemOwner = gemeindeOwners[id]?.ownerId;
-            const prevGemTokens = gemeindeOwners[id]?.totalTokens || 0;
-            const prevCanOwner = cantonStats[gemToCantonMap[id]]?.ownerId;
-
-            if (!tokensState[id]) tokensState[id] = {};
-            tokensState[id][currentUser.id] = (tokensState[id][currentUser.id] || 0) + 1;
-            
-            calculateGameState();
-
-            const newGemOwner = gemeindeOwners[id]?.ownerId;
-            const newCanOwner = cantonStats[gemToCantonMap[id]]?.ownerId;
-
-            const isGemTakeover = newGemOwner !== prevGemOwner && newGemOwner === currentUser.id;
-            const isCanTakeover = newCanOwner !== prevCanOwner && newCanOwner === currentUser.id;
-            
-            const ts = Date.now();
-            let targetName = "Unknown";
-            
-            gemeindeGeoJsonLayer.eachLayer(l => {
-                if (getGemeindeId(l.feature) === id) {
-                    targetName = getGemeindeName(l.feature);
-                    l.setStyle(getGemeindeStyle(l.feature));
-                    updateGemeindeLabel(l, true, currentUser.color); 
-                    
-                    if (l._path) {
-                        l._path.classList.remove('anim-takeover', 'anim-token');
-                        void l._path.offsetWidth;
-                        l._path.classList.add(isGemTakeover ? 'anim-takeover' : 'anim-token');
-                    }
-                    if (l.isPopupOpen()) l.setPopupContent(generateGemeindePopupContent(l.feature));
-                }
-            });
-
-            if (cantonGeoJsonLayer) cantonGeoJsonLayer.eachLayer(l => l.setStyle(getCantonStyle(l.feature)));
-
-            if (isCanTakeover && cantonBordersGeoJsonLayer) {
-                let canBorderLayer = null;
-                cantonBordersGeoJsonLayer.eachLayer(l => { if (getCantonId(l.feature) === gemToCantonMap[id]) canBorderLayer = l; });
-                
-                if (canBorderLayer) {
-                    const pColor = currentUser.color;
-                    canBorderLayer.setStyle({ color: pColor, weight: 5 });
-                    
-                    if (canBorderLayer._path) {
-                        canBorderLayer._path.classList.remove('anim-canton-takeover');
-                        void canBorderLayer._path.offsetWidth;
-                        canBorderLayer._path.classList.add('anim-canton-takeover');
-                    }
-                    setTimeout(() => {
-                        canBorderLayer.setStyle({ color: '#475569', weight: 2 });
-                    }, 2500);
-                }
-            }
-
-            const gemActionType = prevGemTokens === 0 ? 'claim_gem' : 'conquer_gem';
-            const canActionType = prevCanOwner === null ? 'claim_can' : 'conquer_can';
-
-            tokenHistory.push({ playerId: currentUser.id, gemId: id, timestamp: ts });
-            activityLog.push({ type: 'token', playerId: currentUser.id, targetName: targetName, timestamp: ts });
-            
-            if (isGemTakeover) activityLog.push({ type: gemActionType, playerId: currentUser.id, targetName: targetName, timestamp: ts });
-            if (isCanTakeover) {
-                let canName = "Canton";
-                cantonGeoJsonLayer.eachLayer(l => { if(getCantonId(l.feature) === gemToCantonMap[id]) canName = getCantonName(l.feature); });
-                activityLog.push({ type: canActionType, playerId: currentUser.id, targetName: canName, timestamp: ts });
-            }
-
-            if (!currentUser.hasSeenUndoHint) {
-                currentUser.hasSeenUndoHint = true;
-                saveLocalUserLastSeen();
-                setTimeout(() => {
-                    settingsModal.classList.remove('hidden');
-                    undoHint.classList.remove('hidden');
-                    btnUndo.classList.add('ring-4', 'ring-amber-400', 'animate-pulse');
-                }, 1000);
-            }
-
-            currentUser.lastSeen = ts;
-            saveLocalUserLastSeen();
-            renderActivityBox();
-            pushState(); 
-        }
-
-        async function checkAndRunReplay() {
-            if (!currentUser) return;
-            
-            const unseenTokens = tokenHistory.filter(t => t.timestamp > currentUser.lastSeen);
-            if (unseenTokens.length === 0) {
-                currentUser.lastSeen = Date.now();
-                saveLocalUserLastSeen();
-                return;
-            }
-
-            isReplaying = true;
-            replayOverlay.classList.remove('hidden');
-            
-            let replayTokensState = JSON.parse(JSON.stringify(tokensState));
-            
-            for (let t of unseenTokens) {
-                if (replayTokensState[t.gemId] && replayTokensState[t.gemId][t.playerId]) {
-                    replayTokensState[t.gemId][t.playerId]--;
-                    if (replayTokensState[t.gemId][t.playerId] < 0) replayTokensState[t.gemId][t.playerId] = 0;
-                }
-            }
-
-            tokensState = replayTokensState;
-            calculateGameState(); 
-            if (currentView !== 'gemeinde') switchView('gemeinde');
-
-            for (let i = 0; i < unseenTokens.length; i++) {
-                if (!isReplaying) break; 
-                const t = unseenTokens[i];
-                
-                if (!tokensState[t.gemId]) tokensState[t.gemId] = {};
-                
-                const prevGemOwner = gemeindeOwners[t.gemId]?.ownerId;
-                const prevCanOwner = cantonStats[gemToCantonMap[t.gemId]]?.ownerId;
-
-                tokensState[t.gemId][t.playerId] = (tokensState[t.gemId][t.playerId] || 0) + 1;
-                calculateGameState(); 
-
-                const newGemOwner = gemeindeOwners[t.gemId]?.ownerId;
-                const newCanOwner = cantonStats[gemToCantonMap[t.gemId]]?.ownerId;
-
-                const isGemTakeover = newGemOwner !== prevGemOwner && newGemOwner === t.playerId;
-                const isCanTakeover = newCanOwner !== prevCanOwner && newCanOwner === t.playerId;
-
-                renderActivityBox(t.timestamp); 
-
-                const currentLogs = activityLog.filter(log => log.timestamp === t.timestamp);
-                let displayLog = currentLogs.find(log => log.type.includes('conquer_can') || log.type.includes('claim_can') || log.type.includes('takeover_can'));
-                if (!displayLog) displayLog = currentLogs.find(log => log.type.includes('conquer_gem') || log.type.includes('claim_gem') || log.type.includes('takeover_gem'));
-                if (!displayLog) displayLog = currentLogs.find(log => log.type === 'token');
-
-                if (displayLog) {
-                    document.getElementById('replay-current-action').innerHTML = createActivityHtml(displayLog, true, false);
-                }
-
-                let targetLayer = null;
-                gemeindeGeoJsonLayer.eachLayer(l => { if (getGemeindeId(l.feature) === t.gemId) targetLayer = l; });
-
-                if (targetLayer) {
-                    map.flyToBounds(targetLayer.getBounds(), { maxZoom: 10, duration: 0.6 });
-                    await new Promise(r => setTimeout(r, 650)); 
-
-                    if (!isReplaying) break;
-                    targetLayer.setStyle(getGemeindeStyle(targetLayer.feature));
-                    updateGemeindeLabel(targetLayer, true, getUser(t.playerId).color);
-                    
-                    if (targetLayer._path) {
-                        targetLayer._path.classList.remove('anim-takeover', 'anim-token');
-                        void targetLayer._path.offsetWidth;
-                        targetLayer._path.classList.add(isGemTakeover ? 'anim-takeover' : 'anim-token');
-                    }
-                }
-
-                if (isCanTakeover && cantonBordersGeoJsonLayer) {
-                    let canBorderLayer = null;
-                    cantonBordersGeoJsonLayer.eachLayer(l => { if (getCantonId(l.feature) === gemToCantonMap[t.gemId]) canBorderLayer = l; });
-                    
-                    if (canBorderLayer) {
-                        if (!isReplaying) break;
-                        const pColor = getUser(t.playerId).color;
-                        canBorderLayer.setStyle({ color: pColor, weight: 5 });
-                        
-                        if (canBorderLayer._path) {
-                            canBorderLayer._path.classList.remove('anim-canton-takeover');
-                            void canBorderLayer._path.offsetWidth;
-                            canBorderLayer._path.classList.add('anim-canton-takeover');
-                        }
-                        await new Promise(r => setTimeout(r, 2500)); 
-                        canBorderLayer.setStyle({ color: '#475569', weight: 2 });
-                    }
-                } else if (isGemTakeover) {
-                    await new Promise(r => setTimeout(r, 1200));
-                } else {
-                    await new Promise(r => setTimeout(r, 500));
-                }
-            }
-
-            isReplaying = false;
-            replayOverlay.classList.add('hidden');
-            
-            if (latestServerData) {
-                applyServerData(latestServerData);
-            }
-            
-            currentUser.lastSeen = Date.now();
-            saveLocalUserLastSeen();
-            if (registeredUsers[currentUser.id]) {
-                registeredUsers[currentUser.id].lastSeen = currentUser.lastSeen;
-            }
-            pushState();
-        }
-
-        // ==========================================
-        // 10. SETUP & INITIALIZATION
-        // ==========================================
-        function onEachGemeinde(feature, layer) {
-            layer.bindPopup(() => generateGemeindePopupContent(feature), { className: 'custom-popup', offset: [0, -10], autoPanPadding: [20, 20] });
-            layer.on({
-                popupopen: (e) => {
-                    activePopupGemId = getGemeindeId(feature);
-                    e.target.setStyle(getGemeindeStyle(feature));
-                    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) e.target.bringToFront();
-                },
-                popupclose: (e) => {
-                    activePopupGemId = null;
-                    e.target.setStyle(getGemeindeStyle(feature));
-                },
-                mouseover: (e) => {
-                    if (activePopupGemId === getGemeindeId(feature)) return; 
-                    const l = e.target;
-                    l.setStyle({ weight: 2, color: '#3b82f6' }); 
-                    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) l.bringToFront();
-                },
-                mouseout: (e) => { 
-                    if (activePopupGemId === getGemeindeId(feature)) return;
-                    e.target.setStyle(getGemeindeStyle(feature)); 
-                }
-            });
-        }
-
-        function onEachCanton(feature, layer) {
-            layer.bindPopup(() => generateCantonPopupContent(feature), { className: 'custom-popup', offset: [0, -10], autoPanPadding: [20, 20] });
-            layer.on({
-                popupopen: (e) => {
-                    activePopupCanId = getCantonId(feature);
-                    e.target.setStyle(getCantonStyle(feature));
-                    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) e.target.bringToFront();
-                },
-                popupclose: (e) => {
-                    activePopupCanId = null;
-                    e.target.setStyle(getCantonStyle(feature));
-                },
-                mouseover: (e) => {
-                    if (activePopupCanId === getCantonId(feature)) return;
-                    const l = e.target;
-                    l.setStyle({ weight: 3, color: '#3b82f6' }); 
-                    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) l.bringToFront();
-                },
-                mouseout: (e) => { 
-                    if (activePopupCanId === getCantonId(feature)) return;
-                    e.target.setStyle(getCantonStyle(feature)); 
-                }
-            });
-        }
-
-        async function buildSpatialIndex(cantons, gemeinden) {
-            const cachedMap = localStorage.getItem('territoryWarSpatialMapV2');
-            if (cachedMap) { gemToCantonMap = JSON.parse(cachedMap); return; }
-            
-            loaderText.innerText = "Processing territory borders...";
-            for (const gem of gemeinden.features) {
-                const gemId = getGemeindeId(gem);
+        async function fetchWithFallback(urls) {
+            for (let url of urls) {
                 try {
-                    const point = turf.pointOnFeature(gem);
-                    for (const can of cantons.features) {
-                        if (turf.booleanPointInPolygon(point, can)) { gemToCantonMap[gemId] = getCantonId(can); break; }
-                    }
-                } catch(e) {}
+                    let res = await fetch(url);
+                    if (res.ok) return await res.json();
+                } catch (e) {
+                    console.warn(`Fetch failed for ${url}`, e);
+                }
             }
-            localStorage.setItem('territoryWarSpatialMapV2', JSON.stringify(gemToCantonMap));
+            throw new Error("All fetch attempts failed");
         }
 
         async function bootMap() {
-            const CANTONS_URL = 'https://public.opendatasoft.com/api/records/1.0/download/?dataset=georef-switzerland-kanton&format=geojson';
-            const MUNICIPALITIES_URL = 'https://public.opendatasoft.com/api/records/1.0/download/?dataset=georef-switzerland-gemeinde&format=geojson';
+            // Map strictly initialized here ONCE.
+            map = L.map('map', {
+                center: [46.8182, 8.2275], zoom: 8, minZoom: 7, maxZoom: 13, 
+                zoomControl: false, attributionControl: false, 
+                maxBounds: [[45.5, 5.5], [48.0, 11.0]], maxBoundsViscosity: 0.8
+            });
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+            
+            map.on('zoomend', () => {
+                if (map.getZoom() < 10) map.getContainer().classList.add('hide-tokens');
+                else map.getContainer().classList.remove('hide-tokens');
+            });
+            if (map.getZoom() < 10) map.getContainer().classList.add('hide-tokens');
+
+            gemeindeLayerGroup = L.layerGroup().addTo(map);
+            cantonBordersLayerGroup = L.layerGroup().addTo(map); 
+            cantonLayerGroup = L.layerGroup(); 
+
+            // Hardened fallback endpoints
+            const C_URLS = [
+                'https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/georef-switzerland-kanton/exports/geojson',
+                'https://public.opendatasoft.com/api/records/1.0/download/?dataset=georef-switzerland-kanton&format=geojson'
+            ];
+            const M_URLS = [
+                'https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/georef-switzerland-gemeinde/exports/geojson',
+                'https://public.opendatasoft.com/api/records/1.0/download/?dataset=georef-switzerland-gemeinde&format=geojson'
+            ];
             
             try {
-                const [resCan, resGem] = await Promise.all([ fetch(CANTONS_URL), fetch(MUNICIPALITIES_URL) ]);
-                if (!resCan.ok || !resGem.ok) throw new Error("Data fetch failed");
+                const [rc, rm] = await Promise.all([ fetchWithFallback(C_URLS), fetchWithFallback(M_URLS) ]);
+                rawCantonData = rc;
+                rawGemeindeData = rm;
                 
-                rawCantonData = await resCan.json();
-                rawGemeindeData = await resGem.json();
+                // Force cache bypass to rebuild with the new bulletproof ID extractors
+                const cached = localStorage.getItem('bierisko_spatial_map_v4');
+                if (cached) gemToCantonMap = JSON.parse(cached); else {
+                    loaderText.innerText = "Indexing territories...";
+                    for (const gem of rawGemeindeData.features) {
+                        const id = getGemeindeId(gem);
+                        // Fallback to geometric mapping
+                        try {
+                            const pt = turf.pointOnFeature(gem);
+                            for (const can of rawCantonData.features) { if (turf.booleanPointInPolygon(pt, can)) { gemToCantonMap[id] = getCantonId(can); break; } }
+                        } catch(e) {}
+                    }
+                    localStorage.setItem('bierisko_spatial_map_v4', JSON.stringify(gemToCantonMap));
+                }
                 
-                await buildSpatialIndex(rawCantonData, rawGemeindeData);
                 calculateGameState();
-
-                gemeindeGeoJsonLayer = L.geoJSON(rawGemeindeData, { style: getGemeindeStyle, onEachFeature: onEachGemeinde });
+                
+                gemeindeGeoJsonLayer = L.geoJSON(rawGemeindeData, { style: getGemeindeStyle, onEachFeature: (f, l) => {
+                    l._cachedStyleStr = JSON.stringify(getGemeindeStyle(f));
+                    l.bindPopup(() => generateGemeindePopupContent(f), { className: 'custom-popup', offset: [0, -10] });
+                    l.on({
+                        popupopen: (e) => { activePopupGemId = getGemeindeId(f); const s = getGemeindeStyle(f); e.target.setStyle(s); e.target._cachedStyleStr = JSON.stringify(s); e.target.bringToFront(); },
+                        popupclose: (e) => { activePopupGemId = null; const s = getGemeindeStyle(f); e.target.setStyle(s); e.target._cachedStyleStr = JSON.stringify(s); },
+                        mouseover: (e) => { if (activePopupGemId === getGemeindeId(f)) return; e.target.setStyle({ weight: 2, color: '#3b82f6' }); e.target.bringToFront(); },
+                        mouseout: (e) => { if (activePopupGemId === getGemeindeId(f)) return; const s = getGemeindeStyle(f); e.target.setStyle(s); e.target._cachedStyleStr = JSON.stringify(s); }
+                    });
+                } }).addTo(gemeindeLayerGroup);
                 gemeindeGeoJsonLayer.eachLayer(l => updateGemeindeLabel(l)); 
-                gemeindeLayerGroup.addLayer(gemeindeGeoJsonLayer);
-
-                cantonBordersGeoJsonLayer = L.geoJSON(rawCantonData, { style: { fillColor: 'transparent', fillOpacity: 0, color: '#475569', weight: 2 }, interactive: false });
-                cantonBordersLayerGroup.addLayer(cantonBordersGeoJsonLayer);
-
-                cantonGeoJsonLayer = L.geoJSON(rawCantonData, { style: getCantonStyle, onEachFeature: onEachCanton });
-                cantonLayerGroup.addLayer(cantonGeoJsonLayer);
+                
+                cantonBordersGeoJsonLayer = L.geoJSON(rawCantonData, { style: { fillColor: 'transparent', fillOpacity: 0, color: '#475569', weight: 2 }, interactive: false }).addTo(cantonBordersLayerGroup);
+                
+                cantonGeoJsonLayer = L.geoJSON(rawCantonData, { style: getCantonStyle, onEachFeature: (f, l) => {
+                    l._cachedStyleStr = JSON.stringify(getCantonStyle(f));
+                    l.bindPopup(() => generateCantonPopupContent(f), { className: 'custom-popup', offset: [0, -10] });
+                    l.on({
+                        popupopen: (e) => { activePopupCanId = getCantonId(f); const s = getCantonStyle(f); e.target.setStyle(s); e.target._cachedStyleStr = JSON.stringify(s); e.target.bringToFront(); },
+                        popupclose: (e) => { activePopupCanId = null; const s = getCantonStyle(f); e.target.setStyle(s); e.target._cachedStyleStr = JSON.stringify(s); },
+                        mouseover: (e) => { if (activePopupCanId === getCantonId(f)) return; e.target.setStyle({ weight: 3, color: '#3b82f6' }); e.target.bringToFront(); },
+                        mouseout: (e) => { if (activePopupCanId === getCantonId(f)) return; const s = getCantonStyle(f); e.target.setStyle(s); e.target._cachedStyleStr = JSON.stringify(s); }
+                    });
+                } }).addTo(cantonLayerGroup);
                 
                 map.removeLayer(cantonLayerGroup);
                 map.fitBounds(cantonBordersGeoJsonLayer.getBounds(), { padding: [20, 20] });
@@ -1312,250 +743,122 @@
                 setTimeout(() => loader.style.display = 'none', 400);
                 
                 initFirebase();
-                
-            } catch(error) {
-                loaderText.innerText = "Error loading map data. Please refresh.";
-                loaderText.classList.add("text-red-400");
-                console.error(error);
+            } catch(error) { loaderText.innerText = "Boot error. Please refresh."; console.error(error); }
+        }
+
+        window.placeToken = function(id) {
+            if (currentView !== 'gemeinde' || !currentUser || isReplaying) return;
+            const prevGemTokens = gemeindeOwners[id]?.totalTokens || 0, prevGemOwner = gemeindeOwners[id]?.ownerId, prevCanOwner = cantonStats[gemToCantonMap[id]]?.ownerId;
+            if (!tokensState[id]) tokensState[id] = {};
+            tokensState[id][currentUser.id] = (tokensState[id][currentUser.id] || 0) + 1;
+            calculateGameState();
+            const newGemOwner = gemeindeOwners[id]?.ownerId, newCanOwner = cantonStats[gemToCantonMap[id]]?.ownerId;
+            const isGemTakeover = newGemOwner !== prevGemOwner && newGemOwner === currentUser.id, isCanTakeover = newCanOwner !== prevCanOwner && newCanOwner === currentUser.id;
+            const ts = Date.now(); let targetName = "Unknown";
+            
+            gemeindeGeoJsonLayer.eachLayer(l => {
+                if (getGemeindeId(l.feature) === id) {
+                    targetName = getGemeindeName(l.feature); updateLayerStyle(l, getGemeindeStyle(l.feature)); updateGemeindeLabel(l, true, currentUser.color); 
+                    if (l._path) { l._path.classList.remove('anim-takeover', 'anim-token'); void l._path.offsetWidth; l._path.classList.add(isGemTakeover ? 'anim-takeover' : 'anim-token'); }
+                    if (l.isPopupOpen()) l.setPopupContent(generateGemeindePopupContent(l.feature));
+                }
+            });
+            if (isCanTakeover && cantonBordersGeoJsonLayer) {
+                cantonBordersGeoJsonLayer.eachLayer(l => { 
+                    if (getCantonId(l.feature) === gemToCantonMap[id]) {
+                        l.setStyle({ color: currentUser.color, weight: 6 });
+                        if (l._path) { l._path.classList.remove('anim-canton-takeover'); void l._path.offsetWidth; l._path.classList.add('anim-canton-takeover'); }
+                        setTimeout(() => l.setStyle({ color: '#475569', weight: 2 }), 2500);
+                    }
+                });
             }
+            tokenHistory.push({ playerId: currentUser.id, gemId: id, timestamp: ts }); activityLog.push({ type: 'token', playerId: currentUser.id, targetName: targetName, timestamp: ts });
+            if (isGemTakeover) activityLog.push({ type: prevGemTokens === 0 ? 'claim_gem' : 'conquer_gem', playerId: currentUser.id, targetName: targetName, timestamp: ts });
+            if (isCanTakeover) { let canName = "Canton"; cantonGeoJsonLayer.eachLayer(l => { if(getCantonId(l.feature) === gemToCantonMap[id]) canName = getCantonName(l.feature); }); activityLog.push({ type: prevCanOwner === null ? 'claim_can' : 'conquer_can', playerId: currentUser.id, targetName: canName, timestamp: ts }); }
+            if (!currentUser.hasSeenUndoHint) { currentUser.hasSeenUndoHint = true; saveLocalUserLastSeen(); setTimeout(() => { settingsModal.classList.remove('hidden'); undoHint.classList.remove('hidden'); btnUndo.classList.add('ring-4', 'ring-amber-400', 'animate-pulse'); }, 1000); }
+            currentUser.lastSeen = ts; saveLocalUserLastSeen(); renderActivityBox(); refreshMapVisuals(); pushState(); 
+        };
+
+        async function checkAndRunReplay() {
+            if (!currentUser) return;
+            const unseen = tokenHistory.filter(t => t.timestamp > currentUser.lastSeen);
+            if (unseen.length === 0) { currentUser.lastSeen = Date.now(); saveLocalUserLastSeen(); return; }
+            isReplaying = true; replayOverlay.classList.remove('hidden');
+            let replayState = JSON.parse(JSON.stringify(tokensState));
+            for (let t of unseen) { if (replayState[t.gemId]?.[t.playerId]) replayState[t.gemId][t.playerId] = Math.max(0, replayState[t.gemId][t.playerId] - 1); }
+            tokensState = replayState; calculateGameState();
+            for (let t of unseen) {
+                if (!isReplaying) break;
+                if (!tokensState[t.gemId]) tokensState[t.gemId] = {};
+                tokensState[t.gemId][t.playerId] = (tokensState[t.gemId][t.playerId] || 0) + 1;
+                calculateGameState(); renderActivityBox(t.timestamp); refreshMapVisuals();
+                let target = Object.values(gemeindeGeoJsonLayer._layers).find(l => getGemeindeId(l.feature) === t.gemId);
+                if (target) { 
+                    map.flyToBounds(target.getBounds(), { maxZoom: 10, duration: 0.6 }); await new Promise(r => setTimeout(r, 650)); 
+                    updateGemeindeLabel(target, true, getUser(t.playerId).color); 
+                    if (target._path) { target._path.classList.remove('anim-takeover', 'anim-token'); void target._path.offsetWidth; target._path.classList.add('anim-token'); }
+                }
+                await new Promise(r => setTimeout(r, 800));
+            }
+            isReplaying = false; replayOverlay.classList.add('hidden');
+            if (latestServerData) applyServerData(latestServerData);
+            currentUser.lastSeen = Date.now(); saveLocalUserLastSeen(); pushState();
         }
 
         // ==========================================
-        // 11. EVENT LISTENERS
+        // 10. DOM EVENT LISTENERS
         // ==========================================
-        loginInput.addEventListener('input', (e) => {
-            const rawName = e.target.value.trim();
-            const userId = rawName.toLowerCase().replace(/[^a-z0-9]/g, '');
-            
-            if (registeredUsers[userId]) {
-                btnLoginSubmit.innerText = "Login";
-                btnLoginSubmit.className = "w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-emerald-600/30";
-            } else {
-                btnLoginSubmit.innerText = "Register";
-                btnLoginSubmit.className = "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-600/30";
-            }
-        });
-
-        btnSettings.addEventListener('click', () => {
-            settingsModal.classList.remove('hidden');
-        });
-        
-        btnCloseSettings.addEventListener('click', () => {
-            settingsModal.classList.add('hidden');
-            undoHint.classList.add('hidden');
-            btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse');
-        });
-
-        btnCloseTutorial.addEventListener('click', () => {
-            tutorialModal.classList.add('hidden');
-            checkAndRunReplay(); 
-        });
-
-        btnShowRules.addEventListener('click', () => {
-            tutorialModal.classList.remove('hidden');
-            settingsModal.classList.add('hidden');
-        });
-
         loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const rawName = loginInput.value.trim();
-            if(!rawName) return;
-
-            const userId = rawName.toLowerCase().replace(/[^a-z0-9]/g, ''); 
-            if(!userId) return;
-
-            let isNewUser = false;
-            if(!registeredUsers[userId]) {
-                isNewUser = true;
-                const colorIndex = Object.keys(registeredUsers).filter(pid => registeredUsers[pid]).length % PALETTE.length;
-                registeredUsers[userId] = { id: userId, name: rawName, color: PALETTE[colorIndex], lastSeen: Date.now() };
+            e.preventDefault(); const raw = loginInput.value.trim(), uid = raw.toLowerCase().replace(/[^a-z0-9]/g, ''); 
+            if(!uid) return;
+            if(!registeredUsers[uid]) { 
+                const cid = Object.keys(registeredUsers).filter(p => registeredUsers[p]).length % PALETTE.length;
+                registeredUsers[uid] = { id: uid, name: raw, color: PALETTE[cid], lastSeen: Date.now(), hasSeenUndoHint: false };
                 pushState();
             }
-
-            localStorage.setItem('bierisko_username', rawName);
-
-            currentUser = registeredUsers[userId];
-            updateLocalUserLastSeen();
-            updateUIForUser();
-            
-            profileName.innerText = currentUser.name;
-            profileColor.style.backgroundColor = currentUser.color;
-            
-            loginScreen.style.opacity = '0';
-            setTimeout(() => loginScreen.style.visibility = 'hidden', 400);
-
-            calculateGameState();
-            renderActivityBox();
-            
-            if (isNewUser) {
-                tutorialModal.classList.remove('hidden');
-            } else {
-                checkAndRunReplay(); 
-            }
+            localStorage.setItem('bierisko_username', raw); currentUser = registeredUsers[uid]; updateLocalUserLastSeen(); updateUIForUser();
+            profileName.innerText = currentUser.name; profileColor.style.backgroundColor = currentUser.color;
+            loginScreen.style.opacity = '0'; setTimeout(() => loginScreen.style.visibility = 'hidden', 400);
+            calculateGameState(); renderActivityBox(); if (!currentUser.lastSeen || currentUser.lastSeen < 1) tutorialModal.classList.remove('hidden'); else checkAndRunReplay();
         });
 
-        btnLogout.addEventListener('click', () => {
-            if (currentUser) {
-                currentUser.lastSeen = Date.now();
-                saveLocalUserLastSeen();
-                pushState(); 
-            }
-            currentUser = null;
-            updateUIForUser();
-            
-            localStorage.removeItem('bierisko_username');
+        loginInput.addEventListener('input', (e) => {
+            const uid = e.target.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+            btnLoginSubmit.innerText = registeredUsers[uid] ? "Login" : "Register";
+        });
 
-            loginInput.value = '';
-            btnLoginSubmit.innerText = "Register";
-            btnLoginSubmit.className = "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-600/30 disabled:opacity-50 disabled:cursor-not-allowed";
-            
-            loginScreen.style.visibility = 'visible';
-            loginScreen.style.opacity = '1';
-            settingsModal.classList.add('hidden'); 
-            tutorialModal.classList.add('hidden');
-            undoHint.classList.add('hidden');
-            btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse');
-            map.closePopup(); 
+        btnGpsToken.addEventListener('click', () => {
+            if (!currentUser) return showToast("Please join the map first!", true);
+            const orig = btnGpsToken.innerText; btnGpsToken.innerHTML = '<span class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></span>'; btnGpsToken.classList.add('opacity-70', 'cursor-wait'); btnGpsToken.disabled = true;
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const pt = turf.point([pos.coords.longitude, pos.coords.latitude]);
+                let f = rawGemeindeData.features.find(feat => { try { return turf.booleanPointInPolygon(pt, feat); } catch(e) { return false; } });
+                if (f) { window.placeToken(getGemeindeId(f)); showToast(`📍 Token placed in ${getGemeindeName(f)}!`); if (currentView === 'gemeinde' && gemeindeGeoJsonLayer) { let target = null; gemeindeGeoJsonLayer.eachLayer(l => { if (getGemeindeId(l.feature) === getGemeindeId(f)) target = l; }); if (target) map.flyToBounds(target.getBounds(), { maxZoom: 11, duration: 0.6 }); } } else showToast("Couldn't locate you inside Switzerland!", true);
+                btnGpsToken.innerHTML = orig; btnGpsToken.classList.remove('opacity-70', 'cursor-wait'); btnGpsToken.disabled = false;
+            }, (err) => { showToast("GPS access denied.", true); btnGpsToken.innerHTML = orig; btnGpsToken.classList.remove('opacity-70', 'cursor-wait'); btnGpsToken.disabled = false; }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
         });
 
         btnUndo.addEventListener('click', () => {
             if (!currentUser || isReplaying) return;
-
-            let lastTokenIndex = -1;
-            for (let i = tokenHistory.length - 1; i >= 0; i--) {
-                if (tokenHistory[i].playerId === currentUser.id) {
-                    lastTokenIndex = i;
-                    break;
-                }
-            }
-
-            if (lastTokenIndex === -1) {
-                showToast("No recent actions to undo.", true);
-                return;
-            }
-
-            const lastToken = tokenHistory[lastTokenIndex];
-            const gemId = lastToken.gemId;
-            const targetTs = lastToken.timestamp;
-
-            tokenHistory.splice(lastTokenIndex, 1);
-
-            if (tokensState[gemId] && tokensState[gemId][currentUser.id]) {
-                tokensState[gemId][currentUser.id]--;
-                if (tokensState[gemId][currentUser.id] < 0) tokensState[gemId][currentUser.id] = 0;
-            }
-
-            activityLog = activityLog.filter(log => !(log.playerId === currentUser.id && log.timestamp === targetTs));
-
-            undoHint.classList.add('hidden');
-            btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse');
-
-            showToast("Last beer placement undone.");
-            
-            calculateGameState();
-            renderActivityBox();
-            refreshMapVisuals();
-            pushState();
+            let lastTokenIndex = -1; for (let i = tokenHistory.length - 1; i >= 0; i--) { if (tokenHistory[i].playerId === currentUser.id) { lastTokenIndex = i; break; } }
+            if (lastTokenIndex === -1) return showToast("No recent actions to undo.", true);
+            const lastToken = tokenHistory[lastTokenIndex]; tokenHistory.splice(lastTokenIndex, 1);
+            if (tokensState[lastToken.gemId] && tokensState[lastToken.gemId][currentUser.id]) { tokensState[lastToken.gemId][currentUser.id]--; if (tokensState[lastToken.gemId][currentUser.id] <= 0) { delete tokensState[lastToken.gemId][currentUser.id]; } }
+            activityLog = activityLog.filter(log => !(log.playerId === currentUser.id && log.timestamp === lastToken.timestamp));
+            undoHint.classList.add('hidden'); btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse'); showToast("Last beer placement undone."); calculateGameState(); renderActivityBox(); refreshMapVisuals(); pushState();
         });
 
-        btnDelete.addEventListener('click', () => {
-            if(confirm(`Are you sure you want to delete data for ${currentUser.name}? All your tokens will be removed from the live map globally.`)) {
-                const idToDelete = currentUser.id;
-                registeredUsers[idToDelete] = null;
-                
-                for (const gemId in tokensState) {
-                    if (tokensState[gemId][idToDelete] !== undefined) {
-                        tokensState[gemId][idToDelete] = 0;
-                    }
-                }
-                
-                activityLog = activityLog.filter(log => log.playerId !== idToDelete && log.type !== 'system');
-                tokenHistory = tokenHistory.filter(log => log.playerId !== idToDelete);
-                
-                pushState();
-                btnLogout.click(); 
-            }
-        });
-
+        btnSettings.addEventListener('click', () => settingsModal.classList.remove('hidden'));
+        btnCloseSettings.addEventListener('click', () => { settingsModal.classList.add('hidden'); undoHint.classList.add('hidden'); btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse'); });
+        btnShowRules.addEventListener('click', () => { tutorialModal.classList.remove('hidden'); settingsModal.classList.add('hidden'); });
+        btnLogout.addEventListener('click', () => { if (currentUser) { currentUser.lastSeen = Date.now(); saveLocalUserLastSeen(); pushState(); } currentUser = null; updateUIForUser(); localStorage.removeItem('bierisko_username'); loginInput.value = ''; btnLoginSubmit.innerText = "Register"; btnLoginSubmit.className = "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-600/30 disabled:opacity-50 disabled:cursor-not-allowed"; loginScreen.style.visibility = 'visible'; loginScreen.style.opacity = '1'; settingsModal.classList.add('hidden'); tutorialModal.classList.add('hidden'); undoHint.classList.add('hidden'); btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse'); map.closePopup(); });
+        btnDelete.addEventListener('click', () => { if(confirm(`Are you sure you want to delete data for ${currentUser.name}?`)) { const idToDelete = currentUser.id; registeredUsers[idToDelete] = null; for (const gemId in tokensState) { if (tokensState[gemId][idToDelete] !== undefined) { tokensState[gemId][idToDelete] = 0; } } activityLog = activityLog.filter(log => log.playerId !== idToDelete && log.type !== 'system'); tokenHistory = tokenHistory.filter(log => log.playerId !== idToDelete); pushState(); btnLogout.click(); } });
         btnToggleView.addEventListener('click', () => switchView(currentView === 'gemeinde' ? 'canton' : 'gemeinde'));
+        leaderboardHeader.addEventListener('click', () => { isLeaderboardExpanded = !isLeaderboardExpanded; leaderboardToggleIcon.style.transform = isLeaderboardExpanded ? 'rotate(180deg)' : 'rotate(0deg)'; updateLeaderboard(); });
+        activityHeader.addEventListener('click', () => { isActivityExpanded = !isActivityExpanded; activityBox.style.height = isActivityExpanded ? '16rem' : '3.5rem'; activityList.style.opacity = isActivityExpanded ? '1' : '0'; activityToggleIcon.style.transform = isActivityExpanded ? 'rotate(180deg)' : 'rotate(0deg)'; });
+        btnSkipReplay.addEventListener('click', () => isReplaying = false);
 
-        btnGpsToken.addEventListener('click', () => {
-            if (!currentUser) return showToast("Please join the map first!", true);
-            if (!rawGemeindeData) return showToast("Map data not loaded yet.", true);
-            if (!navigator.geolocation) return showToast("Your browser doesn't support geolocation.", true);
-
-            const originalContent = 'Drink Beer Here';
-            btnGpsToken.innerHTML = '<span class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></span>';
-            btnGpsToken.classList.add('opacity-70', 'cursor-wait');
-            btnGpsToken.disabled = true;
-
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude; const lng = position.coords.longitude;
-                    const userPoint = turf.point([lng, lat]);
-                    let foundFeature = null;
-
-                    for (const feature of rawGemeindeData.features) {
-                        try { if (turf.booleanPointInPolygon(userPoint, feature)) { foundFeature = feature; break; } } catch(e) { }
-                    }
-
-                    if (foundFeature) {
-                        const gemId = getGemeindeId(foundFeature);
-                        const name = getGemeindeName(foundFeature);
-                        window.placeToken(gemId);
-                        showToast(`📍 Token placed in ${name}!`);
-                        
-                        let targetLayer = null;
-                        if (currentView === 'gemeinde' && gemeindeGeoJsonLayer) {
-                            gemeindeGeoJsonLayer.eachLayer(l => { if (getGemeindeId(l.feature) === gemId) targetLayer = l; });
-                            if (targetLayer) map.flyToBounds(targetLayer.getBounds(), { maxZoom: 11, duration: 0.6 });
-                        }
-                    } else showToast("Couldn't locate you inside Switzerland!", true);
-                    resetBtn();
-                },
-                (error) => {
-                    let msg = "Could not get your location.";
-                    if (error.code === 1) msg = "Location access denied.";
-                    showToast(msg, true);
-                    resetBtn();
-                },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-            );
-
-            function resetBtn() {
-                btnGpsToken.innerHTML = originalContent;
-                btnGpsToken.classList.remove('opacity-70', 'cursor-wait');
-                btnGpsToken.disabled = false;
-            }
-        });
-
-        activityHeader.addEventListener('click', () => {
-            isActivityExpanded = !isActivityExpanded;
-            if (isActivityExpanded) {
-                activityBox.classList.replace('h-14', 'h-64');
-                activityList.classList.replace('opacity-0', 'opacity-100');
-                activityToggleIcon.style.transform = 'rotate(180deg)';
-            } else {
-                activityBox.classList.replace('h-64', 'h-14');
-                activityList.classList.replace('opacity-100', 'opacity-0');
-                activityToggleIcon.style.transform = 'rotate(0deg)';
-            }
-        });
-
-        leaderboardHeader.addEventListener('click', () => {
-            isLeaderboardExpanded = !isLeaderboardExpanded;
-            leaderboardToggleIcon.style.transform = isLeaderboardExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
-            updateLeaderboard();
-        });
-
-        btnSkipReplay.addEventListener('click', () => { isReplaying = false; });
-
-        // ==========================================
-        // 12. RUN EXECUTION
-        // ==========================================
-        loginInput.focus();
-        bootMap(); 
-        renderActivityBox();
+        document.addEventListener('DOMContentLoaded', bootMap);
     </script>
 </body>
 </html>
