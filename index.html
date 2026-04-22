@@ -104,7 +104,7 @@
                 </button>
             </form>
         </div>
-        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v4.3 STABLE</div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v4.9 STABLE</div>
     </div>
 
     <!-- Screen 2: Rules -->
@@ -116,14 +116,15 @@
             <h2 class="text-2xl font-black text-slate-800 mb-4 shrink-0 uppercase tracking-tight">VENI BIERI VICI! 🍻</h2>
             <div class="text-slate-600 text-sm space-y-4 mb-8 text-left overflow-y-auto pr-2 custom-scrollbar">
                 <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl">
-                    <p class="font-bold text-blue-700 mb-2 uppercase text-[10px] tracking-widest">Official Group</p>
+                    <p class="font-bold text-blue-700 mb-1 uppercase text-[10px] tracking-widest">Official Group</p>
+                    <p class="text-slate-600 text-xs mb-3">Join the official Veni Bieri Vici community on Whatsapp.</p>
                     <a href="https://chat.whatsapp.com/L76IiJiVUBDESEseDmTKko?mode=gi_t" target="_blank" class="inline-block bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold text-xs hover:bg-emerald-700 transition-colors">Join WhatsApp Group</a>
                 </div>
                 <div>
                     <p class="font-black text-slate-800 uppercase text-[10px] tracking-widest mb-2">Logging Rules</p>
                     <ul class="list-disc pl-5 space-y-2">
-                        <li><strong>Only beers</strong> count. Wine and other beverages are not allowed.</li>
-                        <li>Log your beer <strong>exactly when you finish it</strong>. Back-logging previous drinks is not allowed.</li>
+                        <li><strong>Only beers</strong> count. Wine and other beverages cannot be logged.</li>
+                        <li>Log your beer <strong>right after you finish it</strong>. If you forget to log a beer on time, don't log it at all.</li>
                         <li>Beers drunk in <strong>moving vehicles</strong> (trains, buses, cars) are not allowed to be logged.</li>
                         <li>Each beer is worth <strong>exactly 1 token</strong>, regardless of size or alcohol content.</li>
                     </ul>
@@ -132,8 +133,8 @@
                     <p class="font-black text-slate-800 uppercase text-[10px] tracking-widest mb-2">How it Works</p>
                     <ul class="list-disc pl-5 space-y-2">
                         <li>Most tokens in a Gemeinde 🚩 <strong>claims it</strong>.</li>
-                        <li>Most area in a Canton 🏆 <strong>conquers the Canton</strong>.</li>
-                        <li>Most Cantons moves you up the Leaderboard 🥇.</li>
+                        <li>Claim the most area in a Canton 🏆 <strong>to conquer it</strong>.</li>
+                        <li>Each conquered Canton is worth one point on the <strong>Leaderboard</strong> 🥇.</li>
                     </ul>
                 </div>
             </div>
@@ -143,12 +144,12 @@
 
     <!-- UI Overlay: Top Controls -->
     <div class="absolute top-4 left-4 sm:left-6 sm:top-6 z-[2000] flex gap-2 pointer-events-none">
-        <button id="btn-settings" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors pointer-events-auto active:scale-95 flex items-center justify-center shrink-0 aspect-square" title="Settings">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1-1-1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        <button id="btn-settings" class="bg-white/90 backdrop-blur-md flex items-center justify-center rounded-full shadow-lg border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors pointer-events-auto active:scale-95 shrink-0 w-12 h-12" title="Settings">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1-1-1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
-        <button id="btn-toggle-view" class="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-slate-200 text-blue-600 hover:text-blue-700 transition-colors pointer-events-auto active:scale-95 flex items-center justify-center shrink-0 aspect-square" title="Toggle View">
-            <svg id="icon-view-gem" class="shrink-0" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-            <svg id="icon-view-can" class="hidden shrink-0" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l3-3 6 3 9-3v12l-9 3-6-3-3 3V6z"/><path d="M12 6v12"/><path d="M6 3v12"/><path d="M18 9v12"/></svg>
+        <button id="btn-toggle-view" class="bg-white/90 backdrop-blur-md flex items-center justify-center rounded-full shadow-lg border border-slate-200 text-blue-600 hover:text-blue-700 transition-colors pointer-events-auto active:scale-95 shrink-0 w-12 h-12" title="Toggle View">
+            <svg id="icon-view-gem" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+            <svg id="icon-view-can" class="hidden" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l3-3 6 3 9-3v12l-9 3-6-3-3 3V6z"/><path d="M12 6v12"/><path d="M6 3v12"/><path d="M18 9v12"/></svg>
         </button>
     </div>
 
@@ -208,6 +209,72 @@
         </div>
     </div>
 
+    <!-- UI Overlay: Location Permission Tutorial Modal -->
+    <div id="location-tutorial-modal" class="hidden absolute inset-0 z-[6000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center px-4 transition-opacity">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full transform transition-all relative text-left">
+            <button onclick="document.getElementById('location-tutorial-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            
+            <h3 class="text-xl font-black text-slate-800 mb-4 uppercase tracking-tight text-center">Location Required 📍</h3>
+            
+            <div class="flex justify-center gap-2 mb-4">
+                <button id="lang-en" class="text-xs font-bold px-3 py-1 rounded bg-slate-800 text-white" onclick="window.switchLang('en')">EN</button>
+                <button id="lang-de" class="text-xs font-bold px-3 py-1 rounded bg-slate-200 text-slate-600 hover:bg-slate-300 transition-colors" onclick="window.switchLang('de')">DE</button>
+            </div>
+
+            <div id="loc-steps-en" class="block">
+                <ol class="list-decimal pl-5 space-y-3 text-sm text-slate-700 font-medium mb-8">
+                    <li>Open your iPhone <strong>Settings</strong> app.</li>
+                    <li>Scroll down and tap <strong>Privacy & Security</strong>.</li>
+                    <li>Tap <strong>Location Services</strong> and ensure it's turned <strong>ON</strong>.</li>
+                    <li>Scroll down the app list to your browser (e.g., <strong>Safari</strong> or Chrome).</li>
+                    <li>Change permission to <strong>While Using the App</strong>.</li>
+                    <li>Return here and reload the page!</li>
+                </ol>
+            </div>
+            
+            <div id="loc-steps-de" class="hidden">
+                <ol class="list-decimal pl-5 space-y-3 text-sm text-slate-700 font-medium mb-8">
+                    <li>Öffne die <strong>Einstellungen</strong>-App deines iPhones.</li>
+                    <li>Scrolle nach unten und tippe auf <strong>Datenschutz & Sicherheit</strong>.</li>
+                    <li>Tippe auf <strong>Ortungsdienste</strong> und stelle sicher, dass sie <strong>EIN</strong>geschaltet sind.</li>
+                    <li>Scrolle in der App-Liste nach unten zu deinem Browser (z.B. <strong>Safari</strong>).</li>
+                    <li>Ändere die Berechtigung auf <strong>Beim Verwenden der App</strong>.</li>
+                    <li>Kehre hierher zurück und lade die Seite neu!</li>
+                </ol>
+            </div>
+
+            <button onclick="document.getElementById('location-tutorial-modal').classList.add('hidden'); window.location.reload();" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-md shadow-blue-600/30 uppercase tracking-wide">
+                Reload Page
+            </button>
+        </div>
+    </div>
+
+    <!-- UI Overlay: Celebration Modal -->
+    <div id="celebration-modal" class="hidden absolute inset-0 z-[5500] bg-slate-900/70 backdrop-blur-sm flex items-center justify-center px-4 transition-opacity">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full transform transition-all relative text-center">
+            <button onclick="document.getElementById('celebration-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <div class="text-5xl mb-4 animate-bounce">🏆</div>
+            <h3 class="text-2xl font-black text-slate-800 mb-2 uppercase tracking-tight">Territory Conquered!</h3>
+            <p id="celebration-message" class="text-slate-600 text-sm mb-6 font-medium">You just conquered a territory!</p>
+            
+            <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-xl mb-6 shadow-inner">
+                <p class="font-black text-emerald-800 mb-2 uppercase text-[11px] tracking-widest">Verify Your Glory</p>
+                <p class="text-slate-700 text-sm mb-4 font-medium">Join the official WhatsApp group and send a celebratory picture with your beer to the chat! 📸🍻</p>
+                <a href="https://chat.whatsapp.com/L76IiJiVUBDESEseDmTKko?mode=gi_t" target="_blank" class="block w-full bg-emerald-600 text-white px-4 py-3 rounded-lg font-bold text-sm hover:bg-emerald-700 transition-colors shadow-md shadow-emerald-600/30">
+                    Join WhatsApp Group
+                </a>
+            </div>
+
+            <button onclick="document.getElementById('celebration-modal').classList.add('hidden')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-xl transition-colors uppercase tracking-wide text-sm">
+                Continue Playing
+            </button>
+        </div>
+    </div>
+
     <!-- UI Overlay: Replay -->
     <div id="replay-overlay" class="hidden absolute inset-0 z-[4500] pointer-events-none flex flex-col items-center justify-end pb-24">
         <button id="btn-skip-replay" class="mb-4 bg-slate-700 hover:bg-slate-600 text-slate-200 px-6 py-2.5 rounded-full font-bold text-sm transition-colors shadow-lg pointer-events-auto border border-slate-600 active:scale-95 uppercase tracking-wide">Skip Replay</button>
@@ -264,8 +331,14 @@
         // ==========================================
         // 1. GLOBAL STATE & GLOBALS
         // ==========================================
-        const VERSION = "v4.3";
-        const PALETTE = ['#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16'];
+        const VERSION = "v4.8";
+        // Expanded palette for 32 distinct players
+        const PALETTE = [
+            '#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16',
+            '#f43f5e', '#8b5cf6', '#14b8a6', '#eab308', '#d946ef', '#0ea5e9', '#6366f1', '#f97316',
+            '#c026d3', '#0284c7', '#16a34a', '#ea580c', '#4f46e5', '#db2777', '#059669', '#d97706',
+            '#9f1239', '#4338ca', '#047857', '#b45309', '#6d28d9', '#0369a1', '#be185d', '#1d4ed8'
+        ];
         
         let map;
         let registeredUsers = {};
@@ -279,6 +352,9 @@
         let isFirebaseReady = false;
         let isInitialDataLoaded = false;
         let latestServerData = null; 
+        
+        // NEW FAILSAFE: Controls if manual popup buttons are allowed to render
+        let manualPlacementEnabled = false; 
         
         let rawCantonData = null;
         let rawGemeindeData = null;
@@ -333,10 +409,27 @@
         const replayOverlay = document.getElementById('replay-overlay');
         const btnSkipReplay = document.getElementById('btn-skip-replay');
         const btnGpsToken = document.getElementById('btn-gps-token');
+        const locationTutorialModal = document.getElementById('location-tutorial-modal');
+        const celebrationModal = document.getElementById('celebration-modal');
+        const celebrationMessage = document.getElementById('celebration-message');
 
         // ==========================================
         // 3. UTILITIES (Dynamic Data Extractors)
         // ==========================================
+        window.switchLang = function(lang) {
+            if (lang === 'en') {
+                document.getElementById('loc-steps-en').classList.remove('hidden');
+                document.getElementById('loc-steps-de').classList.add('hidden');
+                document.getElementById('lang-en').className = "text-xs font-bold px-3 py-1 rounded bg-slate-800 text-white";
+                document.getElementById('lang-de').className = "text-xs font-bold px-3 py-1 rounded bg-slate-200 text-slate-600 hover:bg-slate-300 transition-colors";
+            } else {
+                document.getElementById('loc-steps-de').classList.remove('hidden');
+                document.getElementById('loc-steps-en').classList.add('hidden');
+                document.getElementById('lang-de').className = "text-xs font-bold px-3 py-1 rounded bg-slate-800 text-white";
+                document.getElementById('lang-en').className = "text-xs font-bold px-3 py-1 rounded bg-slate-200 text-slate-600 hover:bg-slate-300 transition-colors";
+            }
+        };
+
         function getStableGeoId(f, prefix) {
             try {
                 let coords = f.geometry.coordinates.flat(Infinity);
@@ -464,7 +557,10 @@
             if (!tokenRows) tokenRows = '<div class="text-sm text-slate-500 italic my-2">No tokens placed</div>';
             const ownerStr = info.ownerId ? `<span style="color:${getUser(info.ownerId).color}" class="font-bold">${getUser(info.ownerId).name}</span>` : (!info.ownerId && info.totalTokens > 0) ? `<span class="text-slate-500 font-bold">Contested (Tie)</span>` : '<span class="text-slate-400">Unclaimed</span>';
             const safeGemId = id.replace(/'/g, "\\'");
-            const btnHTML = currentUser ? `<button onclick="window.placeToken('${safeGemId}')" class="mt-4 w-full py-2.5 px-3 rounded-lg text-sm font-bold text-white shadow-md active:scale-95 transition-all" style="background-color: ${currentUser.color};">Drink Beer Here</button>` : '';
+            
+            // MANUAL PLACEMENT BUTTON: Only shows if manualPlacementEnabled = true
+            const btnHTML = (currentUser && manualPlacementEnabled) ? `<button onclick="window.placeToken('${safeGemId}')" class="mt-4 w-full py-2.5 px-3 rounded-lg text-sm font-bold text-white shadow-md active:scale-95 transition-all" style="background-color: ${currentUser.color};">Drink Beer Here</button>` : '';
+            
             return `<div class="border-b border-slate-200 pb-2 mb-2"><strong class="block text-lg mb-1 text-slate-800">${name}</strong><div class="text-xs text-slate-500 mb-0.5">Area: ${area} km²</div><div class="text-xs text-slate-500">Controlled By: ${ownerStr}</div></div><div><strong class="text-xs uppercase tracking-wider text-slate-400 mb-1 block">Tokens Placed</strong>${tokenRows}</div>${btnHTML}`;
         }
 
@@ -498,8 +594,14 @@
             const p = getUser(log.playerId);
             const dot = `<div class="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm" style="background-color: ${p.color}"></div>`;
             const pName = `<span style="color: ${p.color}" class="font-bold">${p.name}</span>`;
-            let content = log.type === 'token' ? `${dot} <span class="truncate">${pName} 🍺 in <b>${log.targetName}</b></span>` : `${dot} <span class="truncate">${pName} 🚩 <b>${log.targetName}</b></span>`;
-            return content + timeStr;
+            
+            let actionHtml = '';
+            if (log.type === 'token') actionHtml = `🍺 in <b>${log.targetName}</b>`;
+            else if (log.type.includes('gem')) actionHtml = `🚩 <b>${log.targetName}</b>`;
+            else if (log.type.includes('can')) actionHtml = `🏆 <b>${log.targetName.toUpperCase()}</b>`;
+            else actionHtml = `🚩 <b>${log.targetName}</b>`;
+
+            return `${dot} <span class="truncate">${pName} ${actionHtml}</span>${timeStr}`;
         }
 
         function renderActivityBox(maxTimestamp = Date.now()) {
@@ -597,7 +699,7 @@
         }
 
         // ==========================================
-        // 8. FIREBASE SYNC ENGINE
+        // 8. SURGICAL FIREBASE SYNC ENGINE
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyCfzl0RKiF0Yy8XXAZ0O20TEmDV5gogh9I",
@@ -615,9 +717,26 @@
         const stateRef = doc(db, 'bierisko_game', 'global_state');
 
         async function pushState() {
-            if (!isFirebaseReady || !isInitialDataLoaded) return;
-            if (Object.keys(registeredUsers).length === 0 && currentUser !== null) return;
-            try { await setDoc(stateRef, { users: registeredUsers, tokens: tokensState, activityLog: activityLog.slice(-100), tokenHistory: tokenHistory.slice(-500) }, { merge: true }); } 
+            if (!isFirebaseReady || !isInitialDataLoaded || !currentUser) return;
+            
+            // SURGICAL PUSH: We only upload the tokens belonging to the current user.
+            let myTokens = {};
+            for (let gem in tokensState) {
+                if (tokensState[gem][currentUser.id] !== undefined) {
+                    myTokens[gem] = { [currentUser.id]: tokensState[gem][currentUser.id] };
+                }
+            }
+            
+            let myUser = { [currentUser.id]: registeredUsers[currentUser.id] };
+
+            try { 
+                await setDoc(stateRef, { 
+                    users: myUser, 
+                    tokens: myTokens, 
+                    activityLog: activityLog.slice(-100), 
+                    tokenHistory: tokenHistory.slice(-500) 
+                }, { merge: true }); 
+            } 
             catch(e) { console.error("Cloud error", e); }
         }
 
@@ -673,7 +792,6 @@
         }
 
         async function bootMap() {
-            // Map strictly initialized here ONCE.
             map = L.map('map', {
                 center: [46.8182, 8.2275], zoom: 8, minZoom: 7, maxZoom: 13, 
                 zoomControl: false, attributionControl: false, 
@@ -691,7 +809,6 @@
             cantonBordersLayerGroup = L.layerGroup().addTo(map); 
             cantonLayerGroup = L.layerGroup(); 
 
-            // Hardened fallback endpoints
             const C_URLS = [
                 'https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/georef-switzerland-kanton/exports/geojson',
                 'https://public.opendatasoft.com/api/records/1.0/download/?dataset=georef-switzerland-kanton&format=geojson'
@@ -706,12 +823,16 @@
                 rawCantonData = rc;
                 rawGemeindeData = rm;
                 
-                // Force cache bypass to rebuild with the new bulletproof ID extractors
                 const cached = localStorage.getItem('bierisko_spatial_map_v4');
                 if (cached) gemToCantonMap = JSON.parse(cached); else {
                     loaderText.innerText = "Indexing territories...";
                     for (const gem of rawGemeindeData.features) {
                         const id = getGemeindeId(gem);
+                        // Try fast path mapping first
+                        if (gem.properties?.ste_code) {
+                            gemToCantonMap[id] = String(gem.properties.ste_code);
+                            continue;
+                        }
                         // Fallback to geometric mapping
                         try {
                             const pt = turf.pointOnFeature(gem);
@@ -768,6 +889,9 @@
             const isGemTakeover = newGemOwner !== prevGemOwner && newGemOwner === currentUser.id, isCanTakeover = newCanOwner !== prevCanOwner && newCanOwner === currentUser.id;
             const ts = Date.now(); let targetName = "Unknown";
             
+            let conqueredName = null;
+            let conqueredType = null;
+
             gemeindeGeoJsonLayer.eachLayer(l => {
                 if (getGemeindeId(l.feature) === id) {
                     targetName = getGemeindeName(l.feature); updateLayerStyle(l, getGemeindeStyle(l.feature)); updateGemeindeLabel(l, true, currentUser.color); 
@@ -785,8 +909,23 @@
                 });
             }
             tokenHistory.push({ playerId: currentUser.id, gemId: id, timestamp: ts }); activityLog.push({ type: 'token', playerId: currentUser.id, targetName: targetName, timestamp: ts });
-            if (isGemTakeover) activityLog.push({ type: prevGemTokens === 0 ? 'claim_gem' : 'conquer_gem', playerId: currentUser.id, targetName: targetName, timestamp: ts });
-            if (isCanTakeover) { let canName = "Canton"; cantonGeoJsonLayer.eachLayer(l => { if(getCantonId(l.feature) === gemToCantonMap[id]) canName = getCantonName(l.feature); }); activityLog.push({ type: prevCanOwner === null ? 'claim_can' : 'conquer_can', playerId: currentUser.id, targetName: canName, timestamp: ts }); }
+            if (isGemTakeover) {
+                activityLog.push({ type: prevGemTokens === 0 ? 'claim_gem' : 'conquer_gem', playerId: currentUser.id, targetName: targetName, timestamp: ts });
+                conqueredName = targetName;
+                conqueredType = 'Gemeinde';
+            }
+            if (isCanTakeover) { 
+                let canName = "Canton"; cantonGeoJsonLayer.eachLayer(l => { if(getCantonId(l.feature) === gemToCantonMap[id]) canName = getCantonName(l.feature); }); 
+                activityLog.push({ type: prevCanOwner === null ? 'claim_can' : 'conquer_can', playerId: currentUser.id, targetName: canName, timestamp: ts }); 
+                conqueredName = canName;
+                conqueredType = 'Canton'; // Overrides Gemeinde if both happened at the same time
+            }
+            
+            if (conqueredName) {
+                celebrationMessage.innerHTML = `You just conquered the ${conqueredType} of <strong>${conqueredName}</strong>!`;
+                celebrationModal.classList.remove('hidden');
+            }
+
             if (!currentUser.hasSeenUndoHint) { currentUser.hasSeenUndoHint = true; saveLocalUserLastSeen(); setTimeout(() => { settingsModal.classList.remove('hidden'); undoHint.classList.remove('hidden'); btnUndo.classList.add('ring-4', 'ring-amber-400', 'animate-pulse'); }, 1000); }
             currentUser.lastSeen = ts; saveLocalUserLastSeen(); renderActivityBox(); refreshMapVisuals(); pushState(); 
         };
@@ -814,7 +953,7 @@
             }
             isReplaying = false; replayOverlay.classList.add('hidden');
             if (latestServerData) applyServerData(latestServerData);
-            currentUser.lastSeen = Date.now(); saveLocalUserLastSeen(); pushState();
+            currentUser.lastSeen = Date.now(); saveLocalUserLastSeen(); pushState(); // We are safe to push because pushState now ONLY uploads currentUser's tokens!
         }
 
         // ==========================================
@@ -841,13 +980,27 @@
 
         btnGpsToken.addEventListener('click', () => {
             if (!currentUser) return showToast("Please join the map first!", true);
-            const orig = btnGpsToken.innerText; btnGpsToken.innerHTML = '<span class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></span>'; btnGpsToken.classList.add('opacity-70', 'cursor-wait'); btnGpsToken.disabled = true;
+            const orig = btnGpsToken.innerText; btnGpsToken.innerHTML = '<span class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent inline-block"></span>'; btnGpsToken.classList.add('opacity-70', 'cursor-wait'); btnGpsToken.disabled = true;
             navigator.geolocation.getCurrentPosition((pos) => {
                 const pt = turf.point([pos.coords.longitude, pos.coords.latitude]);
                 let f = rawGemeindeData.features.find(feat => { try { return turf.booleanPointInPolygon(pt, feat); } catch(e) { return false; } });
-                if (f) { window.placeToken(getGemeindeId(f)); showToast(`📍 Token placed in ${getGemeindeName(f)}!`); if (currentView === 'gemeinde' && gemeindeGeoJsonLayer) { let target = null; gemeindeGeoJsonLayer.eachLayer(l => { if (getGemeindeId(l.feature) === getGemeindeId(f)) target = l; }); if (target) map.flyToBounds(target.getBounds(), { maxZoom: 11, duration: 0.6 }); } } else showToast("Couldn't locate you inside Switzerland!", true);
+                if (f) { 
+                    window.placeToken(getGemeindeId(f)); showToast(`📍 Token placed in ${getGemeindeName(f)}!`); 
+                    if (currentView === 'gemeinde' && gemeindeGeoJsonLayer) { let target = null; gemeindeGeoJsonLayer.eachLayer(l => { if (getGemeindeId(l.feature) === getGemeindeId(f)) target = l; }); if (target) map.flyToBounds(target.getBounds(), { maxZoom: 11, duration: 0.6 }); } 
+                } else { 
+                    showToast("Outside Switzerland! Manual placement unlocked.", true);
+                    manualPlacementEnabled = true; refreshMapVisuals();
+                }
                 btnGpsToken.innerHTML = orig; btnGpsToken.classList.remove('opacity-70', 'cursor-wait'); btnGpsToken.disabled = false;
-            }, (err) => { showToast("GPS access denied.", true); btnGpsToken.innerHTML = orig; btnGpsToken.classList.remove('opacity-70', 'cursor-wait'); btnGpsToken.disabled = false; }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+            }, (err) => { 
+                if (err.code === 1) { // PERMISSION_DENIED
+                    locationTutorialModal.classList.remove('hidden');
+                } else {
+                    showToast("GPS Error. Manual placement unlocked.", true);
+                    manualPlacementEnabled = true; refreshMapVisuals();
+                }
+                btnGpsToken.innerHTML = orig; btnGpsToken.classList.remove('opacity-70', 'cursor-wait'); btnGpsToken.disabled = false; 
+            }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
         });
 
         btnUndo.addEventListener('click', () => {
@@ -855,7 +1008,9 @@
             let lastTokenIndex = -1; for (let i = tokenHistory.length - 1; i >= 0; i--) { if (tokenHistory[i].playerId === currentUser.id) { lastTokenIndex = i; break; } }
             if (lastTokenIndex === -1) return showToast("No recent actions to undo.", true);
             const lastToken = tokenHistory[lastTokenIndex]; tokenHistory.splice(lastTokenIndex, 1);
-            if (tokensState[lastToken.gemId] && tokensState[lastToken.gemId][currentUser.id]) { tokensState[lastToken.gemId][currentUser.id]--; if (tokensState[lastToken.gemId][currentUser.id] <= 0) { delete tokensState[lastToken.gemId][currentUser.id]; } }
+            if (tokensState[lastToken.gemId] && tokensState[lastToken.gemId][currentUser.id]) { 
+                tokensState[lastToken.gemId][currentUser.id] = Math.max(0, tokensState[lastToken.gemId][currentUser.id] - 1); 
+            }
             activityLog = activityLog.filter(log => !(log.playerId === currentUser.id && log.timestamp === lastToken.timestamp));
             undoHint.classList.add('hidden'); btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse'); showToast("Last beer placement undone."); calculateGameState(); renderActivityBox(); refreshMapVisuals(); pushState();
         });
@@ -863,8 +1018,29 @@
         btnSettings.addEventListener('click', () => settingsModal.classList.remove('hidden'));
         btnCloseSettings.addEventListener('click', () => { settingsModal.classList.add('hidden'); undoHint.classList.add('hidden'); btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse'); });
         btnShowRules.addEventListener('click', () => { tutorialModal.classList.remove('hidden'); settingsModal.classList.add('hidden'); });
-        btnLogout.addEventListener('click', () => { if (currentUser) { currentUser.lastSeen = Date.now(); saveLocalUserLastSeen(); pushState(); } currentUser = null; updateUIForUser(); localStorage.removeItem('bierisko_username'); loginInput.value = ''; btnLoginSubmit.innerText = "Register"; btnLoginSubmit.className = "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-600/30 disabled:opacity-50 disabled:cursor-not-allowed"; loginScreen.style.visibility = 'visible'; loginScreen.style.opacity = '1'; settingsModal.classList.add('hidden'); tutorialModal.classList.add('hidden'); undoHint.classList.add('hidden'); btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse'); map.closePopup(); });
-        btnDelete.addEventListener('click', () => { if(confirm(`Are you sure you want to delete data for ${currentUser.name}?`)) { const idToDelete = currentUser.id; registeredUsers[idToDelete] = null; for (const gemId in tokensState) { if (tokensState[gemId][idToDelete] !== undefined) { tokensState[gemId][idToDelete] = 0; } } activityLog = activityLog.filter(log => log.playerId !== idToDelete && log.type !== 'system'); tokenHistory = tokenHistory.filter(log => log.playerId !== idToDelete); pushState(); btnLogout.click(); } });
+        
+        btnLogout.addEventListener('click', () => { 
+            if (currentUser) { currentUser.lastSeen = Date.now(); saveLocalUserLastSeen(); pushState(); } 
+            currentUser = null; updateUIForUser(); localStorage.removeItem('bierisko_username'); 
+            loginInput.value = ''; btnLoginSubmit.innerText = "Register"; btnLoginSubmit.className = "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-600/30 disabled:opacity-50 disabled:cursor-not-allowed"; 
+            loginScreen.style.visibility = 'visible'; loginScreen.style.opacity = '1'; settingsModal.classList.add('hidden'); tutorialModal.classList.add('hidden'); undoHint.classList.add('hidden'); btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse'); map.closePopup(); 
+        });
+
+        btnCloseTutorial.addEventListener('click', () => {
+            tutorialModal.classList.add('hidden');
+            checkAndRunReplay(); 
+        });
+
+        btnDelete.addEventListener('click', () => { 
+            if(confirm(`Are you sure you want to delete data for ${currentUser.name}?`)) { 
+                const idToDelete = currentUser.id; registeredUsers[idToDelete] = null; 
+                for (const gemId in tokensState) { if (tokensState[gemId][idToDelete] !== undefined) { tokensState[gemId][idToDelete] = 0; } } 
+                activityLog = activityLog.filter(log => log.playerId !== idToDelete && log.type !== 'system'); 
+                tokenHistory = tokenHistory.filter(log => log.playerId !== idToDelete); 
+                pushState(); btnLogout.click(); 
+            } 
+        });
+
         btnToggleView.addEventListener('click', () => switchView(currentView === 'gemeinde' ? 'canton' : 'gemeinde'));
         leaderboardHeader.addEventListener('click', () => { isLeaderboardExpanded = !isLeaderboardExpanded; leaderboardToggleIcon.style.transform = isLeaderboardExpanded ? 'rotate(180deg)' : 'rotate(0deg)'; updateLeaderboard(); });
         activityHeader.addEventListener('click', () => { isActivityExpanded = !isActivityExpanded; activityBox.style.height = isActivityExpanded ? '16rem' : '3.5rem'; activityList.style.opacity = isActivityExpanded ? '1' : '0'; activityToggleIcon.style.transform = isActivityExpanded ? 'rotate(180deg)' : 'rotate(0deg)'; });
