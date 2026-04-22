@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- Strict Cache-Busting Meta Tags to force browsers to always load the newest version -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
     <title>VENI BIERI VICI</title>
     
     <!-- Beer Emoji Favicon -->
@@ -104,7 +110,7 @@
                 </button>
             </form>
         </div>
-        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v4.9 STABLE</div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v5.0 STABLE</div>
     </div>
 
     <!-- Screen 2: Rules -->
@@ -329,9 +335,24 @@
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ==========================================
+        // 0. VERSION CACHE CONTROLLER
+        // ==========================================
+        const CURRENT_VERSION = "v5.0";
+        const savedVersion = localStorage.getItem('bierisko_app_version');
+        
+        // If versions mismatch, clear heavy caches to force clean reload
+        if (savedVersion !== CURRENT_VERSION) {
+            const username = localStorage.getItem('bierisko_username');
+            const localUser = localStorage.getItem('bierisko_local_user');
+            localStorage.clear();
+            if (username) localStorage.setItem('bierisko_username', username);
+            if (localUser) localStorage.setItem('bierisko_local_user', localUser);
+            localStorage.setItem('bierisko_app_version', CURRENT_VERSION);
+        }
+
+        // ==========================================
         // 1. GLOBAL STATE & GLOBALS
         // ==========================================
-        const VERSION = "v4.8";
         // Expanded palette for 32 distinct players
         const PALETTE = [
             '#ef4444', '#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#84cc16',
@@ -711,10 +732,10 @@
             appId: "1:291287462170:web:f209563d49b3fc0d93bca3",
             measurementId: "G-BSG6YYVGJW"
         };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const stateRef = doc(db, 'bierisko_game', 'global_state');
+        const app_fb = initializeApp(firebaseConfig);
+        const auth_fb = getAuth(app_fb);
+        const db_fb = getFirestore(app_fb);
+        const stateRef = doc(db_fb, 'bierisko_game', 'global_state');
 
         async function pushState() {
             if (!isFirebaseReady || !isInitialDataLoaded || !currentUser) return;
@@ -772,8 +793,8 @@
         }
 
         async function initFirebase() {
-            await signInAnonymously(auth);
-            onAuthStateChanged(auth, user => { if (user && !isFirebaseReady) { isFirebaseReady = true; listenToLiveState(); } });
+            await signInAnonymously(auth_fb);
+            onAuthStateChanged(auth_fb, user => { if (user && !isFirebaseReady) { isFirebaseReady = true; listenToLiveState(); } });
         }
 
         // ==========================================
