@@ -67,7 +67,7 @@
                 </button>
             </form>
         </div>
-        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v5.1 EVENT-SOURCED</div>
+        <div class="absolute bottom-4 right-6 text-[10px] text-slate-400 font-medium">v5.3 STABLE</div>
     </div>
 
     <!-- Screen 2: Rules -->
@@ -106,7 +106,7 @@
     </div>
 
     <!-- UI Overlay: Top Controls -->
-    <div class="absolute top-4 left-4 sm:left-6 sm:top-6 z-[2000] flex gap-2 pointer-events-none">
+    <div class="absolute top-4 left-4 sm:left-6 sm:top-6 z-[2000] flex flex-col gap-2 pointer-events-none">
         <button id="btn-settings" class="bg-white/90 backdrop-blur-md flex items-center justify-center rounded-full shadow-lg border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors pointer-events-auto active:scale-95 shrink-0 w-12 h-12" title="Settings">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1-1-1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
@@ -264,15 +264,49 @@
             <button onclick="document.getElementById('player-stats-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
             </button>
-            <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+            <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
                 <div id="stat-modal-color" class="w-4 h-4 rounded-full border-2 border-white shadow-sm"></div>
                 <span id="stat-modal-name"></span>
             </h3>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center"><p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Cantons Owned</p><p class="text-2xl font-black text-slate-800" id="stat-modal-cantons">0</p></div>
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center"><p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Gemeinden Owned</p><p class="text-2xl font-black text-slate-800" id="stat-modal-gemeinden">0</p></div>
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center"><p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Total Tokens</p><p class="text-2xl font-black text-slate-800" id="stat-modal-tokens">0</p></div>
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center"><p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Total Area</p><p class="text-2xl font-black text-slate-800" id="stat-modal-area">0</p></div>
+            
+            <!-- Top Summary Stats -->
+            <div class="grid grid-cols-3 gap-2 mb-4">
+                <div class="bg-blue-50 p-2 rounded-xl border border-blue-100 text-center">
+                    <p class="text-[9px] uppercase font-bold text-blue-500 mb-0.5">Rank</p>
+                    <p class="text-lg font-black text-blue-700" id="stat-modal-rank">#0</p>
+                </div>
+                <div class="bg-amber-50 p-2 rounded-xl border border-amber-100 text-center">
+                    <p class="text-[9px] uppercase font-bold text-amber-500 mb-0.5">Highest</p>
+                    <p class="text-lg font-black text-amber-700" id="stat-modal-highest-rank">#0</p>
+                </div>
+                <div class="bg-slate-50 p-2 rounded-xl border border-slate-200 text-center">
+                    <p class="text-[9px] uppercase font-bold text-slate-500 mb-0.5">Days Active</p>
+                    <p class="text-lg font-black text-slate-700" id="stat-modal-days">0</p>
+                </div>
+            </div>
+
+            <!-- Detailed Stats Grid -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center flex flex-col justify-center">
+                    <p class="text-[10px] uppercase font-bold text-slate-400 mb-0.5">Cantons</p>
+                    <p class="text-2xl font-black text-slate-800 leading-none" id="stat-modal-cantons">0</p>
+                    <p class="text-[9px] font-medium text-slate-400 mt-1.5" id="stat-rank-cantons">Rank: -</p>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center flex flex-col justify-center">
+                    <p class="text-[10px] uppercase font-bold text-slate-400 mb-0.5">Gemeinden</p>
+                    <p class="text-2xl font-black text-slate-800 leading-none" id="stat-modal-gemeinden">0</p>
+                    <p class="text-[9px] font-medium text-slate-400 mt-1.5" id="stat-rank-gemeinden">Rank: -</p>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center flex flex-col justify-center">
+                    <p class="text-[10px] uppercase font-bold text-slate-400 mb-0.5">Total Tokens</p>
+                    <p class="text-2xl font-black text-slate-800 leading-none" id="stat-modal-tokens">0</p>
+                    <p class="text-[9px] font-medium text-slate-400 mt-1.5" id="stat-rank-tokens">Rank: -</p>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center flex flex-col justify-center">
+                    <p class="text-[10px] uppercase font-bold text-slate-400 mb-0.5">Total Area</p>
+                    <p class="text-2xl font-black text-slate-800 leading-none" id="stat-modal-area">0</p>
+                    <p class="text-[9px] font-medium text-slate-400 mt-1.5" id="stat-rank-area">Rank: -</p>
+                </div>
             </div>
         </div>
     </div>
@@ -294,7 +328,7 @@
         // ==========================================
         // 0. VERSION CACHE CONTROLLER
         // ==========================================
-        const CURRENT_VERSION = "v5.1";
+        const CURRENT_VERSION = "v5.3";
         const savedVersion = localStorage.getItem('bierisko_app_version');
         
         // If versions mismatch, clear heavy caches to force clean reload
@@ -576,7 +610,7 @@
         }
 
         function createActivityHtml(log, isDarkBg = false, showTime = false) {
-            const timeStr = showTime ? `<span class="text-slate-400 text-[10px] ml-auto shrink-0 pl-2">${new Date(log.timestamp).toLocaleString([], {hour:'2-digit', minute:'2-digit'})}</span>` : '';
+            const timeStr = showTime ? `<span class="text-slate-400 text-[10px] ml-auto shrink-0 pl-2">${new Date(log.timestamp).toLocaleString([], {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})}</span>` : '';
             if (log.type === 'system') return `<span class="text-slate-500 italic truncate w-full">${log.text}</span> ${timeStr}`;
             const p = getUser(log.playerId);
             const dot = `<div class="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm" style="background-color: ${p.color}"></div>`;
@@ -610,6 +644,17 @@
                 Object.keys(stat.areas).forEach(pid => { if(scores[pid]) scores[pid].area += stat.areas[pid]; });
             });
             const sorted = Object.keys(registeredUsers).filter(pid => registeredUsers[pid]).sort((a, b) => (scores[b].cantons - scores[a].cantons) || (scores[b].area - scores[a].area));
+            
+            // Highest Rank Tracking Engine
+            if (currentUser && registeredUsers[currentUser.id]) {
+                const myRank = sorted.indexOf(currentUser.id) + 1;
+                if (myRank > 0 && (!currentUser.highestRank || myRank < currentUser.highestRank)) {
+                    currentUser.highestRank = myRank;
+                    registeredUsers[currentUser.id].highestRank = myRank;
+                    if (isFirebaseReady && !isReplaying) pushState();
+                }
+            }
+
             leaderboard.innerHTML = '';
             leaderboardHeader.classList.remove('border-b', 'border-slate-100', 'pb-2', 'mb-2');
             if (isLeaderboardExpanded) {
@@ -623,12 +668,59 @@
         }
 
         window.showPlayerStats = function(pid) {
-            const p = getUser(pid); let c = 0, g = 0, t = 0, a = 0;
-            Object.values(cantonStats).forEach(s => { if (s.ownerId === pid) c++; if (s.areas[pid]) a += s.areas[pid]; });
-            Object.keys(tokensState).forEach(id => { if (tokensState[id][pid] > 0) t += tokensState[id][pid]; if (gemeindeOwners[id]?.ownerId === pid) g++; });
-            document.getElementById('stat-modal-name').innerText = p.name; document.getElementById('stat-modal-color').style.backgroundColor = p.color;
-            document.getElementById('stat-modal-cantons').innerText = c; document.getElementById('stat-modal-gemeinden').innerText = g;
-            document.getElementById('stat-modal-tokens').innerText = t; document.getElementById('stat-modal-area').innerText = Math.round(a) + ' km²';
+            const p = getUser(pid); 
+            
+            // Build comparative stats to determine exact ranks
+            const allStats = [];
+            Object.keys(registeredUsers).forEach(uid => {
+                if(!registeredUsers[uid]) return;
+                let c = 0, g = 0, t = 0, a = 0;
+                Object.values(cantonStats).forEach(s => { if (s.ownerId === uid) c++; if (s.areas[uid]) a += s.areas[uid]; });
+                Object.keys(tokensState).forEach(id => { if (tokensState[id][uid] > 0) t += tokensState[id][uid]; if (gemeindeOwners[id]?.ownerId === uid) g++; });
+                allStats.push({ uid, c, g, t, a });
+            });
+
+            const myStats = allStats.find(s => s.uid === pid) || { c: 0, g: 0, t: 0, a: 0 };
+            
+            // Rank calculations
+            const getRank = (sortFn) => [...allStats].sort(sortFn).findIndex(s => s.uid === pid) + 1;
+            const rCantons = getRank((x, y) => y.c - x.c || y.a - x.a);
+            const rGemeinden = getRank((x, y) => y.g - x.g || y.t - x.t);
+            const rTokens = getRank((x, y) => y.t - x.t);
+            const rArea = getRank((x, y) => y.a - x.a);
+
+            const overallRank = rCantons;
+
+            // Registration Date Fallback Engine
+            let regDate = p.registeredAt;
+            if (!regDate) {
+                const userTokens = tokenHistory.filter(th => th.playerId === pid);
+                if (userTokens.length > 0) regDate = userTokens[0].timestamp;
+                else regDate = p.lastSeen || Date.now();
+            }
+            const daysReg = Math.max(0, Math.floor((Date.now() - regDate) / (1000 * 60 * 60 * 24)));
+            const highestRank = p.highestRank ? Math.min(p.highestRank, overallRank) : overallRank;
+
+            // Populate UI Elements
+            document.getElementById('stat-modal-name').innerText = p.name; 
+            document.getElementById('stat-modal-color').style.backgroundColor = p.color;
+            
+            document.getElementById('stat-modal-rank').innerText = '#' + overallRank;
+            document.getElementById('stat-modal-highest-rank').innerText = '#' + highestRank;
+            document.getElementById('stat-modal-days').innerText = daysReg;
+
+            document.getElementById('stat-modal-cantons').innerText = myStats.c; 
+            document.getElementById('stat-rank-cantons').innerText = 'Rank: #' + rCantons;
+
+            document.getElementById('stat-modal-gemeinden').innerText = myStats.g; 
+            document.getElementById('stat-rank-gemeinden').innerText = 'Rank: #' + rGemeinden;
+
+            document.getElementById('stat-modal-tokens').innerText = myStats.t; 
+            document.getElementById('stat-rank-tokens').innerText = 'Rank: #' + rTokens;
+
+            document.getElementById('stat-modal-area').innerText = Math.round(myStats.a) + ' km²';
+            document.getElementById('stat-rank-area').innerText = 'Rank: #' + rArea;
+
             document.getElementById('player-stats-modal').classList.remove('hidden');
             if (currentView !== 'canton') switchView('canton');
             if (cantonGeoJsonLayer) cantonGeoJsonLayer.eachLayer(l => { if (cantonStats[getCantonId(l.feature)]?.ownerId === pid) { if (l._path) { l._path.classList.remove('anim-takeover'); void l._path.offsetWidth; l._path.classList.add('anim-takeover'); } l.bringToFront(); } });
@@ -946,7 +1038,7 @@
             }
             isReplaying = false; replayOverlay.classList.add('hidden');
             if (latestServerData) applyServerData(latestServerData);
-            currentUser.lastSeen = Date.now(); saveLocalUserLastSeen(); pushState(); 
+            currentUser.lastSeen = Date.now(); saveLocalUserLastSeen(); pushState(); // We are safe to push because pushState now ONLY uploads currentUser's tokens!
         }
 
         // ==========================================
@@ -957,7 +1049,7 @@
             if(!uid) return;
             if(!registeredUsers[uid]) { 
                 const cid = Object.keys(registeredUsers).filter(p => registeredUsers[p]).length % PALETTE.length;
-                registeredUsers[uid] = { id: uid, name: raw, color: PALETTE[cid], lastSeen: Date.now(), hasSeenUndoHint: false };
+                registeredUsers[uid] = { id: uid, name: raw, color: PALETTE[cid], lastSeen: Date.now(), hasSeenUndoHint: false, registeredAt: Date.now(), highestRank: null };
                 pushState();
             }
             localStorage.setItem('bierisko_username', raw); currentUser = registeredUsers[uid]; updateLocalUserLastSeen(); updateUIForUser();
@@ -1017,6 +1109,11 @@
             currentUser = null; updateUIForUser(); localStorage.removeItem('bierisko_username'); 
             loginInput.value = ''; btnLoginSubmit.innerText = "Register"; btnLoginSubmit.className = "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-md shadow-blue-600/30 disabled:opacity-50 disabled:cursor-not-allowed"; 
             loginScreen.style.visibility = 'visible'; loginScreen.style.opacity = '1'; settingsModal.classList.add('hidden'); tutorialModal.classList.add('hidden'); undoHint.classList.add('hidden'); btnUndo.classList.remove('ring-4', 'ring-amber-400', 'animate-pulse'); map.closePopup(); 
+        });
+
+        btnCloseTutorial.addEventListener('click', () => {
+            tutorialModal.classList.add('hidden');
+            checkAndRunReplay(); 
         });
 
         btnDelete.addEventListener('click', () => { 
